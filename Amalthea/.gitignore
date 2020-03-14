@@ -1,0 +1,37 @@
+# Ignore all generated files. Those containing enabled protected regions have
+# to be added explicitly, which overrides these .gitignore definitions.
+amalthea_model.cmake
+CMakeLists.txt
+amalthea_model.pri
+
+amalthea/**/*.cpp
+amalthea/**/*.hpp
+
+# However, known exceptions are explicitly added to avoid confusion.
+!amalthea/model/BaseTypeDefinition.hpp
+!amalthea/model/BoundedContinuousValueDistribution.hpp
+!amalthea/model/BoundedDiscreteValueDistribution.hpp
+!amalthea/model/BoundedTimeDistribution.hpp
+!amalthea/model/Cache.hpp
+!amalthea/model/Channel.hpp
+!amalthea/model/Component.hpp
+!amalthea/model/Composite.hpp
+!amalthea/model/ConnectionHandler.hpp
+!amalthea/model/DataTypeDefinition.hpp
+!amalthea/model/DiscreteValueBetaDistribution.hpp
+!amalthea/model/DiscreteValueBoundaries.hpp
+!amalthea/model/DiscreteValueStatistics.hpp
+!amalthea/model/DiscreteValueUniformDistribution.hpp
+!amalthea/model/DiscreteValueWeibullEstimatorsDistribution.hpp
+!amalthea/model/Label.hpp
+!amalthea/model/MainInterface.hpp
+!amalthea/model/Memory.hpp
+!amalthea/model/ProcessingUnit.hpp
+!amalthea/model/Runnable.hpp
+!amalthea/model/TimeBetaDistribution.hpp
+!amalthea/model/TimeBoundaries.hpp
+!amalthea/model/TimeStatistics.hpp
+!amalthea/model/TimeUniformDistribution.hpp
+!amalthea/model/TimeWeibullEstimatorsDistribution.hpp
+!amalthea/model/TypeDefinition.hpp
+!amalthea/model_forward.hpp
