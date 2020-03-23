@@ -1,0 +1,13 @@
+# Ignore all generated files. Those containing enabled protected regions have
+# to be added explicitly, which overrides these .gitignore definitions.
+am2inc.cmake
+CMakeLists.txt
+am2inc.pri
+
+**/*.cpp
+**/*.hpp
+
+# However, known exceptions are explicitly added to avoid confusion.
+!am2inc_forward.hpp
+
+!version.cpp

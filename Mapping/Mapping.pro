@@ -5,23 +5,27 @@
 include(../../config.pri)
 
 TEMPLATE = lib
-TARGET = Amalthea
+TARGET = Mapping
 QT += core
 
 CONFIG += dll
-CONFIG -= debug
-CONFIG += release
 
 # Amalthea does not distribute the classes over subpackages. As a result the
 # generated PackageImpl.cpp is too big to compile with debug and the
 # sanitizer.
 CONFIG -= sanitizer
 
-DEFINES += MAKE_AMALTHEA_MODEL_DLL
+DEFINES += MAKE_AM2INC_DLL
 
 QMAKE_CXXFLAGS += -Wno-unused-parameter
 
 INCLUDEPATH += ../..
+
+win32 {
+    LIBS += -L../Amalthea/$${DESTDIR} -lAmalthea
+    LIBS += -L../../Root/$${DESTDIR} -lRoot
+}
+
 
 !isEmpty(EMF4CPP): LIBS += -L$${EMF4CPP}/lib
 LIBS += -lemf4cpp-ecore -lemf4cpp-ecorecpp
@@ -34,24 +38,28 @@ QMAKE_RPATHDIR = .
 SRCGEN = .
 VPATH = $${SRCGEN}
 INCLUDEPATH += $${SRCGEN}
+INCLUDEPATH += ../../Root/model
+INCLUDEPATH += ../Amalthea/amalthea ../Amalthea
 
 #
 # list of source files created by emf4cpp
 #
-AMALTHEA_ECORE = $${PWD}/../../EcoreModels/amalthea.ecore
+ECORE_PATH    = $${PWD}/../../EcoreModels
+MAPPING_ECORE = $${ECORE_PATH}/Am2IncMapping.ecore
 
-amalthea_model.pri.target = $$relative_path($${PWD}/amalthea_model.pri, $${OUT_PWD})
-amalthea_model.pri.depends = $$relative_path($${AMALTHEA_ECORE}, $${OUT_PWD})
-amalthea_model.pri.commands =  \
-    @echo generating model && \
-    $${EMF4CPP}/bin/emf4cpp.generator.sh -c -java \
-        --target-version=amalthea $${AMALTHEA_ECORE} && \
+am2inc.pri.target = $$relative_path($${PWD}/am2inc.pri, $${OUT_PWD})
+am2inc.pri.depends = $$relative_path($${MAPPING_ECORE}, $${OUT_PWD})
+am2inc.pri.commands =  \
+    echo generating model && \
+    ( cd $${ECORE_PATH} && \
+    $${EMF4CPP}/bin/emf4cpp.generator.sh -c -o $${PWD} \
+        $${MAPPING_ECORE} ) && \
     touch $@
 
-QMAKE_EXTRA_TARGETS += amalthea_model.pri
+QMAKE_EXTRA_TARGETS += am2inc.pri
 
-exists(amalthea_model.pri): include(amalthea_model.pri)
-!exists(amalthea_model.pri): Makefile.depends += $$amalthea_model.pri.target
+exists(am2inc.pri): include(am2inc.pri)
+!exists(am2inc.pri): Makefile.depends += $$am2inc.pri.target
 
 
 include(../../install.pri)
@@ -92,6 +100,6 @@ win32 {
 HEADERS += \
 
 SOURCES += \
-    version.cpp
+    version.cpp \
 
 RESOURCES += \

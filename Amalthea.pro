@@ -4,4 +4,7 @@
 
 TEMPLATE = subdirs
 
-SUBDIRS += Amalthea
+SUBDIRS += Amalthea Mapping Application
+
+Application.depends += Amalthea Mapping
+Mapping.depends += Amalthea
