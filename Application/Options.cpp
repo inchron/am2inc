@@ -58,6 +58,16 @@ Options::Options(QCoreApplication& app) {
 			QStringList() << "u" << "uri",
 			"Use URI fragment path instead of UUIDs for serialization."
 			) );
+	parser.addOption(
+		QCommandLineOption(
+			QStringList() << "pedantic",
+			"Adhere strictly to the model constraints. Generates a broken output model, if the input model is not compliant."
+			) );
+	parser.addOption(
+		QCommandLineOption(
+			QStringList() << "relax",
+			"Accept input models, which do not strictly adhere to the model constraints. A post processing step tries to repair as much as possible."
+			) );
 	// Add more options here.
 
 	// Process the actual command line arguments given by the user
@@ -69,9 +79,14 @@ Options::Options(QCoreApplication& app) {
 	}
 
 	auto allGivenOptions = parser.optionNames();
-	for ( const auto optionName : allGivenOptions )
+	for ( const auto optionName : allGivenOptions ) {
 		if ( optionName == "v" )
 			_verbosity++;
+		else if ( optionName == "pedantic" )
+			_mode = Pedantic;
+		else if ( optionName == "relax" )
+			_mode = Relaxed;
+	}
 
 	if ( parser.positionalArguments().count() > 0 ) {
 		_inputName = parser.positionalArguments().at(0);

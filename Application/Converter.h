@@ -22,6 +22,7 @@ public:
 
 	void clear();
 	void convert(const amalthea::model::Amalthea_ptr&);
+	void relax();
 
 	const ecore::Ptr<am2inc::Mappings>& getMappings() const { return _mappings; }
 	const ecore::Ptr<Projects::Project>& getProject() const { return _project; }

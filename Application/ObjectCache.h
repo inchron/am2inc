@@ -52,6 +52,7 @@ public:
 			auto t = Creator<F, T>::create();
 			ModelChecker<T>().work(t);
 			it->second[k] = t;
+			reverseAdd(p, t);
 			return t;
 		}
 		return ecore::as<T>(it->second[k]);
@@ -74,8 +75,21 @@ public:
 		it->second[k] = v;
 	}
 
-	void clear() { _content.clear(); }
+	void reverseAdd(const Ptr& am, const Ptr& inc) {
+		_reverseContent.insert(std::make_pair(inc, am));
+	}
+
+	template<class T>
+	ecore::Ptr<T> reverseFind(const Ptr& inc) {
+		auto it = _reverseContent.find(inc);
+		if (it == _reverseContent.end())
+			return ecore::Ptr<T>();
+		return ecore::as<T>(it->second);
+	}
+
+	void clear() { _content.clear(); _reverseContent.clear(); }
 
 private:
 	std::map< Key, Value > _content;
+	std::map< Ptr, Ptr > _reverseContent;
 };

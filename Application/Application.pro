@@ -59,6 +59,7 @@ SOURCES += \
     AttributeCreator.cpp \
     Converter.cpp \
     Converter/hwModel.cpp \
+    Converter/relax.cpp \
     CreatorTraits.cpp \
     EcoreModelChecker.cpp \
     ModelChecker.cpp \

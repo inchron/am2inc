@@ -33,6 +33,7 @@ public slots:
 protected slots:
 	bool readInput();
 	bool convert();
+	bool relax();
 	bool writeOutput();
 
 protected:

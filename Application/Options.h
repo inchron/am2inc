@@ -62,6 +62,9 @@ public:
 	SeedMode getSeedMode() const { return _seedMode; }
 	Basics::RandomSeed::ValueType getSeed() const { return _seed; }
 
+	enum Mode { Pedantic, Relaxed };
+	Mode getMode() const { return _mode; }
+
 private:
 	static void showVersion();
 
@@ -73,6 +76,8 @@ private:
 
 	SeedMode _seedMode{Undefined};
 	Basics::RandomSeed::ValueType _seed{1u};
+
+	Mode _mode{Relaxed};
 };
 
 #endif

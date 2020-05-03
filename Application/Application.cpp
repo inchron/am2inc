@@ -52,6 +52,10 @@ void Application::start() {
 		return;
 	if (convert())
 		return;
+	if (_options->getMode() == Options::Relaxed) {
+		if (relax())
+			return;
+	}
 	if (writeOutput())
 		return;
 
@@ -158,6 +162,11 @@ bool Application::convert() {
 	_mappings = _converter.getMappings();
 	_project = _converter.getProject();
 #endif
+	return false;
+}
+
+bool Application::relax() {
+	_converter.relax();
 	return false;
 }
 

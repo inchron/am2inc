@@ -64,6 +64,13 @@ struct AttributeCreator<sm3::DataSize> {
 
 		return value;
 	}
+
+	ecore::Ptr<sm3::DataSize> operator()(ecore::ELong v, sm3::DataSizeUnit u) {
+		auto value = sm3::create<sm3::DataSize>();
+		value->setValue(v);
+		value->setUnit(u);
+		return value;
+	}
 };
 
 template<>

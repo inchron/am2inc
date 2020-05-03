@@ -142,9 +142,15 @@ void Converter::work(const am::HwPort_ptr& am, am::HwPort*) {
 				p->getConnectedSlaves().push_back(port);
 			} else if (auto p = ecore::as<sm3::CpuCore>(inchron)) {
 				p->setConnectedSlave(port);
+				p->setBitWidth(
+					AttributeCreator<sm3::DataSize>()(am->getBitWidth(),
+													 sm3::DataSizeUnit::B));
 			// } else if (auto p = ecore::as<sm3m::Memory>(inchron)) {
 			} else if (auto p = ecore::as<sm3m::CacheMemory>(inchron)) {
 				p->setConnectedSlave(port);
+				p->setBitWidth(
+					AttributeCreator<sm3::DataSize>()(am->getBitWidth(),
+													 sm3::DataSizeUnit::B));
 			}
 
 		} else if (am->getPortType() == am::PortType::responder) {
@@ -156,8 +162,14 @@ void Converter::work(const am::HwPort_ptr& am, am::HwPort*) {
 			// } else if (auto p = ecore::as<sm3::CpuCore>(inchron)) {
 			} else if (auto p = ecore::as<sm3m::Memory>(inchron)) {
 				p->setConnectedMaster(port);
+				p->setBitWidth(
+					AttributeCreator<sm3::DataSize>()(am->getBitWidth(),
+													 sm3::DataSizeUnit::B));
 			} else if (auto p = ecore::as<sm3m::CacheMemory>(inchron)) {
 				p->setConnectedMaster(port);
+				p->setBitWidth(
+					AttributeCreator<sm3::DataSize>()(am->getBitWidth(),
+													 sm3::DataSizeUnit::B));
 			}
 		}
 	}
