@@ -19,7 +19,7 @@ DEFINES += MAKE_AMALTHEA_MODEL_DLL
 
 QMAKE_CXXFLAGS += -Wno-unused-parameter
 
-INCLUDEPATH += ..
+INCLUDEPATH += ../..
 
 !isEmpty(EMF4CPP): LIBS += -L$${EMF4CPP}/lib
 LIBS += -lemf4cpp-ecore -lemf4cpp-ecorecpp
@@ -90,5 +90,6 @@ win32 {
 HEADERS += \
 
 SOURCES += \
+    version.cpp
 
 RESOURCES += \
