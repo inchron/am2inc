@@ -50,6 +50,39 @@ struct AttributeCreator<sm3::DataSize> {
 	template<class A>
 	ecore::Ptr<sm3::DataSize> operator()(ecore::Ptr<A> a) {
 		auto value = sm3::create<sm3::DataSize>();
+		value->setValue(a->getValue());
+
+		auto eenum = am::ModelPackage::_instance()->getDataSizeUnit();
+		auto name = eenum->getEEnumLiteral( (int)a->getUnit() )->getName();
+		if (name == "Kibit")
+			name = "kibit";
+		else if (name == "KiB")
+			name = "kiB";
+		auto newEenum = sm3::ModelPackage::_instance()->getDataSizeUnit();
+		auto newUnit = newEenum->getEEnumLiteral(name);
+		value->setUnit( (sm3::DataSizeUnit)newUnit->getValue() );
+
+		return value;
+	}
+};
+
+template<>
+struct AttributeCreator<sm3::DataRate> {
+	template<class A>
+	ecore::Ptr<sm3::DataRate> operator()(ecore::Ptr<A> a) {
+		auto value = sm3::create<sm3::DataRate>();
+		value->setValue(a->getValue());
+
+		auto eenum = am::ModelPackage::_instance()->getDataRateUnit();
+		auto name = eenum->getEEnumLiteral( (int)a->getUnit() )->getName();
+		if (name == "KibitPerSecond")
+			name = "kibitPerSecond";
+		else if (name == "KiBPerSecond")
+			name = "kiBPerSecond";
+		auto newEenum = sm3::ModelPackage::_instance()->getDataRateUnit();
+		auto newUnit = newEenum->getEEnumLiteral(name);
+		value->setUnit( (sm3::DataRateUnit)newUnit->getValue() );
+
 		return value;
 	}
 };

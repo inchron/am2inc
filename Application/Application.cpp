@@ -23,7 +23,9 @@
 
 #include "Converter.h"
 
-namespace am = amalthea::model;
+namespace am   = amalthea::model;
+namespace sm3  = root::model;
+namespace sm3m = root::model::memory;
 
 
 Application::Application(int &argc, char **argv)
@@ -35,7 +37,12 @@ Application::Application(int &argc, char **argv)
 			new root::XMLResourceFactory() );
 
 	/* Disable required minimum number of CpuCores in this application. */
-	root::model::ModelPackage::_instance()->getCpu__cores()->setLowerBound(0);
+	sm3::ModelPackage::_instance()->getCpu__cores()->setLowerBound(0);
+	sm3::ModelPackage::_instance()->getCpuCore__connectedSlave()->setLowerBound(0);
+	sm3m::MemoryPackage::_instance()->getMemory__connectedMaster()->setLowerBound(0);
+	sm3m::MemoryPackage::_instance()->getCacheMemory__connectedSlave()->setLowerBound(0);
+	sm3m::MemoryPackage::_instance()->getInterconnect__connectedMasters()->setLowerBound(0);
+	sm3m::MemoryPackage::_instance()->getInterconnect__connectedSlaves()->setLowerBound(0);
 }
 
 Application::~Application() = default;
