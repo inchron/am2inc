@@ -47,17 +47,17 @@ void INamed::_initialize()
     // the ecore. If you want to replace it by C++ code, enable
     // the following protected region and implement it there.
     <%org.eclipse.app4mc.amalthea.model.INamed%> _xifexpression = null;
-<%org.eclipse.emf.ecore.EObject%> _eContainer = this.eContainer();
-if ((_eContainer instanceof <%org.eclipse.app4mc.amalthea.model.INamed%>))
-{
-	<%org.eclipse.emf.ecore.EObject%> _eContainer_1 = this.eContainer();
-	_xifexpression = ((<%org.eclipse.app4mc.amalthea.model.INamed%>) _eContainer_1);
-}
-else
-{
-	_xifexpression = null;
-}
-return _xifexpression;
+    <%org.eclipse.emf.ecore.EObject%> _eContainer = this.eContainer();
+    if ((_eContainer instanceof <%org.eclipse.app4mc.amalthea.model.INamed%>))
+    {
+        <%org.eclipse.emf.ecore.EObject%> _eContainer_1 = this.eContainer();
+        _xifexpression = ((<%org.eclipse.app4mc.amalthea.model.INamed%>) _eContainer_1);
+    }
+    else
+    {
+        _xifexpression = null;
+    }
+    return _xifexpression;
 #endif
     /*PROTECTED REGION ID(INamedImpl_getNamedContainer) ENABLED START*/
     auto _eContainer = eContainer();
@@ -72,17 +72,17 @@ return _xifexpression;
     // the ecore. If you want to replace it by C++ code, enable
     // the following protected region and implement it there.
     <%java.lang.String%> _xifexpression = null;
-<%org.eclipse.app4mc.amalthea.model.Namespace%> _namespace = this.getNamespace();
-boolean _tripleEquals = (_namespace == null);
-if (_tripleEquals)
-{
-	return "";
-}
-else
-{
-	_xifexpression = <%org.eclipse.app4mc.amalthea.model.AmaltheaExtensions%>.toPlainString(this.getNamePrefixSegments(), this.getDefaultNameSeparator());
-}
-return _xifexpression;
+    <%org.eclipse.app4mc.amalthea.model.Namespace%> _namespace = this.getNamespace();
+    boolean _tripleEquals = (_namespace == null);
+    if (_tripleEquals)
+    {
+        return "";
+    }
+    else
+    {
+        _xifexpression = <%org.eclipse.app4mc.amalthea.model.AmaltheaExtensions%>.toPlainString(this.getNamePrefixSegments(), this.getDefaultNameSeparator());
+    }
+    return _xifexpression;
 #endif
     /*PROTECTED REGION ID(INamedImpl_getNamePrefix) START*/
     // Please, enable the protected region if you add manually written code.
@@ -98,13 +98,13 @@ std::vector< ::ecore::EString > INamed::getQualifiedNameSegments()
     // the ecore. If you want to replace it by C++ code, enable
     // the following protected region and implement it there.
     final <%org.eclipse.emf.common.util.EList%><<%java.lang.String%>> segments = this.getNamePrefixSegments();
-<%java.lang.String%> _name = this.getName();
-boolean _tripleNotEquals = (_name != null);
-if (_tripleNotEquals)
-{
-	segments.add(this.getName());
-}
-return segments;
+    <%java.lang.String%> _name = this.getName();
+    boolean _tripleNotEquals = (_name != null);
+    if (_tripleNotEquals)
+    {
+        segments.add(this.getName());
+    }
+    return segments;
 #endif
     /*PROTECTED REGION ID(INamedImpl_getQualifiedNameSegments) ENABLED START*/
 
@@ -152,17 +152,17 @@ std::vector< ::ecore::EString > INamed::getNamePrefixSegments()
     // the ecore. If you want to replace it by C++ code, enable
     // the following protected region and implement it there.
     <%org.eclipse.emf.common.util.EList%><<%java.lang.String%>> _xifexpression = null;
-<%org.eclipse.app4mc.amalthea.model.Namespace%> _namespace = this.getNamespace();
-boolean _tripleEquals = (_namespace == null);
-if (_tripleEquals)
-{
-	_xifexpression = <%org.eclipse.emf.ecore.xcore.lib.XcoreCollectionLiterals%>.<<%java.lang.String%>>newBasicEList();
-}
-else
-{
-	_xifexpression = this.getNamespace().getQualifiedNameSegments();
-}
-return _xifexpression;
+    <%org.eclipse.app4mc.amalthea.model.Namespace%> _namespace = this.getNamespace();
+    boolean _tripleEquals = (_namespace == null);
+    if (_tripleEquals)
+    {
+        _xifexpression = <%org.eclipse.emf.ecore.xcore.lib.XcoreCollectionLiterals%>.<<%java.lang.String%>>newBasicEList();
+    }
+    else
+    {
+        _xifexpression = this.getNamespace().getQualifiedNameSegments();
+    }
+    return _xifexpression;
 #endif
     /*PROTECTED REGION ID(INamedImpl_getNamePrefixSegments) ENABLED START*/
 
@@ -198,7 +198,7 @@ return _xifexpression;
 }
 
 void INamed::eSet(::ecore::EInt _featureID,
-        ::ecore::EJavaObject const &_newValue)
+        ::ecore::EJavaObject const& _newValue)
 {
     switch (_featureID)
     {
@@ -249,7 +249,7 @@ void INamed::eUnset(::ecore::EInt _featureID)
 /** Set the local end of a reference with an EOpposite property.
  */
 void INamed::_inverseAdd(::ecore::EInt _featureID,
-        ::ecore::EJavaObject const &_newValue)
+        ::ecore::EJavaObject const& _newValue)
 {
     switch (_featureID)
     {
@@ -261,7 +261,7 @@ void INamed::_inverseAdd(::ecore::EInt _featureID,
 /** Unset the local end of a reference with an EOpposite property.
  */
 void INamed::_inverseRemove(::ecore::EInt _featureID,
-        ::ecore::EJavaObject const &_oldValue)
+        ::ecore::EJavaObject const& _oldValue)
 {
     switch (_featureID)
     {
