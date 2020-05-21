@@ -55,6 +55,18 @@ public:
 	void work(const amalthea::model::HwAccessElement_ptr&, amalthea::model::HwAccessElement*);
 	void work(const amalthea::model::HwAccessPath_ptr&, amalthea::model::HwAccessPath*);
 
+	/* Amalthea StimuliModel */
+	void work(const amalthea::model::ArrivalCurveStimulus_ptr&, amalthea::model::ArrivalCurveStimulus*);
+	void work(const amalthea::model::CustomStimulus_ptr&, amalthea::model::CustomStimulus*);
+	void work(const amalthea::model::EventStimulus_ptr&, amalthea::model::EventStimulus*);
+	void work(const amalthea::model::InterProcessStimulus_ptr&, amalthea::model::InterProcessStimulus*);
+	void work(const amalthea::model::PeriodicBurstStimulus_ptr&, amalthea::model::PeriodicBurstStimulus*);
+	void work(const amalthea::model::PeriodicStimulus_ptr&, amalthea::model::PeriodicStimulus*);
+	void work(const amalthea::model::PeriodicSyntheticStimulus_ptr&, amalthea::model::PeriodicSyntheticStimulus*);
+	void work(const amalthea::model::RelativePeriodicStimulus_ptr&, amalthea::model::RelativePeriodicStimulus*);
+	void work(const amalthea::model::SingleStimulus_ptr&, amalthea::model::SingleStimulus*);
+	void work(const amalthea::model::VariableRateStimulus_ptr&, amalthea::model::VariableRateStimulus*);
+
 	/* Amalthea SwModel */
 	void work(const amalthea::model::Task_ptr&, amalthea::model::Task*);
 

@@ -52,3 +52,4 @@ amalthea/**/*.hpp
 !amalthea/model/INamedImpl.cpp
 !amalthea/model/IReferable.cpp
 !amalthea/model/IReferableImpl.cpp
+!amalthea/model/TimeConstantImpl.cpp

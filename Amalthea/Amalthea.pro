@@ -61,7 +61,7 @@ unix {
         libemf4cpp.extra = cp --preserve --no-dereference \
                 $${EMF4CPP}/lib/libemf4cpp-ecore*.so* $(INSTALL_ROOT)$${PREFIX}/lib
         libemf4cpp.path = $${PREFIX}/lib
-        INSTALLS += libemf4cpp
+#        INSTALLS += libemf4cpp
     }
 }
 

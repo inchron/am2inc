@@ -20,6 +20,7 @@
 namespace am   = amalthea::model;
 namespace sm3  = root::model;
 namespace sm3m = root::model::memory;
+namespace sm3s = root::model::stimulation;
 
 
 template<class I>
@@ -29,10 +30,33 @@ struct AttributeCreator {
 };
 
 template<>
+struct AttributeCreator<sm3::Time> {
+	template<class A>
+	ecore::Ptr<sm3::Time> operator()(ecore::Ptr<A> a) {
+		auto value = sm3::create<sm3::Time>();
+		if (!a)
+			return value;
+
+		value->setValue(a->getValue());
+
+		auto eenum = am::ModelPackage::_instance()->getTimeUnit();
+		auto name = eenum->getEEnumLiteral( (int)a->getUnit() )->getName();
+		auto newEenum = sm3::ModelPackage::_instance()->getTimeUnit();
+		auto newUnit = newEenum->getEEnumLiteral(name);
+		value->setUnit( (sm3::TimeUnit)newUnit->getValue() );
+
+		return value;
+	}
+};
+
+template<>
 struct AttributeCreator<sm3::Frequency> {
 	template<class A>
 	ecore::Ptr<sm3::Frequency> operator()(ecore::Ptr<A> a) {
 		auto value = sm3::create<sm3::Frequency>();
+		if (!a)
+			return value;
+
 		value->setValue(a->getValue());
 
 		auto eenum = am::ModelPackage::_instance()->getFrequencyUnit();
@@ -50,6 +74,9 @@ struct AttributeCreator<sm3::DataSize> {
 	template<class A>
 	ecore::Ptr<sm3::DataSize> operator()(ecore::Ptr<A> a) {
 		auto value = sm3::create<sm3::DataSize>();
+		if (!a)
+			return value;
+
 		value->setValue(a->getValue());
 
 		auto eenum = am::ModelPackage::_instance()->getDataSizeUnit();
@@ -78,6 +105,9 @@ struct AttributeCreator<sm3::DataRate> {
 	template<class A>
 	ecore::Ptr<sm3::DataRate> operator()(ecore::Ptr<A> a) {
 		auto value = sm3::create<sm3::DataRate>();
+		if (!a)
+			return value;
+
 		value->setValue(a->getValue());
 
 		auto eenum = am::ModelPackage::_instance()->getDataRateUnit();

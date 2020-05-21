@@ -60,6 +60,7 @@ SOURCES += \
     Converter.cpp \
     Converter/hwModel.cpp \
     Converter/relax.cpp \
+    Converter/stimuliModel.cpp \
     CreatorTraits.cpp \
     EcoreModelChecker.cpp \
     ModelChecker.cpp \
