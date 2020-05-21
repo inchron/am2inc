@@ -76,14 +76,6 @@ void Converter::addMapping(const std::vector<am::ReferableBaseObject_ptr>& am,
 
 /*
  * @see Converter/hwModel.cpp for the conversion of Amalthea's HwModel.
+ *
+ * @see Converter/swModel.cpp for the conversion of Amalthea's SwModel.
  */
-
-
-
-void Converter::work(const am::Task_ptr& task, am::Task*) {
-	if (_mode == PreOrder) {
-		auto process = _oc.make<sm3::ModelFactory, sm3::Process>(task);
-		process->setName(task->getName());
-		addMapping({task}, {process});
-	}
-}

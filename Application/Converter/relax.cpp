@@ -134,4 +134,24 @@ void Converter::relax() {
 			ic->getConnectedSlaves().get(i)->setResponder(port);
 		}
 	} // if (numberOfSubStructures > 0 || numberOfMemories > 0)
+
+
+	/* Set CpuCore affinity of IsrSchedulers if missing. */
+	for (auto&& system : _model->getSystems()) {
+		if (auto genericSystem = ecore::as<sm3::GenericSystem>(system)) {
+			auto isrScheduler = ecore::as<sm3::Scheduler>(
+				genericSystem->getRtosConfig()->getSchedulables().get(0));
+			if (isrScheduler->getCpuCores().size() > 0)
+				continue;
+			if (isrScheduler->getSchedulables().size() == 0)
+				continue;
+
+			auto defaultScheduler = ecore::as<sm3::Scheduler>(
+				isrScheduler->getSchedulables().get(0));
+			/* Allow multiple Systems to be mapped to different CpuCores of
+			 * the same Cpu. */
+			for (auto&& core : defaultScheduler->getCpuCores())
+				isrScheduler->getCpuCores().push_back(core);
+		}
+	}
 }

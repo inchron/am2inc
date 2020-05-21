@@ -48,6 +48,7 @@ amalthea/**/*.hpp
 !amalthea/model_forward.hpp
 
 !amalthea/model/HwFeatureImpl.cpp
+!amalthea/model/HwConnectionImpl.cpp
 !amalthea/model/HwPortImpl.cpp
 !amalthea/model/INamedImpl.cpp
 !amalthea/model/IReferable.cpp

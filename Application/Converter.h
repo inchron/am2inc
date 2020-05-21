@@ -69,6 +69,21 @@ public:
 
 	/* Amalthea SwModel */
 	void work(const amalthea::model::Task_ptr&, amalthea::model::Task*);
+	void work(const amalthea::model::ISR_ptr&, amalthea::model::ISR*);
+	void addStimulus(const amalthea::model::Process_ptr&, const root::model::Process_ptr&);
+	void addEvents(const root::model::Process_ptr&);
+
+	/* Amalthea osModel */
+	void work(const amalthea::model::OperatingSystem_ptr&, amalthea::model::OperatingSystem*);
+	void work(const amalthea::model::TaskScheduler_ptr&, amalthea::model::TaskScheduler*);
+	void work(const amalthea::model::TaskSchedulingAlgorithm_ptr&, amalthea::model::TaskSchedulingAlgorithm*);
+	void work(const amalthea::model::SchedulerAssociation_ptr&, amalthea::model::SchedulerAssociation*);
+
+	/* Amalthea mappingModel */
+	void work(const amalthea::model::SchedulerAllocation_ptr&, amalthea::model::SchedulerAllocation*);
+	void work(const amalthea::model::RunnableAllocation_ptr&, amalthea::model::RunnableAllocation*);
+	void work(const amalthea::model::TaskAllocation_ptr&, amalthea::model::TaskAllocation*);
+
 
 private:
 	enum Mode { PreOrder, PostOrder } _mode{PreOrder};
@@ -80,4 +95,5 @@ private:
 	ecore::Ptr<Projects::Project> _project;
 	ecore::Ptr<root::model::Model> _model;
 	ecore::Ptr<root::model::Clock> _idealClock;
+	std::deque<root::model::Scheduler_ptr> _schedulerHierarchy;
 };

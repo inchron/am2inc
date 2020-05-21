@@ -79,13 +79,6 @@ void Converter::work(const am::HwStructure_ptr& am, am::HwStructure*) {
 			if (numberOfCores > 0) {
 				cpu->setCpuModel("generic");
 				cpu->setReloadCpuModel(true);
-
-				auto system = _oc.make<sm3::ModelFactory, sm3::GenericSystem>(am, ObjectCache::Sub1);
-				system->setName("System_" + am->getName());
-				_model->getSystems().push_back(system);
-				auto isrScheduler = system->getRtosConfig()->getSchedulables().get(0);
-				for (auto&& core : cpu->getCores())
-					isrScheduler->getCpuCores().push_back(core);
 			}
 
 		} break;
