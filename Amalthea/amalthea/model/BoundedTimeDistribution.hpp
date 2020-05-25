@@ -49,8 +49,10 @@ namespace amalthea
         static const int classifierId = ModelPackage::BOUNDEDTIMEDISTRIBUTION;
 
         /*PROTECTED REGION ID(BoundedTimeDistribution) ENABLED START*/
-        using TimeInterval::getLowerBound;
-        using TimeInterval::getUpperBound;
+        ::amalthea::model::Time_ptr getLowerBound () override
+        {   return TimeInterval::getLowerBound();}
+        ::amalthea::model::Time_ptr getUpperBound () override
+        {   return TimeInterval::getUpperBound();}
         /*PROTECTED REGION END*/
 
         // EObjectImpl

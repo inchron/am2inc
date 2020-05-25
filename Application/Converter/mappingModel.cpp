@@ -10,11 +10,30 @@
 #include "../Converter.h"
 
 #include "../AttributeCreator.h"
+#include "../Diagnostic.h"
 #include "../StimulusTraits.h"
 
 
-void Converter::work(const amalthea::model::SchedulerAllocation_ptr& am,
-					 amalthea::model::SchedulerAllocation*) {
+void Converter::work(const am::MemoryMapping_ptr& am, am::MemoryMapping*) {
+	if (_mode == PreOrder) {
+		/* There are 8 concrete types of AbstractMemoryElements. A
+		 * MemoryElementTrait would be helpful. */
+		if ( am->getAbstractElement()->eClass()->getClassifierID()
+			 != am::ModelPackage::LABEL )
+			return;
+
+		auto label = _oc.make<sm3m::MemoryFactory, sm3m::DataObject>(am->getAbstractElement());
+		auto memory = _oc.make<sm3m::MemoryFactory, sm3m::Memory>(am->getMemory());
+		/* ignored: am->getMemoryPositionAddress() */
+		label->setMemory(memory);
+	}
+}
+
+void Converter::work(const am::PhysicalSectionMapping_ptr&, am::PhysicalSectionMapping*) {
+	static Diagnostic::NotImplemented<am::PhysicalSectionMapping> message;
+}
+
+void Converter::work(const am::SchedulerAllocation_ptr& am, am::SchedulerAllocation*) {
 	if (_mode == PreOrder) {
 		auto scheduler = _oc.make<sm3::ModelFactory, sm3::Scheduler>(am->getScheduler());
 		/* @todo only used for the process of the UserDefinedScheduler.
@@ -32,12 +51,11 @@ void Converter::work(const amalthea::model::SchedulerAllocation_ptr& am,
  * RunnableAllocations and the TaskAllocations of the Tasks, which call those
  * Runnables, are in sync. Otherwise there will be undefined behaviour.
  */
-void Converter::work(const amalthea::model::RunnableAllocation_ptr&,
-					 amalthea::model::RunnableAllocation*) {
+void Converter::work(const am::RunnableAllocation_ptr&, am::RunnableAllocation*) {
+	static Diagnostic::NotImplemented<am::RunnableAllocation> message;
 }
 
-void Converter::work(const amalthea::model::TaskAllocation_ptr& am,
-					 amalthea::model::TaskAllocation*) {
+void Converter::work(const am::TaskAllocation_ptr& am, am::TaskAllocation*) {
 	if (_mode == PreOrder) {
 		auto task = _oc.find<sm3::Process>(am->getTask(), ObjectCache::Default);
 		auto scheduler = _oc.make<sm3::ModelFactory, sm3::Scheduler>(am->getScheduler());

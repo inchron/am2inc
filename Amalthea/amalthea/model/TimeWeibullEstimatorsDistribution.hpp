@@ -52,7 +52,9 @@ namespace amalthea
         static const int classifierId = ModelPackage::TIMEWEIBULLESTIMATORSDISTRIBUTION;
 
         /*PROTECTED REGION ID(TimeWeibullEstimatorsDistribution) ENABLED START*/
-        using TimeInterval::getUpperBound;
+        ::amalthea::model::Time_ptr getAverage () override
+        {
+            return const_cast<const TimeWeibullEstimatorsDistribution*>(this)->getAverage();}
         /*PROTECTED REGION END*/
 
         // EObjectImpl

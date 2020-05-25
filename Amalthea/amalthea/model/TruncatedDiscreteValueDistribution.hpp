@@ -54,9 +54,13 @@ namespace amalthea
          * value it can be used in template expansions. */
         static const int classifierId = ModelPackage::TRUNCATEDDISCRETEVALUEDISTRIBUTION;
 
-        /*PROTECTED REGION ID(TruncatedDiscreteValueDistribution) START*/
-        // Please, enable the protected region if you add manually written code.
-        // To do this, add the keyword ENABLED before START.
+        /*PROTECTED REGION ID(TruncatedDiscreteValueDistribution) ENABLED START*/
+        ::ecore::ELongObject getLowerBound () override
+        {
+            return const_cast<const TruncatedDiscreteValueDistribution*>(this)->getLowerBound();}
+        ::ecore::ELongObject getUpperBound () override
+        {
+            return const_cast<const TruncatedDiscreteValueDistribution*>(this)->getUpperBound();}
         /*PROTECTED REGION END*/
 
         // EObjectImpl

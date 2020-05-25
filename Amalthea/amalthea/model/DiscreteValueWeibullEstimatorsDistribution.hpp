@@ -54,8 +54,9 @@ namespace amalthea
         static const int classifierId = ModelPackage::DISCRETEVALUEWEIBULLESTIMATORSDISTRIBUTION;
 
         /*PROTECTED REGION ID(DiscreteValueWeibullEstimatorsDistribution) ENABLED START*/
-        using DiscreteValueInterval::getLowerBound;
-        using DiscreteValueInterval::getUpperBound;
+        ::ecore::EDoubleObject getAverage () override
+        {
+            return const_cast<const DiscreteValueWeibullEstimatorsDistribution*>(this)->getAverage();}
         /*PROTECTED REGION END*/
 
         // EObjectImpl

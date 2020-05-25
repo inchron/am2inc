@@ -50,7 +50,9 @@ namespace amalthea
         static const int classifierId = ModelPackage::TIMESTATISTICS;
 
         /*PROTECTED REGION ID(TimeStatistics) ENABLED START*/
-        using TimeInterval::getUpperBound;
+        ::amalthea::model::Time_ptr getAverage () override
+        {
+            return const_cast<const TimeStatistics*>(this)->getAverage();}
         /*PROTECTED REGION END*/
 
         // EObjectImpl

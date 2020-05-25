@@ -1,6 +1,6 @@
 // -*- mode: c++; c-basic-style: "bsd"; c-basic-offset: 4; -*-
 /*
- * amalthea/model/DiscreteValueBetaDistribution.hpp
+ * amalthea/model/ContinuousValueWeibullEstimatorsDistribution.hpp
  * This file was created by EMF4CPP 2.0.0 and is copyrighted by the
  * respective user and/or provider of the processed ECORE model.
  *
@@ -8,18 +8,18 @@
  * https://github.com/catedrasaes-umu/emf4cpp
  */
 
-#ifndef AMALTHEA_MODEL_DISCRETEVALUEBETADISTRIBUTION_HPP
-#define AMALTHEA_MODEL_DISCRETEVALUEBETADISTRIBUTION_HPP
+#ifndef AMALTHEA_MODEL_CONTINUOUSVALUEWEIBULLESTIMATORSDISTRIBUTION_HPP
+#define AMALTHEA_MODEL_CONTINUOUSVALUEWEIBULLESTIMATORSDISTRIBUTION_HPP
 
 #include <amalthea/model/dllModel.hpp>
 #include <amalthea/model_forward.hpp>
 
 #include <ecore_forward.hpp>
-#include <amalthea/model/BoundedDiscreteValueDistribution.hpp>
+#include <amalthea/model/BoundedContinuousValueDistribution.hpp>
 
 #include "ModelPackage.hpp"
 
-/*PROTECTED REGION ID(DiscreteValueBetaDistribution_pre) START*/
+/*PROTECTED REGION ID(ContinuousValueWeibullEstimatorsDistribution_pre) START*/
 // Please, enable the protected region if you add manually written code.
 // To do this, add the keyword ENABLED before START.
 /*PROTECTED REGION END*/
@@ -29,35 +29,34 @@ namespace amalthea
     namespace model
     {
 
-    class EXPORT_AMALTHEA_MODEL_DLL DiscreteValueBetaDistribution : public virtual ::amalthea::model::BoundedDiscreteValueDistribution
+    class EXPORT_AMALTHEA_MODEL_DLL ContinuousValueWeibullEstimatorsDistribution : public virtual ::amalthea::model::BoundedContinuousValueDistribution
     {
     public:
-        DiscreteValueBetaDistribution();
+        ContinuousValueWeibullEstimatorsDistribution();
 
-        virtual ~DiscreteValueBetaDistribution();
+        virtual ~ContinuousValueWeibullEstimatorsDistribution();
 
         virtual void _initialize();
 
         // Operations
 
-        virtual ::ecore::EDoubleObject getAverage ();
-
         // Attributes
-        virtual ::amalthea::model::PositiveDouble getAlpha () const;
-        virtual void setAlpha (::amalthea::model::PositiveDouble _alpha);
+        virtual ::ecore::EDoubleObject getAverage () const;
+        virtual void setAverage (::ecore::EDoubleObject _average);
 
-        virtual ::amalthea::model::PositiveDouble getBeta () const;
-        virtual void setBeta (::amalthea::model::PositiveDouble _beta);
+        virtual ::amalthea::model::PositiveDouble getPRemainPromille () const;
+        virtual void setPRemainPromille (::amalthea::model::PositiveDouble _pRemainPromille);
 
         // References
 
         /* This is the same value as getClassifierId() returns, but as a static
          * value it can be used in template expansions. */
-        static const int classifierId = ModelPackage::DISCRETEVALUEBETADISTRIBUTION;
+        static const int classifierId = ModelPackage::CONTINUOUSVALUEWEIBULLESTIMATORSDISTRIBUTION;
 
-        /*PROTECTED REGION ID(DiscreteValueBetaDistribution) ENABLED START*/
-        using DiscreteValueInterval::getLowerBound;
-        using DiscreteValueInterval::getUpperBound;
+        /*PROTECTED REGION ID(ContinuousValueWeibullEstimatorsDistribution) ENABLED START*/
+        ::ecore::EDoubleObject getAverage () override
+        {
+            return const_cast<const ContinuousValueWeibullEstimatorsDistribution*>(this)->getAverage();}
         /*PROTECTED REGION END*/
 
         // EObjectImpl
@@ -69,21 +68,21 @@ namespace amalthea
         virtual void _inverseAdd ( ::ecore::EInt _featureID, ::ecore::EJavaObject const& _newValue);
         virtual void _inverseRemove ( ::ecore::EInt _featureID, ::ecore::EJavaObject const& _oldValue);
 
-        /*PROTECTED REGION ID(DiscreteValueBetaDistributionImpl) START*/
+        /*PROTECTED REGION ID(ContinuousValueWeibullEstimatorsDistributionImpl) START*/
         // Please, enable the protected region if you add manually written code.
         // To do this, add the keyword ENABLED before START.
         /*PROTECTED REGION END*/
 
     protected:
-        DiscreteValueBetaDistribution_ptr _this()
-        {   return std::dynamic_pointer_cast<DiscreteValueBetaDistribution>(shared_from_this());}
+        ContinuousValueWeibullEstimatorsDistribution_ptr _this()
+        {   return std::dynamic_pointer_cast<ContinuousValueWeibullEstimatorsDistribution>(shared_from_this());}
 
         // Attributes
 
-        ::amalthea::model::PositiveDouble m_alpha
-        {   1.0};
+        ::ecore::EDoubleObject m_average
+        {   0.0};
 
-        ::amalthea::model::PositiveDouble m_beta
+        ::amalthea::model::PositiveDouble m_pRemainPromille
         {   1.0};
 
         // References
@@ -94,5 +93,5 @@ namespace amalthea
  // model
 }// amalthea
 
-#endif // AMALTHEA_MODEL_DISCRETEVALUEBETADISTRIBUTION_HPP
+#endif // AMALTHEA_MODEL_CONTINUOUSVALUEWEIBULLESTIMATORSDISTRIBUTION_HPP
 

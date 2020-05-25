@@ -16,7 +16,12 @@
  * connect all CpuCores to them.
  */
 void Converter::relax() {
+	relaxHardware();
+	relaxIsrSchedulers();
+	relaxFreeObjects();
+}
 
+void Converter::relaxHardware() {
 	/* Add Interconnect to Cpus. */
 	for (auto&& cpu : _model->getCpus()) {
 		const auto numberOfCores = cpu->getCores().size();
@@ -134,8 +139,10 @@ void Converter::relax() {
 			ic->getConnectedSlaves().get(i)->setResponder(port);
 		}
 	} // if (numberOfSubStructures > 0 || numberOfMemories > 0)
+}
 
 
+void Converter::relaxIsrSchedulers() {
 	/* Set CpuCore affinity of IsrSchedulers if missing. */
 	for (auto&& system : _model->getSystems()) {
 		if (auto genericSystem = ecore::as<sm3::GenericSystem>(system)) {
@@ -153,5 +160,65 @@ void Converter::relax() {
 			for (auto&& core : defaultScheduler->getCpuCores())
 				isrScheduler->getCpuCores().push_back(core);
 		}
+	}
+}
+
+namespace /* anonymous */ {
+
+std::underlying_type<ObjectCache::SubKey>::type operator +(ObjectCache::SubKey val) {
+	return static_cast< typename std::underlying_type<ObjectCache::SubKey>::type >(val);
+}
+
+ObjectCache::SubKey operator ++(ObjectCache::SubKey& val) {
+	return val = static_cast<ObjectCache::SubKey>( + val + 1 );
+}
+
+} // anonymous namespace
+
+void Converter::relaxFreeObjects() {
+	auto globalComponent = sm3::create<sm3::Component>();
+	globalComponent->setName("__GLOBAL__");
+	ModelChecker<sm3::Component>().work(globalComponent);
+
+	auto globalSystem = sm3::create<sm3::GenericSystem>();
+	ModelChecker<sm3::GenericSystem>().work(globalSystem);
+	globalSystem->setName("__GLOBAL__");
+
+	auto globalRtos = globalSystem->getRtosConfig();
+	globalRtos->getSchedulables().clear();
+
+	for (auto&& e : _oc.getContent()) {
+		auto&& values = e.second;
+		for (auto key = ObjectCache::Default; key < ObjectCache::MaxSubKey; ++key) {
+			const auto& object = values[key];
+			if (!object || object->eContainer())
+				continue;
+
+			/* The object is valid and is not located in a container. */
+			if (auto function = ecore::as<sm3::Function>(object)) {
+				globalComponent->getFunctions().push_back(function);
+			} else if (auto dataObject = ecore::as<sm3m::DataObject>(object)) {
+				globalComponent->getVariables().push_back(dataObject);
+			} else if (auto event = ecore::as<sm3::Event>(object)) {
+				globalRtos->getEvents().push_back(event);
+
+			} else {
+				std::cerr << "Ignoring object w/o container of type "
+						  << object->eClass()->getName() << "\n";
+			}
+		}
+	}
+
+	bool keepSystem = false;
+
+	if ( globalComponent->getFunctions().size()
+		 || globalComponent->getVariables().size()) {
+		globalSystem->getComponents().push_back(globalComponent);
+		keepSystem = true;
+	}
+
+	if ( keepSystem
+		 || globalRtos->getEvents().size() ) {
+		_model->getSystems().push_back(globalSystem);
 	}
 }

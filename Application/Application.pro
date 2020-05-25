@@ -49,6 +49,7 @@ HEADERS += \
     AttributeCreator.h \
     Converter.h \
     CreatorTraits.h \
+    Diagnostic.h \
     EcoreModelChecker.h \
     ModelChecker.h \
     ObjectCache.h \
@@ -58,6 +59,7 @@ SOURCES += \
     Application.cpp \
     AttributeCreator.cpp \
     Converter.cpp \
+    Converter/activityGraph.cpp \
     Converter/hwModel.cpp \
     Converter/mappingModel.cpp \
     Converter/osModel.cpp \

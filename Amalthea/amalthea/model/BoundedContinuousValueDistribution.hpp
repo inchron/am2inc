@@ -50,8 +50,12 @@ namespace amalthea
         static const int classifierId = ModelPackage::BOUNDEDCONTINUOUSVALUEDISTRIBUTION;
 
         /*PROTECTED REGION ID(BoundedContinuousValueDistribution) ENABLED START*/
-        using ContinuousValueInterval::getLowerBound;
-        using ContinuousValueInterval::getUpperBound;
+        ::ecore::EDoubleObject getLowerBound () override
+        {
+            return ContinuousValueInterval::getLowerBound();}
+        ::ecore::EDoubleObject getUpperBound () override
+        {
+            return ContinuousValueInterval::getUpperBound();}
         /*PROTECTED REGION END*/
 
         // EObjectImpl

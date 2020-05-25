@@ -19,12 +19,11 @@ amalthea/**/*.hpp
 !amalthea/model/Composite.hpp
 !amalthea/model/ConnectionHandler.hpp
 !amalthea/model/ContinuousValueInterval.hpp
+!amalthea/model/ContinuousValueStatistics.hpp
+!amalthea/model/ContinuousValueWeibullEstimatorsDistribution.hpp
 !amalthea/model/DataTypeDefinition.hpp
-!amalthea/model/DiscreteValueBetaDistribution.hpp
-!amalthea/model/DiscreteValueBoundaries.hpp
 !amalthea/model/DiscreteValueInterval.hpp
 !amalthea/model/DiscreteValueStatistics.hpp
-!amalthea/model/DiscreteValueUniformDistribution.hpp
 !amalthea/model/DiscreteValueWeibullEstimatorsDistribution.hpp
 !amalthea/model/IReferable.hpp
 !amalthea/model/Label.hpp
@@ -36,10 +35,8 @@ amalthea/**/*.hpp
 !amalthea/model/ProcessingUnit.hpp
 !amalthea/model/Runnable.hpp
 !amalthea/model/TimeBetaDistribution.hpp
-!amalthea/model/TimeBoundaries.hpp
 !amalthea/model/TimeInterval.hpp
 !amalthea/model/TimeStatistics.hpp
-!amalthea/model/TimeUniformDistribution.hpp
 !amalthea/model/TimeWeibullEstimatorsDistribution.hpp
 !amalthea/model/TruncatedContinuousValueDistribution.hpp
 !amalthea/model/TruncatedDiscreteValueDistribution.hpp
@@ -47,8 +44,10 @@ amalthea/**/*.hpp
 !amalthea/model/TypeDefinition.hpp
 !amalthea/model_forward.hpp
 
-!amalthea/model/HwFeatureImpl.cpp
+!amalthea/model/DiscreteValueConstantImpl.cpp
+!amalthea/model/DiscreteValueIntervalImpl.cpp
 !amalthea/model/HwConnectionImpl.cpp
+!amalthea/model/HwFeatureImpl.cpp
 !amalthea/model/HwPortImpl.cpp
 !amalthea/model/INamedImpl.cpp
 !amalthea/model/IReferable.cpp

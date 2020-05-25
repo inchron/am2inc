@@ -35,7 +35,7 @@ struct StimulusTrait<am::EventStimulus> {
 
 template<>
 struct StimulusTrait<am::InterProcessStimulus> {
-	// using type = sm3s::;
+	using type = sm3::ActivationConnection;
 };
 
 template<>

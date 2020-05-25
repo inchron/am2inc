@@ -51,8 +51,9 @@ namespace amalthea
         static const int classifierId = ModelPackage::DISCRETEVALUESTATISTICS;
 
         /*PROTECTED REGION ID(DiscreteValueStatistics) ENABLED START*/
-        using DiscreteValueInterval::getLowerBound;
-        using DiscreteValueInterval::getUpperBound;
+        ::ecore::EDoubleObject getAverage () override
+        {
+            return const_cast<const DiscreteValueStatistics*>(this)->getAverage();}
         /*PROTECTED REGION END*/
 
         // EObjectImpl

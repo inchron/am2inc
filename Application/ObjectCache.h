@@ -37,6 +37,7 @@ public:
 	using Ptr = ecore::Ptr<ecore::EObject>;
 	using Key = Ptr;
 	using Value = std::array< Ptr, MaxSubKey >;
+	using Map = std::map< Key, Value >;
 
 	/** Returns an existing object for the default SubKey or creates one. */
 	template<class F, class T>
@@ -89,7 +90,9 @@ public:
 
 	void clear() { _content.clear(); _reverseContent.clear(); }
 
+	const Map& getContent() const { return _content; }
+
 private:
-	std::map< Key, Value > _content;
+	Map _content;
 	std::map< Ptr, Ptr > _reverseContent;
 };

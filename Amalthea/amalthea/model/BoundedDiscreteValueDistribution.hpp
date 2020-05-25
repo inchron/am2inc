@@ -50,8 +50,15 @@ namespace amalthea
         static const int classifierId = ModelPackage::BOUNDEDDISCRETEVALUEDISTRIBUTION;
 
         /*PROTECTED REGION ID(BoundedDiscreteValueDistribution) ENABLED START*/
-        using DiscreteValueInterval::getLowerBound;
-        using DiscreteValueInterval::getUpperBound;
+        /* The methods defined by the interface class IDiscreteValueDeviation
+         * must be reimplemented. In this case the functionality is
+         * implemented by another base class. */
+        ::ecore::ELongObject getLowerBound () override
+        {
+            return DiscreteValueInterval::getLowerBound();}
+        ::ecore::ELongObject getUpperBound () override
+        {
+            return DiscreteValueInterval::getUpperBound();}
         /*PROTECTED REGION END*/
 
         // EObjectImpl

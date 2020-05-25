@@ -47,6 +47,14 @@ struct AttributeCreator<sm3::Time> {
 
 		return value;
 	}
+
+	template<typename Integer>
+	ecore::Ptr<sm3::Time> operator()(Integer v, sm3::TimeUnit u) {
+		auto value = sm3::create<sm3::Time>();
+		value->setValue(v);
+		value->setUnit(u);
+		return value;
+	}
 };
 
 template<>

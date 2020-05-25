@@ -89,12 +89,10 @@ return _elvis;
     /*PROTECTED REGION ID(HwConnectionImpl_getNamePrefixSegments) ENABLED START*/
     // Please, enable the protected region if you add manually written code.
     // To do this, add the keyword ENABLED before START.
-
     std::vector < ::ecore::EString > _qualifiedNameSegments;
     auto _namedContainer = getNamedContainer();
     if (_namedContainer)
-        _qualifiedNameSegments =
-                _namedContainer->getQualifiedNameSegments();
+        _qualifiedNameSegments = _namedContainer->getQualifiedNameSegments();
     return _qualifiedNameSegments;
 
     /*PROTECTED REGION END*/

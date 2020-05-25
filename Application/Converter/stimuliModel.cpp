@@ -10,21 +10,34 @@
 #include "../Converter.h"
 
 #include "../AttributeCreator.h"
+#include "../Diagnostic.h"
 #include "../StimulusTraits.h"
 
 namespace sm3s = root::model::stimulation;
 
 
 void Converter::work(const am::ArrivalCurveStimulus_ptr&, am::ArrivalCurveStimulus*) {
+	static Diagnostic::NotImplemented<am::ArrivalCurveStimulus> message;
 }
 
 void Converter::work(const am::CustomStimulus_ptr&, am::CustomStimulus*) {
+	static Diagnostic::NotImplemented<am::CustomStimulus> message;
 }
 
 void Converter::work(const am::EventStimulus_ptr&, am::EventStimulus*) {
+	static Diagnostic::NotImplemented<am::EventStimulus> message;
 }
 
-void Converter::work(const am::InterProcessStimulus_ptr&, am::InterProcessStimulus*) {
+/** An am::InterProcessStimulus is mapped to a sm3::ActivationConnection.
+ */
+void Converter::work(const am::InterProcessStimulus_ptr& am, am::InterProcessStimulus*) {
+	if (_mode == PreOrder) {
+		auto gen = _oc.make<sm3::ModelFactory, sm3::ActivationConnection>(am);
+		gen->setName(am->getName());
+		/* am::InterProcessStimulus::counter is ignored here, it must be set
+		 * (multiple times) as ActivationAction::period,offset. */
+		_model->getConnections().push_back(gen);
+	}
 }
 
 void Converter::work(const am::PeriodicBurstStimulus_ptr& am, am::PeriodicBurstStimulus*) {
@@ -253,5 +266,6 @@ void Converter::work(const am::SingleStimulus_ptr& am, am::SingleStimulus*) {
 }
 
 void Converter::work(const am::VariableRateStimulus_ptr&, am::VariableRateStimulus*) {
+	static Diagnostic::NotImplemented<am::VariableRateStimulus> message;
 }
 
