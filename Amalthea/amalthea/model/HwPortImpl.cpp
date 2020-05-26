@@ -54,21 +54,22 @@ std::vector< ::ecore::EString > HwPort::getNamePrefixSegments()
     // the ecore. If you want to replace it by C++ code, enable
     // the following protected region and implement it there.
     <%org.eclipse.emf.common.util.EList%><<%java.lang.String%>> _elvis = null;
-<%org.eclipse.app4mc.amalthea.model.INamed%> _namedContainer = this.getNamedContainer();
-<%org.eclipse.emf.common.util.EList%><<%java.lang.String%>> _qualifiedNameSegments = null;
-if (_namedContainer!=null)
-{
-	_qualifiedNameSegments=_namedContainer.getQualifiedNameSegments();
-}
-if (_qualifiedNameSegments != null)
-{
-	_elvis = _qualifiedNameSegments;
-} else
-{
-	<%org.eclipse.emf.common.util.BasicEList%><<%java.lang.String%>> _newBasicEList = <%org.eclipse.emf.ecore.xcore.lib.XcoreCollectionLiterals%>.<<%java.lang.String%>>newBasicEList();
-	_elvis = _newBasicEList;
-}
-return _elvis;
+    <%org.eclipse.app4mc.amalthea.model.INamed%> _namedContainer = this.getNamedContainer();
+    <%org.eclipse.emf.common.util.EList%><<%java.lang.String%>> _qualifiedNameSegments = null;
+    if (_namedContainer!=null)
+    {
+        _qualifiedNameSegments=_namedContainer.getQualifiedNameSegments();
+    }
+    if (_qualifiedNameSegments != null)
+    {
+        _elvis = _qualifiedNameSegments;
+    }
+    else
+    {
+        <%org.eclipse.emf.common.util.BasicEList%><<%java.lang.String%>> _newBasicEList = <%org.eclipse.emf.ecore.xcore.lib.XcoreCollectionLiterals%>.<<%java.lang.String%>>newBasicEList();
+        _elvis = _newBasicEList;
+    }
+    return _elvis;
 #endif
     /*PROTECTED REGION ID(HwPortImpl_getNamePrefixSegments) ENABLED START*/
     std::vector < ::ecore::EString > _qualifiedNameSegments;
@@ -155,7 +156,7 @@ return _elvis;
 }
 
 void HwPort::eSet(::ecore::EInt _featureID,
-        ::ecore::EJavaObject const &_newValue)
+        ::ecore::EJavaObject const& _newValue)
 {
     switch (_featureID)
     {
@@ -277,7 +278,7 @@ void HwPort::eUnset(::ecore::EInt _featureID)
 /** Set the local end of a reference with an EOpposite property.
  */
 void HwPort::_inverseAdd(::ecore::EInt _featureID,
-        ::ecore::EJavaObject const &_newValue)
+        ::ecore::EJavaObject const& _newValue)
 {
     switch (_featureID)
     {
@@ -297,7 +298,7 @@ void HwPort::_inverseAdd(::ecore::EInt _featureID,
 /** Unset the local end of a reference with an EOpposite property.
  */
 void HwPort::_inverseRemove(::ecore::EInt _featureID,
-        ::ecore::EJavaObject const &_oldValue)
+        ::ecore::EJavaObject const& _oldValue)
 {
     switch (_featureID)
     {
