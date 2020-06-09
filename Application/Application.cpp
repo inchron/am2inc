@@ -48,26 +48,49 @@ Application::Application(int &argc, char **argv)
 Application::~Application() = default;
 
 void Application::start() {
-	if (readInput())
-		return;
-	if (convert())
-		return;
-	if (_options->getMode() == Options::Relaxed) {
-		if (relax())
+	try {
+		if (readInput())
 			return;
-	}
-	if (writeOutput())
+		if (convert())
+			return;
+		if (_options->getMode() == Options::Relaxed) {
+			if (relax())
+				return;
+		}
+		if (writeOutput())
+			return;
+	} catch (std::exception& e) {
+		error(Options::Trouble,
+			  QStringLiteral("Aborting due to exception: %1")
+			  .arg(QString::fromStdString(e.what())));
 		return;
+	} catch (const char* msg) {
+		error(Options::Trouble,
+			  QStringLiteral("Aborting due to exception: %1").arg(msg));
+		return;
+	} catch (...) {
+		error(Options::Trouble,
+			  QStringLiteral("Aborting due to unknown exception"));
+		return;
+	}
 
-	error(Options::Ok);
+	error(Options::Ok, QString::null);
 }
 
-void Application::error(Options::Status error, const char*) {
-	info(0, QStringLiteral("Terminating with error %1").arg(error));
+void Application::error(Options::Status error, const QString& msg) {
+	if (error != Options::Ok) {
+		if (!msg.isEmpty())
+			info(0, QStringLiteral("Terminating with error %1").arg(msg));
+		else
+			info(0, QStringLiteral("Terminating with error"));
+	} else
+		info(0, QStringLiteral("Successful translation."));
 	QCoreApplication::exit(error);
 }
 
-void Application::warning(const char*) { }
+void Application::warning(const QString& msg) {
+	info(1, QStringLiteral("Warning: %1").arg(msg));
+}
 
 /** Emit an informational message depending on the verbosity level.
  *
@@ -77,7 +100,7 @@ void Application::warning(const char*) { }
 void Application::info(unsigned int verbosity, const QString& msg) {
 	if (verbosity <= _options->verbosity())
 		std::cerr << QCoreApplication::applicationName().toStdString()
-				  << msg.toStdString() << "\n";
+				  << " " << msg.toStdString() << "\n";
 }
 
 std::string Application::readStdIn() {
@@ -176,7 +199,10 @@ bool Application::writeOutput() {
 	auto mappingXmi = _resourceSet->createResource(QUrl::fromLocalFile("mapping.xmi"));
 	mappingXmi->getContents()->push_back(_mappings);
 
-	auto projectXmi = _resourceSet->createResource(QUrl::fromLocalFile("project.xmi"));
+	auto projectUrl = QUrl::fromLocalFile("project.xmi");
+	info(1, QStringLiteral("Writing output to %1").arg(projectUrl.toLocalFile()));
+
+	auto projectXmi = _resourceSet->createResource(projectUrl);
 	projectXmi->getContents()->push_back(_project);
 
 	mappingXmi->save();

@@ -37,8 +37,8 @@ protected slots:
 	bool writeOutput();
 
 protected:
-	void error(Options::Status, const char* = nullptr);
-	void warning(const char*);
+	void error(Options::Status, const QString&);
+	void warning(const QString&);
 	void info(unsigned int verbosity, const QString& msg);
 
 	std::string readStdIn();

@@ -37,13 +37,20 @@ struct AttributeCreator<sm3::Time> {
 		if (!a)
 			return value;
 
-		value->setValue(a->getValue());
+		/* If there is a mismatch regarding the unit mapping, emf4cpp will
+		 * throw an exception. In that case we return the empty object, which
+		 * was already created. */
+		try {
+			auto eenum = am::ModelPackage::_instance()->getTimeUnit();
+			auto name = eenum->getEEnumLiteral( (int)a->getUnit() )->getName();
+			auto newEenum = sm3::ModelPackage::_instance()->getTimeUnit();
+			auto newUnit = newEenum->getEEnumLiteral(name);
+			value->setUnit( (sm3::TimeUnit)newUnit->getValue() );
+		} catch (...) {
+			return value;
+		}
 
-		auto eenum = am::ModelPackage::_instance()->getTimeUnit();
-		auto name = eenum->getEEnumLiteral( (int)a->getUnit() )->getName();
-		auto newEenum = sm3::ModelPackage::_instance()->getTimeUnit();
-		auto newUnit = newEenum->getEEnumLiteral(name);
-		value->setUnit( (sm3::TimeUnit)newUnit->getValue() );
+		value->setValue(a->getValue());
 
 		return value;
 	}
@@ -65,13 +72,20 @@ struct AttributeCreator<sm3::Frequency> {
 		if (!a)
 			return value;
 
-		value->setValue(a->getValue());
+		/* If there is a mismatch regarding the unit mapping, emf4cpp will
+		 * throw an exception. In that case we return the empty object, which
+		 * was already created. */
+		try {
+			auto eenum = am::ModelPackage::_instance()->getFrequencyUnit();
+			auto name = eenum->getEEnumLiteral( (int)a->getUnit() )->getName();
+			auto newEenum = sm3::ModelPackage::_instance()->getFrequencyUnit();
+			auto newUnit = newEenum->getEEnumLiteral(name);
+			value->setUnit( (sm3::FrequencyUnit)newUnit->getValue() );
+		} catch (...) {
+			return value;
+		}
 
-		auto eenum = am::ModelPackage::_instance()->getFrequencyUnit();
-		auto name = eenum->getEEnumLiteral( (int)a->getUnit() )->getName();
-		auto newEenum = sm3::ModelPackage::_instance()->getFrequencyUnit();
-		auto newUnit = newEenum->getEEnumLiteral(name);
-		value->setUnit( (sm3::FrequencyUnit)newUnit->getValue() );
+		value->setValue(a->getValue());
 
 		return value;
 	}
@@ -85,17 +99,24 @@ struct AttributeCreator<sm3::DataSize> {
 		if (!a)
 			return value;
 
-		value->setValue(a->getValue());
+		/* If there is a mismatch regarding the unit mapping, emf4cpp will
+		 * throw an exception. In that case we return the empty object, which
+		 * was already created. */
+		try {
+			auto eenum = am::ModelPackage::_instance()->getDataSizeUnit();
+			auto name = eenum->getEEnumLiteral( (int)a->getUnit() )->getName();
+			if (name == "Kibit")
+				name = "kibit";
+			else if (name == "KiB")
+				name = "kiB";
+			auto newEenum = sm3::ModelPackage::_instance()->getDataSizeUnit();
+			auto newUnit = newEenum->getEEnumLiteral(name);
+			value->setUnit( (sm3::DataSizeUnit)newUnit->getValue() );
+		} catch (...) {
+			return value;
+		}
 
-		auto eenum = am::ModelPackage::_instance()->getDataSizeUnit();
-		auto name = eenum->getEEnumLiteral( (int)a->getUnit() )->getName();
-		if (name == "Kibit")
-			name = "kibit";
-		else if (name == "KiB")
-			name = "kiB";
-		auto newEenum = sm3::ModelPackage::_instance()->getDataSizeUnit();
-		auto newUnit = newEenum->getEEnumLiteral(name);
-		value->setUnit( (sm3::DataSizeUnit)newUnit->getValue() );
+		value->setValue(a->getValue());
 
 		return value;
 	}
@@ -116,17 +137,24 @@ struct AttributeCreator<sm3::DataRate> {
 		if (!a)
 			return value;
 
-		value->setValue(a->getValue());
+		/* If there is a mismatch regarding the unit mapping, emf4cpp will
+		 * throw an exception. In that case we return the empty object, which
+		 * was already created. */
+		try {
+			auto eenum = am::ModelPackage::_instance()->getDataRateUnit();
+			auto name = eenum->getEEnumLiteral( (int)a->getUnit() )->getName();
+			if (name == "KibitPerSecond")
+				name = "kibitPerSecond";
+			else if (name == "KiBPerSecond")
+				name = "kiBPerSecond";
+			auto newEenum = sm3::ModelPackage::_instance()->getDataRateUnit();
+			auto newUnit = newEenum->getEEnumLiteral(name);
+			value->setUnit( (sm3::DataRateUnit)newUnit->getValue() );
+		} catch (...) {
+			return value;
+		}
 
-		auto eenum = am::ModelPackage::_instance()->getDataRateUnit();
-		auto name = eenum->getEEnumLiteral( (int)a->getUnit() )->getName();
-		if (name == "KibitPerSecond")
-			name = "kibitPerSecond";
-		else if (name == "KiBPerSecond")
-			name = "kiBPerSecond";
-		auto newEenum = sm3::ModelPackage::_instance()->getDataRateUnit();
-		auto newUnit = newEenum->getEEnumLiteral(name);
-		value->setUnit( (sm3::DataRateUnit)newUnit->getValue() );
+		value->setValue(a->getValue());
 
 		return value;
 	}
