@@ -6,12 +6,12 @@
  */
 #pragma once
 
-#include <Utils/EmfTreeWalker.h>
+#include <ecorecpp/util/TreeWalker.hpp>
 
 #include <amalthea/model/ModelItemDispatcher.hpp>
 
-#include <Projects/Project.h>
 #include <am2inc/Mappings.hpp>
+#include <root/Root.hpp>
 #include <root/model/Model.hpp>
 
 #include "ObjectCache.h"
@@ -25,10 +25,10 @@ public:
 	void relax();
 
 	const ecore::Ptr<am2inc::Mappings>& getMappings() const { return _mappings; }
-	const ecore::Ptr<Projects::Project>& getProject() const { return _project; }
+	const ecore::Ptr<root::Root>& getRoot() const { return _root; }
 
-	Utils::EmfTreeWalker::Status preOrder(const ecore::EObject_ptr&);
-	Utils::EmfTreeWalker::Status postOrder(const ecore::EObject_ptr&);
+	ecorecpp::util::TreeWalker::Status preOrder(const ecore::EObject_ptr&);
+	ecorecpp::util::TreeWalker::Status postOrder(const ecore::EObject_ptr&);
 
 	void addMapping(const std::vector<amalthea::model::ReferableBaseObject_ptr>&,
 					const std::vector<root::Referable_ptr>&);
@@ -125,12 +125,12 @@ public:
 
 private:
 	enum Mode { PreOrder, PostOrder } _mode{PreOrder};
-	Utils::EmfTreeWalker::Status _status{Utils::EmfTreeWalker::Status::Continue};
+	ecorecpp::util::TreeWalker::Status _status{ecorecpp::util::TreeWalker::Status::Continue};
 
 	ObjectCache _oc;
 
 	ecore::Ptr<am2inc::Mappings> _mappings;
-	ecore::Ptr<Projects::Project> _project;
+	ecore::Ptr<root::Root> _root;
 	ecore::Ptr<root::model::Model> _model;
 	ecore::Ptr<root::model::Clock> _idealClock;
 	std::deque<root::model::Scheduler_ptr> _schedulerHierarchy;

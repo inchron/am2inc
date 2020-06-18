@@ -29,12 +29,10 @@
  */
 #include "../Converter.h"
 
-#include <Model/Time.h>
-
 #include "../AttributeCreator.h"
 #include "../Diagnostic.h"
 #include "../StimulusTraits.h"
-
+#include "../TimeOperators.h"
 
 namespace details {
 
@@ -267,22 +265,27 @@ sm3::TimeDistribution_ptr createTimeDistribution(am::IDiscreteValueDeviation_ptr
 
 	case am::ModelPackage::DISCRETEVALUESTATISTICS: {
 		auto stat = ecore::as<am::DiscreteValueStatistics>(am);
-		auto avg = ::Time(*AttributeCreator<sm3::Time>()(stat->getAverage(), sm3::TimeUnit::T));
-		auto min = ::Time(*AttributeCreator<sm3::Time>()(stat->getLowerBound(), sm3::TimeUnit::T));
-		auto max = ::Time(*AttributeCreator<sm3::Time>()(stat->getUpperBound(), sm3::TimeUnit::T));
+		auto avg = AttributeCreator<sm3::Time>()(stat->getAverage(), sm3::TimeUnit::T);
+		auto min = AttributeCreator<sm3::Time>()(stat->getLowerBound(), sm3::TimeUnit::T);
+		auto max = AttributeCreator<sm3::Time>()(stat->getUpperBound(), sm3::TimeUnit::T);
 
-		auto dl = avg - min;
-		auto du = max - avg;
-		::Time sigma;
-		if (dl > du)
-			sigma = dl / 3;
+		/* In general it is not safe to handle EMF objects, which are not
+		 * created on the heap and are not managed by a std::shared_ptr<>. */
+		auto dl = root::model::create<root::model::Time>();
+		auto du  = root::model::create<root::model::Time>();
+		auto sigma = root::model::create<root::model::Time>();
+
+		*dl = *avg - *min;
+		*du = *max - *avg;
+		if (*dl > *du)
+			*sigma = *dl / 3;
 		else
-			sigma = du / 3;
+			*sigma = *du / 3;
 
-		td->setMin(min.toModelTime());
-		td->setMax(max.toModelTime());
-		td->setMean(avg.toModelTime());
-		td->setSigma(sigma.toModelTime());
+		td->setMin(min);
+		td->setMax(max);
+		td->setMean(avg);
+		td->setSigma(sigma);
 		td->setType(sm3::TimeDistributionType::Normal);
 	} break;
 

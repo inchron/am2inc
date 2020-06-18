@@ -1,31 +1,19 @@
 #
-# qmake configuration for libAmalthea.so / Amalthea.dll
+# qmake configuration for libroot.so / root.dll
 #
 
 include(../config.pri)
 
 TEMPLATE = lib
-TARGET = Mapping
+TARGET = Root
 QT += core
 
 CONFIG += dll
-
-# Amalthea does not distribute the classes over subpackages. As a result the
-# generated PackageImpl.cpp is too big to compile with debug and the
-# sanitizer.
-CONFIG -= sanitizer
-
-DEFINES += MAKE_AM2INC_DLL
+DEFINES += MAKE_ROOT_DLL
 
 QMAKE_CXXFLAGS += -Wno-unused-parameter
 
 INCLUDEPATH += ..
-
-win32 {
-    LIBS += -LAmalthea/$${DESTDIR} -lAmalthea
-    LIBS += -L../Root/$${DESTDIR} -lRoot
-}
-
 
 !isEmpty(EMF4CPP): LIBS += -L$${EMF4CPP}/lib
 LIBS += -lemf4cpp-ecore -lemf4cpp-ecorecpp
@@ -35,31 +23,27 @@ QMAKE_RPATHDIR = .
 #
 # All files are located in a subdirectory, which needs to be added to VPATH and INCLUDES
 #
-SRCGEN = .
+SRCGEN = model
 VPATH = $${SRCGEN}
 INCLUDEPATH += $${SRCGEN}
-INCLUDEPATH += ../Root/model
-INCLUDEPATH += ../Amalthea/amalthea ../Amalthea
+
+
+ROOT_ECORE = $${PWD}/../EcoreModels/root.ecore
 
 #
-# list of source files created by emf4cpp
+# root.pri has the list of source files created by emf4cpp for the model
 #
-ECORE_PATH    = $${PWD}/../EcoreModels
-MAPPING_ECORE = $${ECORE_PATH}/Am2IncMapping.ecore
-
-am2inc.pri.target = $$relative_path($${PWD}/am2inc.pri, $${OUT_PWD})
-am2inc.pri.depends = $$relative_path($${MAPPING_ECORE}, $${OUT_PWD})
-am2inc.pri.commands =  \
-    echo generating model && \
-    ( cd $${ECORE_PATH} && \
-    $${EMF4CPP}/bin/emf4cpp.generator.sh -c -o $${PWD} \
-        $${MAPPING_ECORE} ) && \
+root.pri.target = $$relative_path($${PWD}/model/root.pri, $${OUT_PWD})
+root.pri.depends = $$relative_path($${ROOT_ECORE}, $${OUT_PWD})
+root.pri.commands =  \
+    @echo generating model && \
+    $${EMF4CPP}/bin/emf4cpp.generator.sh -c -o $${PWD}/model $${ROOT_ECORE} && \
     touch $@
 
-QMAKE_EXTRA_TARGETS += am2inc.pri
+QMAKE_EXTRA_TARGETS += root.pri
 
-exists(am2inc.pri): include(am2inc.pri)
-!exists(am2inc.pri): Makefile.depends += $$am2inc.pri.target
+exists(model/root.pri): include(model/root.pri)
+!exists(model/root.pri): Makefile.depends += $$root.pri.target
 
 
 include(../install.pri)
@@ -69,7 +53,7 @@ unix {
         libemf4cpp.extra = cp --preserve --no-dereference \
                 $${EMF4CPP}/lib/libemf4cpp-ecore*.so* $(INSTALL_ROOT)$${PREFIX}/lib
         libemf4cpp.path = $${PREFIX}/lib
-#        INSTALLS += libemf4cpp
+        INSTALLS += libemf4cpp
     }
 }
 
@@ -98,8 +82,11 @@ win32 {
 
 
 HEADERS += \
+    XMLResource.h \
+    XMLResourceFactory.h \
 
 SOURCES += \
-    version.cpp \
+    XMLResource.cpp \
+    XMLResourceFactory.cpp \
 
 RESOURCES += \

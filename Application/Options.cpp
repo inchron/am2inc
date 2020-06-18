@@ -8,11 +8,10 @@
 
 #include <iostream>
 #include <QCommandLineParser>
-#include <ReleaseInfo/ReleaseInfo.h>
+#include "../gitversion.h"
 
 #include <amalthea/model/ModelPackage.hpp>
 #include <root/RootPackage.hpp>
-#include <projects/ProjectsPackage.hpp>
 
 
 Options::Options(QCoreApplication& app) {
@@ -109,7 +108,7 @@ Options::Options(QCoreApplication& app) {
 			_seedMode = NotSeeded;
 		} else {
 			bool ok = false;
-			Basics::RandomSeed::ValueType s = parser.value("seed").toULongLong(&ok, 0);
+			RandomSeedType s = parser.value("seed").toULongLong(&ok, 0);
 			if (!ok) {
 				parser.showHelp(1);
 			} else {
@@ -151,12 +150,10 @@ QString Options::getOutputName() const {
 
 
 void Options::showVersion() {
-	ReleaseInfo::ReleaseInfo ri;
-	std::cout << "Version " << ri.getVersionString() << " Build " __DATE__ " ("
-			  << ri.getSCMDescribe() << ")\n";
+	std::cout << "Version " << VERSION << " Build " __DATE__ " ("
+			  << GIT_VERSION << ")\n";
 
 	std::cout <<   "Amalthea : " << amalthea::model::ModelPackage::_instance()->getNsURI()
 			  << "\nINCHRON  : " << root::RootPackage::_instance()->getNsURI()
-			  << "\nProjects : " << projects::ProjectsPackage::_instance()->getNsURI()
 			  << "\n";
 }

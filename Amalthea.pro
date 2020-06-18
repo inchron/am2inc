@@ -4,7 +4,15 @@
 
 TEMPLATE = subdirs
 
-SUBDIRS += Amalthea Mapping Application
+SUBDIRS += \
+    Amalthea \
+    Application \
+    Mapping \
+    Root \
+    gitversion \
 
-Application.depends += Amalthea Mapping
-Mapping.depends += Amalthea
+gitversion.file = gitversion.pro
+
+Amalthea.depends += gitversion
+Mapping.depends += gitversion Amalthea Root
+Application.depends += Amalthea Mapping Root

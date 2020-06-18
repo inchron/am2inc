@@ -13,7 +13,6 @@
 #include <QString>
 #include <QStringList>
 #include <stdio.h>
-#include <Basics/RandomSeed.h>
 
 class QCoreApplication;
 
@@ -60,7 +59,8 @@ public:
 	 * values from the Settings are used. */
 	enum SeedMode { Undefined, Seeded, NotSeeded };
 	SeedMode getSeedMode() const { return _seedMode; }
-	Basics::RandomSeed::ValueType getSeed() const { return _seed; }
+	using RandomSeedType = std::uint64_t;
+	RandomSeedType getSeed() const { return _seed; }
 
 	enum Mode { Pedantic, Relaxed };
 	Mode getMode() const { return _mode; }
@@ -75,7 +75,7 @@ private:
 	QString _outputName{"-"};
 
 	SeedMode _seedMode{Undefined};
-	Basics::RandomSeed::ValueType _seed{1u};
+	RandomSeedType _seed{1u};
 
 	Mode _mode{Relaxed};
 };

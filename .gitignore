@@ -1,0 +1,7 @@
+
+gitversion.h
+
+**/Makefile*
+*~
+**/release/
+**/debug/

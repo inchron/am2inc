@@ -183,7 +183,7 @@ bool Application::convert() {
 
 	_converter.convert(_amalthea);
 	_mappings = _converter.getMappings();
-	_project = _converter.getProject();
+	_root = _converter.getRoot();
 #endif
 	return false;
 }
@@ -202,11 +202,11 @@ bool Application::writeOutput() {
 	auto projectUrl = QUrl::fromLocalFile("project.xmi");
 	info(1, QStringLiteral("Writing output to %1").arg(projectUrl.toLocalFile()));
 
-	auto projectXmi = _resourceSet->createResource(projectUrl);
-	projectXmi->getContents()->push_back(_project);
+	auto rootXmi = _resourceSet->createResource(projectUrl);
+	rootXmi->getContents()->push_back(_root);
 
 	mappingXmi->save();
-	projectXmi->save();
+	rootXmi->save();
 
 	return false;
 }

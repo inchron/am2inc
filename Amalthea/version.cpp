@@ -8,8 +8,8 @@
  */
 #include <QString>
 
-#include <ReleaseInfo/gitversion.h>
 #include <amalthea/model/dllModel.hpp>
+#include "../gitversion.h"
 
 namespace amalthea {
 

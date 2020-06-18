@@ -11,8 +11,6 @@
 #include <QCoreApplication>
 #include <ecorecpp/resource/ResourceSet.hpp>
 
-#include <Projects/Project.h>
-
 #include <amalthea/model_forward.hpp>
 #include <am2inc_forward.hpp>
 #include <root_forward.hpp>
@@ -49,6 +47,6 @@ private:
 
 	amalthea::model::Amalthea_ptr _amalthea;
 	am2inc::Mappings_ptr _mappings;
-	ecore::Ptr<Projects::Project> _project;
+	ecore::Ptr<root::Root> _root;
 	Converter _converter;
 };

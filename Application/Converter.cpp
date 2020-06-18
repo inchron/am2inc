@@ -24,8 +24,18 @@ void Converter::convert(const am::Amalthea_ptr& am) {
 	auto post = std::bind(&Converter::postOrder, this, std::placeholders::_1);
 
 	_mappings = am2inc::create<am2inc::Mappings>();
-	_project = Projects::Project::create();
-	_model = ecore::as<sm3::Model>(_project->getRoot()->getModel());
+
+	_root = root::create<root::Root>();
+	_model = sm3::create<sm3::Model>();
+	_model->setName("New Project");
+	_root->setModel(_model);
+
+	{
+		auto scenario = sm3::stimulation::create<sm3::stimulation::StimulationScenario>();
+		scenario->setName("DefaultScenario");
+		_model->getScenarios().push_back( scenario );
+		_model->setDefaultScenario( scenario );
+	}
 
 	{
 		auto clock = sm3::create<sm3::Clock>();
@@ -44,19 +54,19 @@ void Converter::convert(const am::Amalthea_ptr& am) {
 		_idealClock = clock;
 	}
 
-	Utils::EmfTreeWalker walker(pre, post);
+	ecorecpp::util::TreeWalker walker(pre, post);
 	walker.traverse(am);
 }
 
-Utils::EmfTreeWalker::Status Converter::preOrder(const ecore::EObject_ptr& obj) {
-	_status = Utils::EmfTreeWalker::Status::Continue;
+ecorecpp::util::TreeWalker::Status Converter::preOrder(const ecore::EObject_ptr& obj) {
+	_status = ecorecpp::util::TreeWalker::Status::Continue;
 	_mode = PreOrder;
 	enter(obj);
 	return _status;
 }
 
-Utils::EmfTreeWalker::Status Converter::postOrder(const ecore::EObject_ptr& obj) {
-	_status = Utils::EmfTreeWalker::Status::Continue;
+ecorecpp::util::TreeWalker::Status Converter::postOrder(const ecore::EObject_ptr& obj) {
+	_status = ecorecpp::util::TreeWalker::Status::Continue;
 	_mode = PostOrder;
 	enter(obj);
 	return _status;

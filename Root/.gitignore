@@ -1,0 +1,12 @@
+# Ignore all generated files. Those containing enabled protected regions have
+# to be added explicitly, which overrides these .gitignore definitions.
+model/*.*
+editor/*.*
+model/**/*.cpp
+model/**/*.hpp
+editor/**/*.cpp
+editor/**/*.hpp
+
+# However, known exceptions are explicitly added to avoid confusion.
+!model/root/Referable.cpp
+!model/root/model/TimeImpl.cpp

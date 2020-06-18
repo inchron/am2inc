@@ -2,7 +2,7 @@
 # qmake configuration for libAmalthea.so / Amalthea.dll
 #
 
-include(../../config.pri)
+include(../config.pri)
 
 TEMPLATE = lib
 TARGET = Amalthea
@@ -21,7 +21,7 @@ DEFINES += MAKE_AMALTHEA_MODEL_DLL
 
 QMAKE_CXXFLAGS += -Wno-unused-parameter
 
-INCLUDEPATH += ../..
+INCLUDEPATH += ..
 
 !isEmpty(EMF4CPP): LIBS += -L$${EMF4CPP}/lib
 LIBS += -lemf4cpp-ecore -lemf4cpp-ecorecpp
@@ -38,7 +38,7 @@ INCLUDEPATH += $${SRCGEN}
 #
 # list of source files created by emf4cpp
 #
-AMALTHEA_ECORE = $${PWD}/../../EcoreModels/amalthea.ecore
+AMALTHEA_ECORE = $${PWD}/../EcoreModels/amalthea.ecore
 
 amalthea_model.pri.target = $$relative_path($${PWD}/amalthea_model.pri, $${OUT_PWD})
 amalthea_model.pri.depends = $$relative_path($${AMALTHEA_ECORE}, $${OUT_PWD})
@@ -54,7 +54,7 @@ exists(amalthea_model.pri): include(amalthea_model.pri)
 !exists(amalthea_model.pri): Makefile.depends += $$amalthea_model.pri.target
 
 
-include(../../install.pri)
+include(../install.pri)
 
 unix {
     ! isEmpty(EMF4CPP) {

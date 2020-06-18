@@ -8,8 +8,8 @@
  */
 #include <QString>
 
-#include <ReleaseInfo/gitversion.h>
-#include "am2inc/dllAm2inc.hpp"
+#include <am2inc/dllAm2inc.hpp>
+#include "../gitversion.h"
 
 namespace am2inc {
 
