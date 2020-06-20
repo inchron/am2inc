@@ -11,7 +11,7 @@ SUBDIRS += \
     Root \
     gitversion \
 
-gitversion.file = gitversion.pro
+gitversion.file = gitversion.pri
 
 Amalthea.depends += gitversion
 Mapping.depends += gitversion Amalthea Root

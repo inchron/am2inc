@@ -195,18 +195,30 @@ bool Application::relax() {
 
 bool Application::writeOutput() {
 	_converter.clear();
+	if (_options->noOutput()) {
+		info(1, QStringLiteral("Writing no output as requested"));
+		return false;
+	}
 
-	auto mappingXmi = _resourceSet->createResource(QUrl::fromLocalFile("mapping.xmi"));
-	mappingXmi->getContents()->push_back(_mappings);
-
-	auto projectUrl = QUrl::fromLocalFile("project.xmi");
+	auto projectUrl = QUrl::fromLocalFile(_options->getOutputName());
 	info(1, QStringLiteral("Writing output to %1").arg(projectUrl.toLocalFile()));
-
 	auto rootXmi = _resourceSet->createResource(projectUrl);
 	rootXmi->getContents()->push_back(_root);
 
-	mappingXmi->save();
-	rootXmi->save();
+	if (!_options->getOutputName().isEmpty() && _options->getOutputName() != "-") {
+		rootXmi->save();
+	} else {
+		std::ostringstream stream;
+		rootXmi->save(stream);
+		std::cout << stream.str();
+	}
+
+	if (!_options->getMappingName().isEmpty()) {
+		auto mappingXmi = _resourceSet->createResource(
+			QUrl::fromLocalFile(_options->getMappingName()));
+		mappingXmi->getContents()->push_back(_mappings);
+		mappingXmi->save();
+	}
 
 	return false;
 }

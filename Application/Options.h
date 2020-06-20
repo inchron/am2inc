@@ -10,17 +10,32 @@
 #ifndef Options_H
 #define Options_H
 
+#include <QCommandLineParser>
 #include <QString>
 #include <QStringList>
-#include <stdio.h>
 
 class QCoreApplication;
 
 class Options {
 public:
+	/** The default constructor just initializes the QCommandLineParser. All
+	 * other members are initialized by brace-or-equal initializers in the
+	 * class declaration. */
+	Options();
+
+	/** Instantiating an Options object with a QCoreApplication will
+	 * immediately process the command-line. */
 	Options(QCoreApplication&);
 
 	enum Status { Ok = 0, CommandLine, Trouble };
+
+	bool noOutput() const { return _noOutput; }
+	QString getInputName() const { return _inputName; }
+	QString getOutputName() const { return _outputName; }
+	QString getMappingName() const { return _mappingName; }
+
+	enum Mode { Pedantic, Relaxed };
+	Mode getMode() const { return _mode; }
 
 	using Verbosity = unsigned int;
 	Verbosity verbosity() const { return _verbosity; }
@@ -28,7 +43,7 @@ public:
 	/** Check the verbosity level.
 	 *
 	 * Usage:
-	 * if (options.if_verbose(1))
+	 * if (options.verbose_if(1))
 	 *     std::cerr << "I'm doing something\n";
 	 */
 	bool verbose_if(Verbosity lvl) const {
@@ -49,34 +64,17 @@ public:
 			std::forward<Lambda>(lambda)();
 	}
 
-	bool noOutput() const;
-	bool useURI() const;
-	QString getInputName() const;
-	QString getOutputName() const;
-
-	/* The seed is passed from the v1/LargeFile to the model - always. If
-	 * neither -N nor -S is used, the context is not a Trace access and the
-	 * values from the Settings are used. */
-	enum SeedMode { Undefined, Seeded, NotSeeded };
-	SeedMode getSeedMode() const { return _seedMode; }
-	using RandomSeedType = std::uint64_t;
-	RandomSeedType getSeed() const { return _seed; }
-
-	enum Mode { Pedantic, Relaxed };
-	Mode getMode() const { return _mode; }
-
 private:
-	static void showVersion();
+	QCommandLineParser _parser;
+
+	Q_NORETURN void showVersion();
+	Q_NORETURN void showHelp(int exitCode);
 
 	Verbosity _verbosity{1};
 	bool _noOutput{false};
-	bool _useURI{false};
 	QString _inputName{"-"};
 	QString _outputName{"-"};
-
-	SeedMode _seedMode{Undefined};
-	RandomSeedType _seed{1u};
-
+	QString _mappingName{""};
 	Mode _mode{Relaxed};
 };
 

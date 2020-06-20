@@ -1,6 +1,9 @@
 #
 # gitversion.pro
 #
+
+include(config.pri)
+
 TEMPLATE = aux
 
 gitversion.h.commands = @echo updating gitversion.h if necessary && ./gitversion.sh

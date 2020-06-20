@@ -22,7 +22,7 @@ QMAKE_CXXFLAGS += -Wno-unused-parameter
 INCLUDEPATH += ..
 
 win32 {
-    LIBS += -LAmalthea/$${DESTDIR} -lAmalthea
+    LIBS += -L../Amalthea/$${DESTDIR} -lAmalthea
     LIBS += -L../Root/$${DESTDIR} -lRoot
 }
 
