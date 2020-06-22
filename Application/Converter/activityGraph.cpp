@@ -106,6 +106,7 @@ void Converter::work(const am::ActivityGraph_ptr& am, am::ActivityGraph*) {
 		_callGraph = cg;
 		_callSequence = cs;
 		assert(_graphEntries.empty());
+		_graphEntries.push_back(_callSequence);
 
 	} else {
 		details::removeIfUnused(_callSequence, _oc);
@@ -126,14 +127,22 @@ void Converter::work(const am::Group_ptr& am, am::Group*) {
 			cs = _oc.make<sm3::ModelFactory, sm3::CallSequence>(am);
 			details::addAsSibling(_callSequence, cs);
 			_callSequence = cs;
+			_graphEntries.pop_back();
+			_graphEntries.push_back(_callSequence);
 		}
 
 		cs->setName(am->getName());
+		if (!am->isOrdered()) {
+			std::cerr << "Unsupported attribute: Group '" << am->getName()
+					  << "' uses random execution order\n";
+		}
 
 	} else { // PostOrder
 		auto cs = sm3::create<sm3::CallSequence>();
 		details::addAsSibling(_callSequence, cs);
 		_callSequence = cs;
+		_graphEntries.pop_back();
+		_graphEntries.push_back(_callSequence);
 	}
 }
 
@@ -383,12 +392,71 @@ void Converter::work(const am::ModeLabelAccess_ptr&, am::ModeLabelAccess*) {
 	static Diagnostic::NotImplemented<am::ModeLabelAccess> message;
 }
 
-void Converter::work(const am::ModeSwitch_ptr&, am::ModeSwitch*) {
-	static Diagnostic::NotImplemented<am::ModeSwitch> message;
+void Converter::work(const am::ModeSwitch_ptr& am, am::ModeSwitch*) {
+	if (_mode == PreOrder) {
+		auto modeSwitch = _oc.make<sm3::ModelFactory, sm3::ModeSwitch>(am);
+		details::addAsSibling(_callSequence, modeSwitch);
+		details::removeIfUnused(_callSequence, _oc);
+
+		/* The end of this am::ModeSwitch, any am::ModeSwitchEntry and an
+		 * am::ModeSwitchDefault will lead to the creation of a new
+		 * CallSequence. */
+		_callSequence = sm3::CallSequence_ptr();
+
+	} else {
+		/* A new CallSequence starts after the ModeSwitch. It replaces the
+		 * previous one. */
+		_callSequence = sm3::create<sm3::CallSequence>();
+		auto thisModeSwitch = _oc.make<sm3::ModelFactory, sm3::ModeSwitch>(am);
+		details::addAsSibling( thisModeSwitch, _callSequence);
+		_graphEntries.pop_back();
+		_graphEntries.push_back(_callSequence);
+	}
+}
+
+void Converter::work(const am::ModeSwitchDefault_ptr& am, am::ModeSwitchDefault*) {
+	if (_mode == PreOrder) {
+		auto msd = _oc.make<sm3::ModelFactory, sm3::ModeSwitchDefault>(am);
+		auto modeSwitch = _oc.make<sm3::ModelFactory, sm3::ModeSwitch>(am->eContainer());
+		modeSwitch->setDefaultEntry(msd);
+
+		auto cs = sm3::create<sm3::CallSequence>();
+		msd->getGraphEntries().push_back(cs);
+		_graphEntries.push_back(cs);
+		_callSequence = cs;
+
+	} else {
+		details::removeIfUnused(_callSequence, _oc);
+		_callSequence = sm3::CallSequence_ptr();
+		_graphEntries.pop_back();
+	}
+}
+
+void Converter::work(const am::ModeSwitchEntry_ptr& am, am::ModeSwitchEntry*) {
+	if (_mode == PreOrder) {
+		auto mse = _oc.make<sm3::ModelFactory, sm3::ModeSwitchEntry>(am);
+		auto modeSwitch = _oc.make<sm3::ModelFactory, sm3::ModeSwitch>(am->eContainer());
+		assert(modeSwitch);
+		modeSwitch->getEntries().push_back(mse);
+
+		auto condition = _oc.make<sm3::ModelFactory, sm3::ModeCondition>(am);
+		mse->setCondition(condition);
+
+		auto cs = sm3::create<sm3::CallSequence>();
+		mse->getGraphEntries().push_back(cs);
+		_graphEntries.push_back(cs);
+		_callSequence = cs;
+
+	} else {
+		details::removeIfUnused(_callSequence, _oc);
+		_callSequence = sm3::CallSequence_ptr();
+		_graphEntries.pop_back();
+	}
 }
 
 void Converter::work(const am::ProbabilitySwitch_ptr&, am::ProbabilitySwitch*) {
 	static Diagnostic::NotImplemented<am::ProbabilitySwitch> message;
+	skipChildren();
 }
 
 void Converter::work(const am::SchedulePoint_ptr&, am::SchedulePoint*) {

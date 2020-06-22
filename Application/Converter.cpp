@@ -72,6 +72,10 @@ ecorecpp::util::TreeWalker::Status Converter::postOrder(const ecore::EObject_ptr
 	return _status;
 }
 
+void Converter::skipChildren() {
+	_status = Status::SkipChildren;
+}
+
 
 void Converter::addMapping(const std::vector<am::ReferableBaseObject_ptr>& am,
 						   const std::vector<root::Referable_ptr>& inc) {

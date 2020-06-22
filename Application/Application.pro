@@ -21,6 +21,7 @@ QMAKE_CXXFLAGS += -Wno-unused-parameter
 QT += core
 QT -= gui
 CONFIG += console
+CONFIG += release
 
 LIBS += -L../Amalthea/$${DESTDIR} -lAmalthea
 LIBS += -L../Root/$${DESTDIR} -lRoot

@@ -27,8 +27,10 @@ public:
 	const ecore::Ptr<am2inc::Mappings>& getMappings() const { return _mappings; }
 	const ecore::Ptr<root::Root>& getRoot() const { return _root; }
 
-	ecorecpp::util::TreeWalker::Status preOrder(const ecore::EObject_ptr&);
-	ecorecpp::util::TreeWalker::Status postOrder(const ecore::EObject_ptr&);
+	using Status = ecorecpp::util::TreeWalker::Status;
+	Status preOrder(const ecore::EObject_ptr&);
+	Status postOrder(const ecore::EObject_ptr&);
+	void skipChildren();
 
 	void addMapping(const std::vector<amalthea::model::ReferableBaseObject_ptr>&,
 					const std::vector<root::Referable_ptr>&);
@@ -73,6 +75,10 @@ public:
 	void work(const amalthea::model::OsEvent_ptr&, amalthea::model::OsEvent*);
 	void work(const amalthea::model::Runnable_ptr&, amalthea::model::Runnable*);
 	void work(const amalthea::model::Task_ptr&, amalthea::model::Task*);
+	void work(const amalthea::model::ModeLabel_ptr&, amalthea::model::ModeLabel*);
+	void work(const amalthea::model::EnumMode_ptr&, amalthea::model::EnumMode*);
+	void work(const amalthea::model::NumericMode_ptr&, amalthea::model::NumericMode*);
+	void work(const amalthea::model::ModeConditionDisjunction_ptr&, amalthea::model::ModeConditionDisjunction*);
 
 	void addStimulus(const amalthea::model::Process_ptr&, const root::model::Process_ptr&);
 	void addEvents(const root::model::Process_ptr&);
@@ -92,6 +98,8 @@ public:
 	void work(const amalthea::model::LabelAccess_ptr&, amalthea::model::LabelAccess*);
 	void work(const amalthea::model::ModeLabelAccess_ptr&, amalthea::model::ModeLabelAccess*);
 	void work(const amalthea::model::ModeSwitch_ptr&, amalthea::model::ModeSwitch*);
+	void work(const amalthea::model::ModeSwitchDefault_ptr&, amalthea::model::ModeSwitchDefault*);
+	void work(const amalthea::model::ModeSwitchEntry_ptr&, amalthea::model::ModeSwitchEntry*);
 	void work(const amalthea::model::ProbabilitySwitch_ptr&, amalthea::model::ProbabilitySwitch*);
 	void work(const amalthea::model::RunnableCall_ptr&, amalthea::model::RunnableCall*);
 	void work(const amalthea::model::SchedulePoint_ptr&, amalthea::model::SchedulePoint*);
@@ -137,6 +145,11 @@ private:
 
 	/* Keep track of the current CallGraph elements. */
 	ecore::Ptr<root::model::CallGraph> _callGraph;
+
+	/** See work(const am::ActivityGraph_ptr&, ...) for an explanation of
+	 * _graphEntries and _callSequence. */
 	std::deque<root::model::GraphEntryBase_ptr> _graphEntries;
+	/** See work(const am::ActivityGraph_ptr&, ...) for an explanation of
+	 * _graphEntries and _callSequence. */
 	ecore::Ptr<root::model::CallSequence> _callSequence;
 };
