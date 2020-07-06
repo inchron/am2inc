@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="model" nsURI="http://app4mc.eclipse.org/amalthea/0.9.7" nsPrefix="am">
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="model" nsURI="http://app4mc.eclipse.org/amalthea/0.9.8" nsPrefix="am">
   <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
     <details key="documentation" value="*&#xA;*******************************************************************************&#xA;Copyright (c) 2015-2020 Robert Bosch GmbH and others.&#xA;&#xA;This program and the accompanying materials are made&#xA;available under the terms of the Eclipse Public License 2.0&#xA;which is available at https://www.eclipse.org/legal/epl-2.0/&#xA;&#xA;SPDX-License-Identifier: EPL-2.0&#xA;*******************************************************************************"/>
     <details key="modelName" value="Amalthea"/>
     <details key="prefix" value="Amalthea"/>
+    <details key="modelDirectory" value="/org.eclipse.app4mc.amalthea.model/xcore-gen"/>
     <details key="editDirectory" value="/org.eclipse.app4mc.amalthea.model.edit/src-gen"/>
     <details key="editorDirectory" value="/org.eclipse.app4mc.amalthea.model.editor/src-gen"/>
     <details key="rootExtendsClass" value="org.eclipse.app4mc.amalthea.sphinx.AmaltheaExtendedEObjectImpl"/>
@@ -19,7 +20,7 @@
     <details key="collapseAllAction" value="true"/>
     <details key="expandAllAction" value="true"/>
     <details key="autoExpandProperties" value="1"/>
-    <details key="eclipsePlatformVersion" value="Photon"/>
+    <details key="eclipsePlatformVersion" value="2019-12"/>
     <details key="basePackage" value="org.eclipse.app4mc.amalthea"/>
   </eAnnotations>
   <eClassifiers xsi:type="ecore:EClass" name="Amalthea" eSuperTypes="#//BaseObject">
@@ -27,7 +28,7 @@
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
         changeable="false" volatile="true" transient="true" derived="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="get" value="return &quot;0.9.7&quot;;"/>
+        <details key="get" value="return &quot;0.9.8&quot;;"/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="commonElements" eType="#//CommonElements"
@@ -571,19 +572,19 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="min" unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
         defaultValueLiteral="0"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="avg" unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"
-        defaultValueLiteral="0"/>
+        defaultValueLiteral="0.f"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="max" unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
         defaultValueLiteral="0"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="SingleValueStatistic" eSuperTypes="#//NumericStatistic">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"
-        defaultValueLiteral="0"/>
+        defaultValueLiteral="0.f"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="SamplingType">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="The types of sampling"/>
     </eAnnotations>
-    <eLiterals name="_default_" literal="default" />
+    <eLiterals name="_default_" literal="default"/>
     <eLiterals name="BestCase"/>
     <eLiterals name="WorstCase"/>
     <eLiterals name="AverageCase"/>

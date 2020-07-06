@@ -21,7 +21,8 @@ DEFINES += MAKE_AMALTHEA_MODEL_DLL
 
 QMAKE_CXXFLAGS += -Wno-unused-parameter
 
-INCLUDEPATH += ..
+INCLUDEPATH += .. ../Amalthea
+
 
 !isEmpty(EMF4CPP): LIBS += -L$${EMF4CPP}/lib
 LIBS += -lemf4cpp-ecore -lemf4cpp-ecorecpp
@@ -44,6 +45,7 @@ amalthea_model.pri.target = $$relative_path($${PWD}/amalthea_model.pri, $${OUT_P
 amalthea_model.pri.depends = $$relative_path($${AMALTHEA_ECORE}, $${OUT_PWD})
 amalthea_model.pri.commands =  \
     @echo generating model && \
+    ./adaptC++.sh $${AMALTHEA_ECORE} && \
     $${EMF4CPP}/bin/emf4cpp.generator.sh -c -java \
         --target-version=amalthea $${AMALTHEA_ECORE} && \
     touch $@
@@ -53,6 +55,7 @@ QMAKE_EXTRA_TARGETS += amalthea_model.pri
 exists(amalthea_model.pri): include(amalthea_model.pri)
 !exists(amalthea_model.pri): Makefile.depends += $$amalthea_model.pri.target
 
+Makefile.depends += Amalthea.pro adaptC++.sh
 
 include(../install.pri)
 
@@ -88,6 +91,8 @@ win32 {
       INSTALLS += deploy
 }
 
+QMAKE_EXTRA_TARGETS += version.cpp
+version.cpp.depends += amalthea_model.pri
 
 HEADERS += \
 

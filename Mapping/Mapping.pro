@@ -19,7 +19,7 @@ DEFINES += MAKE_AM2INC_DLL
 
 QMAKE_CXXFLAGS += -Wno-unused-parameter
 
-INCLUDEPATH += ..
+INCLUDEPATH += .. ../Mapping
 
 win32 {
     LIBS += -L../Amalthea/$${DESTDIR} -lAmalthea
@@ -96,6 +96,8 @@ win32 {
       INSTALLS += deploy
 }
 
+QMAKE_EXTRA_TARGETS += version.cpp
+version.cpp.depends += am2inc.pri
 
 HEADERS += \
 

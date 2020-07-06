@@ -86,7 +86,7 @@ namespace amalthea
         {   0};
 
         ::ecore::EFloat m_avg
-        {   0};
+        {   0.f};
 
         ::ecore::EInt m_max
         {   0};
