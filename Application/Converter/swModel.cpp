@@ -81,7 +81,16 @@ void Converter::addStimulus(const am::Process_ptr& am, const sm3::Process_ptr& p
 			callSequence->getCalls().push_back(activationAction);
 
 		} else {
-			conn->getActivations().push_back(activationAction);
+			auto cg = conn->getCallGraph();
+			if (!cg) {
+				cg = sm3::create<sm3::CallGraph>();
+				conn->setCallGraph(cg);
+			}
+			if (cg->getGraphEntries().size() == 0)
+				cg->getGraphEntries().push_back(sm3::create<sm3::CallSequence>());
+			auto cs = ecore::as<sm3::CallSequence>(cg->getGraphEntries().get(0));
+
+			cs->getCalls().push_back(activationAction);
 			auto ips = ecore::as<am::InterProcessStimulus>(stimulus);
 			if (auto counter = ips->getCounter()) {
 				activationAction->setPeriod(counter->getPrescaler());

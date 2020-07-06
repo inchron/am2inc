@@ -77,6 +77,20 @@ void addAsSibling(const ecore::Ptr<T>& older, const ecore::Ptr<U>& younger) {
 } // namespace details
 
 
+/** Translate an am::ActivityGraph into a sm3::CallGraph.
+ *
+ * Amalthea does not necessarily need a CallSequence, but in the INCHRON model
+ * every CallSequenceItem must be contained by a CallSequence. Whenever
+ * needed, CallSequences are created, and afterwards the helper methods
+ * defined above detect and remove unnecessary instances.
+ *
+ * GraphEntries are tracked in a std::deque. The current CallSequence is
+ * always at the end. When a ModeSwitch or another GraphEntry is processed, it
+ * is added as sibling of the current end, and the newly created CallSequence
+ * is appended to the std::deque. The postorder processing of the ModeSwitch
+ * is responsible to not only cleanup empty CallSequences, but also remove it
+ * from the std::deque.
+ */
 void Converter::work(const am::ActivityGraph_ptr& am, am::ActivityGraph*) {
 	if (_mode == PreOrder) {
 		auto cg = _oc.make<sm3::ModelFactory, sm3::CallGraph>(am);
