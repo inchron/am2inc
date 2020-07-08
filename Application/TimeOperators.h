@@ -37,9 +37,19 @@ bool operator > (const root::model::Time& lhs, const root::model::Time& rhs) {
 }
 
 inline
-root::model::Time operator / (const root::model::Time& lhs, double divisor) {
+double operator / (const root::model::Time& numerator, const root::model::Time& denominator) {
+	checkUnits(numerator, denominator);
+	return (double)numerator.getValue() / denominator.getValue();
+}
+
+inline
+root::model::Time operator / (const root::model::Time& numerator, double denominator) {
 	root::model::Time t;
-	t.setUnit(lhs.getUnit());
-	t.setValue(lhs.getValue() / divisor);
+	t.setUnit(numerator.getUnit());
+	t.setValue(numerator.getValue());
+	/* The smaller the unit, the larger the value, which leads to smaller loss
+	 * of precision. */
+	normalize(t, root::model::TimeUnit::fs);
+	t.setValue(t.getValue() / denominator);
 	return t;
 }

@@ -53,9 +53,15 @@ namespace amalthea
          * value it can be used in template expansions. */
         static const int classifierId = ModelPackage::TRUNCATEDTIMEDISTRIBUTION;
 
-        /*PROTECTED REGION ID(TruncatedTimeDistribution) START*/
-        // Please, enable the protected region if you add manually written code.
-        // To do this, add the keyword ENABLED before START.
+        /*PROTECTED REGION ID(TruncatedTimeDistribution) ENABLED START*/
+        /* Reimplement the abstract operations from ITimeDeviation, which are
+         * defined non-const. */
+        ::amalthea::model::Time_ptr getLowerBound () override
+        {
+            return const_cast<const TruncatedTimeDistribution*>(this)->getLowerBound();}
+        ::amalthea::model::Time_ptr getUpperBound () override
+        {
+            return const_cast<const TruncatedTimeDistribution*>(this)->getUpperBound();}
         /*PROTECTED REGION END*/
 
         // EObjectImpl

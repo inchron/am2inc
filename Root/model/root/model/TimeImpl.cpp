@@ -41,7 +41,7 @@ void Time::_initialize()
 void Time::denormalize()
 {
     /*PROTECTED REGION ID(TimeImpl_denormalize) ENABLED START*/
-    if (m_unit <= TimeUnit::ps)
+    if (m_unit <= TimeUnit::fs)
     {
         while (m_unit > TimeUnit::s)
         {

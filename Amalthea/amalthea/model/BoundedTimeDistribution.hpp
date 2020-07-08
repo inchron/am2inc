@@ -49,6 +49,8 @@ namespace amalthea
         static const int classifierId = ModelPackage::BOUNDEDTIMEDISTRIBUTION;
 
         /*PROTECTED REGION ID(BoundedTimeDistribution) ENABLED START*/
+        /* Reimplement the abstract operations from ITimeDeviation, which are
+         * defined non-const. */
         ::amalthea::model::Time_ptr getLowerBound () override
         {   return TimeInterval::getLowerBound();}
         ::amalthea::model::Time_ptr getUpperBound () override

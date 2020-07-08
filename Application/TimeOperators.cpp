@@ -23,7 +23,7 @@ operator ++(T& val) {
 void normalize(root::model::Time& t, root::model::TimeUnit u) {
 	if ( t.getUnit() >= root::model::TimeUnit::T
 		 || u >= root::model::TimeUnit::T )
-		throw std::logic_error("Cannot normalize from/to TimeUnit T");
+		return;
 
 	auto value = t.getValue();
 	for (auto unit = t.getUnit(); unit < u; ++unit)
