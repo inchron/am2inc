@@ -43,9 +43,11 @@ void Converter::work(const am::HwStructure_ptr& am, am::HwStructure*) {
 		case am::StructureType::System:
 			_model->setName(am->getName());
 			break;
+
 		case am::StructureType::ECU:
-		case am::StructureType::SoC:
 		case am::StructureType::Microcontroller:
+		case am::StructureType::SoC:
+		case am::StructureType::Cluster:
 		{
 			auto cpu = _oc.make<sm3::ModelFactory, sm3::Cpu>(am, ObjectCache::Default);
 			_model->getCpus().push_back(cpu);
@@ -58,6 +60,7 @@ void Converter::work(const am::HwStructure_ptr& am, am::HwStructure*) {
 				cpu->setClock(clock);
 			}
 		} break;
+
 		default:
 			break;
 		}
@@ -65,13 +68,12 @@ void Converter::work(const am::HwStructure_ptr& am, am::HwStructure*) {
 	} else { /* PostOrder */
 		switch (am->getStructureType()) {
 		case am::StructureType::System:
+			break;
+
 		case am::StructureType::ECU:
-		case am::StructureType::SoC:
-		{
-
-		} break;
-
 		case am::StructureType::Microcontroller:
+		case am::StructureType::SoC:
+		case am::StructureType::Cluster:
 		{
 			auto cpu = _oc.make<sm3::ModelFactory, sm3::Cpu>(am, ObjectCache::Default);
 			const auto numberOfCores = cpu->getCores().size();
@@ -82,6 +84,7 @@ void Converter::work(const am::HwStructure_ptr& am, am::HwStructure*) {
 			}
 
 		} break;
+
 		default:
 			break;
 		}
