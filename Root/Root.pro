@@ -82,11 +82,7 @@ win32 {
 
 
 HEADERS += \
-    XMLResource.h \
-    XMLResourceFactory.h \
 
 SOURCES += \
-    XMLResource.cpp \
-    XMLResourceFactory.cpp \
 
 RESOURCES += \

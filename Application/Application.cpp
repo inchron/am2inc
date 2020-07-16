@@ -12,9 +12,7 @@
 #include <QString>
 
 #include <ecorecpp.hpp>
-
-#include <Root/XMLResource.h>
-#include <Root/XMLResourceFactory.h>
+#include <ecorecpp/resource/XMLResource.hpp>
 
 #include <amalthea/model.hpp>
 #include <amalthea/model/ModelPackage.hpp>
@@ -34,7 +32,7 @@ Application::Application(int &argc, char **argv)
 	  _resourceSet(ecore::make<ecorecpp::resource::ResourceSet>()) {
 	_resourceSet->getResourceFactoryRegistry()
 		->getProtocolToFactoryMap()[ "file" ].reset(
-			new root::XMLResourceFactory() );
+			new ecorecpp::resource::XMLResourceFactory() );
 
 	/* Disable required minimum number of CpuCores in this application. */
 	auto sm3Pkg = sm3::ModelPackage::_instance();
