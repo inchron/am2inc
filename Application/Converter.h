@@ -6,6 +6,8 @@
  */
 #pragma once
 
+#include <stack>
+
 #include <ecorecpp/util/TreeWalker.hpp>
 
 #include <amalthea/model/ModelItemDispatcher.hpp>
@@ -101,6 +103,7 @@ public:
 	void work(const amalthea::model::ModeSwitchDefault_ptr&, amalthea::model::ModeSwitchDefault*);
 	void work(const amalthea::model::ModeSwitchEntry_ptr&, amalthea::model::ModeSwitchEntry*);
 	void work(const amalthea::model::ProbabilitySwitch_ptr&, amalthea::model::ProbabilitySwitch*);
+	void work(const amalthea::model::ProbabilitySwitchEntry_ptr&, amalthea::model::ProbabilitySwitchEntry*);
 	void work(const amalthea::model::RunnableCall_ptr&, amalthea::model::RunnableCall*);
 	void work(const amalthea::model::SchedulePoint_ptr&, amalthea::model::SchedulePoint*);
 	void work(const amalthea::model::SemaphoreAccess_ptr&, amalthea::model::SemaphoreAccess*);
@@ -117,6 +120,7 @@ public:
 	void work(const amalthea::model::TaskScheduler_ptr&, amalthea::model::TaskScheduler*);
 	void work(const amalthea::model::TaskSchedulingAlgorithm_ptr&, amalthea::model::TaskSchedulingAlgorithm*);
 	void work(const amalthea::model::SchedulerAssociation_ptr&, amalthea::model::SchedulerAssociation*);
+	void work(const amalthea::model::Semaphore_ptr&, amalthea::model::Semaphore*);
 
 	/* Amalthea mappingModel */
 	void work(const amalthea::model::MemoryMapping_ptr&, amalthea::model::MemoryMapping*);
@@ -130,6 +134,11 @@ public:
 	void relaxHardware();
 	void relaxIsrSchedulers();
 	void relaxFreeObjects();
+	void setName(root::model::CallSequenceItem&, const std::string&);
+	void setName(root::model::GraphEntryBase&, const std::string& = std::string());
+	void setName(root::model::ModeSwitchEntry&, const std::string& = std::string());
+	void setName(root::model::ProbabilitySwitchEntry&, const std::string& = std::string());
+	void setName(root::model::ModelObject&, const std::string& = std::string());
 
 private:
 	enum Mode { PreOrder, PostOrder } _mode{PreOrder};
@@ -152,4 +161,20 @@ private:
 	/** See work(const am::ActivityGraph_ptr&, ...) for an explanation of
 	 * _graphEntries and _callSequence. */
 	ecore::Ptr<root::model::CallSequence> _callSequence;
+
+	/** CallSequenceItems have a name, which is suffixed with this counter. */
+	std::uint32_t _csiCounter{0};
+
+	/** CallSequences are GraphEntryBases and have a name, too, but they are
+	 * created freehanded and deleted again if unused. Hence they use their
+	 * own counter. */
+	std::uint32_t _geCounter{0};
+
+	/* ModeSwitchEntrys and ProbablitiySwitchEntrys are named locally to their
+	 * surrounding ModeSwitch resp. ProbabilitySwitch. Due to nested
+	 * switches this is implemented as a stack. */
+	std::stack<std::uint32_t> _mseCounter;
+
+	/** This counter is used for various ModelObjects. */
+	std::uint32_t _moCounter{0};
 };

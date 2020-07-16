@@ -76,7 +76,6 @@ void Converter::skipChildren() {
 	_status = Status::SkipChildren;
 }
 
-
 void Converter::addMapping(const std::vector<am::ReferableBaseObject_ptr>& am,
 						   const std::vector<root::Referable_ptr>& inc) {
 	auto mapping = am2inc::create<am2inc::Mapping>();
@@ -87,6 +86,51 @@ void Converter::addMapping(const std::vector<am::ReferableBaseObject_ptr>& am,
 	_mappings->getMappings().push_back(mapping);
 }
 
+/** Set an automatic name for a CallSequenceItem.
+ *
+ * The name often contains useful information about another object used by the
+ * CallSequenceItem.
+ */
+void Converter::setName(root::model::CallSequenceItem& csi, const std::string& name) {
+	csi.setName(name + "_" + std::to_string(_csiCounter++));
+}
+
+/** Set an automatic name for a GraphEntry.
+ *
+ * The class name of the GraphEntry object is used, if no other name is given.
+ */
+void Converter::setName(root::model::GraphEntryBase& ge, const std::string& nameIn) {
+	auto name = nameIn.empty() ? ge.eClass()->getName() : nameIn;
+	ge.setName(name + "_" + std::to_string(_geCounter++));
+}
+
+/** Set an automatic name for a ModeSwitchEntry.
+ *
+ * The class name of the GraphEntry object is used, if no other name is given.
+ */
+void Converter::setName(root::model::ModeSwitchEntry& mse, const std::string& nameIn) {
+	auto name = nameIn.empty() ? mse.eClass()->getName() : nameIn;
+	mse.setName(name + "_" + std::to_string(_mseCounter.top()++));
+}
+
+/** Set an automatic name for a ModeSwitchEntry.
+ *
+ * The class name of the GraphEntry object is used, if no other name is given.
+ */
+void Converter::setName(root::model::ProbabilitySwitchEntry& pse, const std::string& nameIn) {
+	auto name = nameIn.empty() ? pse.eClass()->getName() : nameIn;
+	pse.setName(name + "_" + std::to_string(_mseCounter.top()++));
+}
+
+/** Set an automatic name for a ModelObject.
+ *
+ * The concrete class name of the ModelObject object is used, if no other name
+ * is given.
+ */
+void Converter::setName(root::model::ModelObject& mo, const std::string& nameIn) {
+	auto name = nameIn.empty() ? mo.eClass()->getName() : nameIn;
+	mo.setName(name + "_" + std::to_string(_moCounter++));
+}
 
 /*
  * @see Converter/hwModel.cpp for the conversion of Amalthea's HwModel.

@@ -185,7 +185,9 @@ void Converter::relaxFreeObjects() {
 	globalSystem->setName("__GLOBAL__");
 
 	auto globalRtos = globalSystem->getRtosConfig();
-	globalRtos->getSchedulables().clear();
+	auto globalIsrScheduler = ecore::as<sm3::Scheduler>(globalRtos->getSchedulables().get(0));
+	auto globalProcessScheduler = ecore::as<sm3::Scheduler>(
+		globalIsrScheduler->getSchedulables().get(0));
 
 	for (auto&& e : _oc.getContent()) {
 		auto&& values = e.second;
@@ -201,6 +203,11 @@ void Converter::relaxFreeObjects() {
 				globalComponent->getVariables().push_back(dataObject);
 			} else if (auto event = ecore::as<sm3::Event>(object)) {
 				globalRtos->getEvents().push_back(event);
+			} else if (auto process = ecore::as<sm3::Process>(object)) {
+				if (process->isIsr())
+					globalIsrScheduler->getSchedulables().push_back(process);
+				else
+					globalProcessScheduler->getSchedulables().push_back(process);
 
 			} else {
 				std::cerr << "Ignoring object w/o container of type "

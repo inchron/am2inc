@@ -68,3 +68,15 @@ void Converter::work(const amalthea::model::SchedulerAssociation_ptr& am,
 			parentScheduler->getSchedulables().push_back(impactedScheduler);
 	}
 }
+
+void Converter::work(const amalthea::model::Semaphore_ptr& am, amalthea::model::Semaphore*) {
+	if (_mode == PreOrder) {
+		auto semaphore = _oc.make<sm3::ModelFactory, sm3::Semaphore>(am);
+		_model->getSemaphores().push_back(semaphore);
+
+		semaphore->setName(am->getName());
+		semaphore->setInitialValue(am->getInitialValue());
+		semaphore->setMaxValue(am->getMaxValue());
+		// ignored: am->getPriorityCeilingProtocol()
+	}
+}

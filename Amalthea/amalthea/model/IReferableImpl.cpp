@@ -19,9 +19,8 @@
 #include <ecore/EObject.hpp>
 #include <ecorecpp/mapping.hpp>
 
-/*PROTECTED REGION ID(IReferableImpl.cpp) START*/
-// Please, enable the protected region if you add manually written code.
-// To do this, add the keyword ENABLED before START.
+/*PROTECTED REGION ID(IReferableImpl.cpp) ENABLED START*/
+#include <algorithm>
 /*PROTECTED REGION END*/
 
 using namespace ::amalthea::model;
@@ -64,6 +63,7 @@ void IReferable::_initialize()
         result.append(segments[i]);
     }
 
+	std::replace( result.begin(), result.end(), ' ', '+'); // replace all ' ' to '+'
     return result;
     /*PROTECTED REGION END*/
 }

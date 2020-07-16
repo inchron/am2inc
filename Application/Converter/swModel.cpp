@@ -74,8 +74,11 @@ void Converter::addStimulus(const am::Process_ptr& am, const sm3::Process_ptr& p
 				gen->setTargets(callGraph);
 			}
 
-			if (callGraph->getGraphEntries().size() == 0)
-				callGraph->getGraphEntries().push_back(sm3::create<sm3::CallSequence>());
+			if (callGraph->getGraphEntries().size() == 0) {
+				auto cs = sm3::create<sm3::CallSequence>();
+				callGraph->getGraphEntries().push_back(cs);
+				setName(*cs);
+			}
 			auto callSequence = ecore::as<sm3::CallSequence>(callGraph->getGraphEntries().get(0));
 
 			callSequence->getCalls().push_back(activationAction);
@@ -86,8 +89,11 @@ void Converter::addStimulus(const am::Process_ptr& am, const sm3::Process_ptr& p
 				cg = sm3::create<sm3::CallGraph>();
 				conn->setCallGraph(cg);
 			}
-			if (cg->getGraphEntries().size() == 0)
-				cg->getGraphEntries().push_back(sm3::create<sm3::CallSequence>());
+			if (cg->getGraphEntries().size() == 0) {
+				auto cs = sm3::create<sm3::CallSequence>();
+				cg->getGraphEntries().push_back(cs);
+				setName(*cs);
+			}
 			auto cs = ecore::as<sm3::CallSequence>(cg->getGraphEntries().get(0));
 
 			cs->getCalls().push_back(activationAction);
@@ -435,6 +441,7 @@ sm3::RelationalExpression_ptr createRelationalExpression(ObjectCache& oc,
 void Converter::work(const am::ModeConditionDisjunction_ptr& am, am::ModeConditionDisjunction*) {
 	if (_mode == PreOrder) {
 		auto condition = _oc.make<sm3::ModelFactory, sm3::ModeCondition>(am);
+		setName(*condition);
 		_model->getGlobalModeConditions().push_back(condition);
 
 		/* 1..* ModeConditionDisjunctionEntry interface -> ModeCondition interface ->
