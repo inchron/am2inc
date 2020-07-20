@@ -45,7 +45,6 @@ private:
 	std::shared_ptr<Options> _options;
 	ecore::Ptr<ecorecpp::resource::ResourceSet> _resourceSet;
 
-	amalthea::model::Amalthea_ptr _amalthea;
 	am2inc::Mappings_ptr _mappings;
 	ecore::Ptr<root::Root> _root;
 	Converter _converter;

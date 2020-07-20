@@ -95,8 +95,10 @@ QMAKE_EXTRA_TARGETS += version.cpp
 version.cpp.depends += amalthea_model.pri
 
 HEADERS += \
+    XMLResource.h \
 
 SOURCES += \
+    XMLResource.cpp \
     version.cpp
 
 RESOURCES += \

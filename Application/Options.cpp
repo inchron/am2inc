@@ -26,7 +26,10 @@ Options::Options() {
 			<< QStringLiteral("help"),
 			"Displays help on commandline options."));
 
-	_parser.addPositionalArgument("model.amxmi", "If given, the Amalthea model is read from this file, otherwise it is read from stdin.");
+	_parser.addPositionalArgument(
+		"model.amxmi",
+		"If given, the Amalthea model is read from this file. If multiple files "
+		"are specified, all of them are read as unified model.");
 
 	_parser.addOption(
 		QCommandLineOption(
@@ -94,9 +97,10 @@ Options::Options(QCoreApplication& app) : Options() {
 			_mode = Relaxed;
 	}
 
-	if ( _parser.positionalArguments().count() > 0 ) {
-		_inputName = _parser.positionalArguments().at(0);
-	}
+	if ( _parser.positionalArguments().count() > 0 )
+		_inputNames = _parser.positionalArguments();
+	else
+		showHelp(CommandLine);
 
 	if ( _parser.isSet("no-output") ) {
 		_noOutput = true;

@@ -30,7 +30,7 @@ public:
 	enum Status { Ok = 0, CommandLine, Trouble };
 
 	bool noOutput() const { return _noOutput; }
-	QString getInputName() const { return _inputName; }
+	QStringList getInputNames() const { return _inputNames; }
 	QString getOutputName() const { return _outputName; }
 	QString getMappingName() const { return _mappingName; }
 
@@ -72,7 +72,7 @@ private:
 
 	Verbosity _verbosity{1};
 	bool _noOutput{false};
-	QString _inputName{"-"};
+	QStringList _inputNames{"-"};
 	QString _outputName{"-"};
 	QString _mappingName{""};
 	Mode _mode{Relaxed};

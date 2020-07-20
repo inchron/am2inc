@@ -21,6 +21,7 @@
 
 class Converter : public amalthea::model::ModelItemDispatcher<Converter> {
 public:
+	Converter();
 
 	void clear();
 	void convert(const amalthea::model::Amalthea_ptr&);

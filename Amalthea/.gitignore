@@ -44,6 +44,9 @@ amalthea/**/*.hpp
 !amalthea/model/TypeDefinition.hpp
 !amalthea/model_forward.hpp
 
+!amalthea/model/ComponentInstanceImpl.cpp
+!amalthea/model/ComponentPortImpl.cpp
+!amalthea/model/ComponentStructureImpl.cpp
 !amalthea/model/DiscreteValueConstantImpl.cpp
 !amalthea/model/DiscreteValueIntervalImpl.cpp
 !amalthea/model/HwConnectionImpl.cpp
@@ -52,4 +55,8 @@ amalthea/**/*.hpp
 !amalthea/model/INamedImpl.cpp
 !amalthea/model/IReferable.cpp
 !amalthea/model/IReferableImpl.cpp
+!amalthea/model/ModeLiteralImpl.cpp
+!amalthea/model/NamespaceImpl.cpp
+!amalthea/model/RunnableParameterImpl.cpp
+!amalthea/model/SubInterfaceImpl.cpp
 !amalthea/model/TimeConstantImpl.cpp

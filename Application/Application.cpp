@@ -15,6 +15,7 @@
 #include <ecorecpp/resource/XMLResource.hpp>
 
 #include <amalthea/model.hpp>
+#include <Amalthea/XMLResource.h>
 #include <amalthea/model/ModelPackage.hpp>
 #include <root.hpp>
 #include <root/RootPackage.hpp>
@@ -30,6 +31,7 @@ Application::Application(int &argc, char **argv)
 	: QCoreApplication(argc, argv),
 	  _options(std::make_shared<Options>(*this)),
 	  _resourceSet(ecore::make<ecorecpp::resource::ResourceSet>()) {
+
 	_resourceSet->getResourceFactoryRegistry()
 		->getProtocolToFactoryMap()[ "file" ].reset(
 			new ecorecpp::resource::XMLResourceFactory() );
@@ -122,20 +124,17 @@ std::string Application::readStdIn() {
 }
 
 bool Application::readInput() {
-	QUrl file = QUrl::fromLocalFile(_options->getInputName());
+	amalthea::XMLResource::URIList _allUris;
+	for (auto&& fileName : _options->getInputNames())
+		_allUris.push_back(QUrl::fromLocalFile(fileName));
 
-	ecorecpp::resource::Resource_ptr input = ecore::make<ecorecpp::resource::XMLResource>(file);
+	auto input = amalthea::XMLResource::create(_allUris);
 	input->setResourceSet(_resourceSet.get());
 	_resourceSet->getResources().push_back(input);
 
 	try {
-		if (!_options->getInputName().isEmpty() && _options->getInputName() != "-")
-			input->load();
-		else {
-			std::string xmi = readStdIn();
-			std::istringstream istream(xmi);
-			input->load(istream);
-		}
+		input->load();
+
 	} catch (const std::logic_error& error) {
 		std::cerr << "[am2inc] Exiting, parser failed (const std::logic_error&)\n";
 		std::cerr << "[am2inc] error: " << error.what() << "\n";
@@ -149,44 +148,21 @@ bool Application::readInput() {
 		return true;
 	}
 
-	_amalthea = ecore::as<am::Amalthea>(input->getContents()->get(0));
-	if (!_amalthea) {
-		error(Options::Trouble, "no Amalthea model");
-		return true;
-	}
-
-	_amalthea->_initialize();
 	return false;
 }
 
 bool Application::convert() {
-#if 0
-	try {
-		std::cerr << "amalthea: @" << (void*)_amalthea.get() << "\n";
-		auto swModel = ecore::as<am::SWModel>(_amalthea->getSwModel());
-		std::cerr << "  swModel: @" << (void*)swModel.get() << "\n";
+	/* Actually there is only one Resource. */
+	for (auto&& resource : _resourceSet->getResources())
+		for (auto&& content : *resource->getContents()) {
+			auto amalthea = ecore::as<am::Amalthea>(content);
+			if (amalthea)
+				_converter.convert(amalthea);
+		}
 
-		for (auto task : swModel->getTasks())
-			std::cerr << "    task: @" << (void*)task.get()
-					  << " uniqueName " << task->getUniqueName()
-					  << "\n";
-
-		for (auto runnable : swModel->getRunnables())
-			std::cerr << "    runnable: @" << (void*)runnable.get()
-					  << " uniqueName " << runnable->getUniqueName()
-					  << "\n";
-	} catch (const char* error) {
-		std::cerr << "\n\n### Exception: " << error << " ###\n";
-		exit(1);
-		return true;
-	}
-
-#else
-
-	_converter.convert(_amalthea);
 	_mappings = _converter.getMappings();
 	_root = _converter.getRoot();
-#endif
+
 	return false;
 }
 

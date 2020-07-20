@@ -17,12 +17,7 @@ void Converter::clear() {
 	_oc.clear();
 }
 
-/** Main entry to the Converter, part of the fixed framework.
- */
-void Converter::convert(const am::Amalthea_ptr& am) {
-	auto pre  = std::bind(&Converter::preOrder,  this, std::placeholders::_1);
-	auto post = std::bind(&Converter::postOrder, this, std::placeholders::_1);
-
+Converter::Converter() {
 	_mappings = am2inc::create<am2inc::Mappings>();
 
 	_root = root::create<root::Root>();
@@ -53,6 +48,13 @@ void Converter::convert(const am::Amalthea_ptr& am) {
 		_model->getClocks().push_back(clock);
 		_idealClock = clock;
 	}
+}
+
+/** Main entry to the Converter, part of the fixed framework.
+ */
+void Converter::convert(const am::Amalthea_ptr& am) {
+	auto pre  = std::bind(&Converter::preOrder,  this, std::placeholders::_1);
+	auto post = std::bind(&Converter::postOrder, this, std::placeholders::_1);
 
 	ecorecpp::util::TreeWalker walker(pre, post);
 	walker.traverse(am);
