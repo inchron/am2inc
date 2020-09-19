@@ -61,7 +61,7 @@ void DiscreteValueInterval::_initialize()
     // This is the original body of the EOperation as specified in
     // the ecore. If you want to replace it by C++ code, enable
     // the following protected region and implement it there.
-    return <%org.eclipse.app4mc.amalthea.model.AmaltheaValidations%>.validateInvariants(this, diagnostics, context);
+    return <%org.eclipse.app4mc.amalthea.model.AmaltheaValidations%>.validateInvariants(this, diagnostics);
 #endif
     /*PROTECTED REGION ID(DiscreteValueIntervalImpl_validateInvariants) START*/
     // Please, enable the protected region if you add manually written code.

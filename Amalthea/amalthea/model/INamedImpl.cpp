@@ -151,18 +151,22 @@ std::vector< ::ecore::EString > INamed::getNamePrefixSegments()
     // This is the original body of the EOperation as specified in
     // the ecore. If you want to replace it by C++ code, enable
     // the following protected region and implement it there.
-    <%org.eclipse.emf.common.util.EList%><<%java.lang.String%>> _xifexpression = null;
+    <%org.eclipse.emf.common.util.EList%><<%java.lang.String%>> _elvis = null;
 <%org.eclipse.app4mc.amalthea.model.Namespace%> _namespace = this.getNamespace();
-boolean _tripleEquals = (_namespace == null);
-if (_tripleEquals)
+<%org.eclipse.emf.common.util.EList%><<%java.lang.String%>> _qualifiedNameSegments = null;
+if (_namespace!=null)
 {
-	_xifexpression = <%org.eclipse.emf.ecore.xcore.lib.XcoreCollectionLiterals%>.<<%java.lang.String%>>newBasicEList();
+	_qualifiedNameSegments=_namespace.getQualifiedNameSegments();
 }
-else
+if (_qualifiedNameSegments != null)
 {
-	_xifexpression = this.getNamespace().getQualifiedNameSegments();
+	_elvis = _qualifiedNameSegments;
+} else
+{
+	<%org.eclipse.emf.common.util.BasicEList%><<%java.lang.String%>> _newBasicEList = <%org.eclipse.emf.ecore.xcore.lib.XcoreCollectionLiterals%>.<<%java.lang.String%>>newBasicEList();
+	_elvis = _newBasicEList;
 }
-return _xifexpression;
+return _elvis;
 #endif
     /*PROTECTED REGION ID(INamedImpl_getNamePrefixSegments) ENABLED START*/
 

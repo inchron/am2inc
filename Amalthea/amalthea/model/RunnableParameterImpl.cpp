@@ -76,7 +76,8 @@ return _elvis;
     std::vector < ::ecore::EString > _qualifiedNameSegments;
     auto _containingRunnable = getContainingRunnable();
     if (_containingRunnable)
-        _qualifiedNameSegments = _containingRunnable->getQualifiedNameSegments();
+        _qualifiedNameSegments =
+                _containingRunnable->getQualifiedNameSegments();
     return _qualifiedNameSegments;
 
     /*PROTECTED REGION END*/

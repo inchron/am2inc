@@ -74,7 +74,8 @@ return _elvis;
     std::vector < ::ecore::EString > _qualifiedNameSegments;
     auto _containingInterface = getContainingInterface(); // ecore::as<ComponentInterface>(eContainer());
     if (_containingInterface)
-        _qualifiedNameSegments = _containingInterface->getQualifiedNameSegments();
+        _qualifiedNameSegments =
+                _containingInterface->getQualifiedNameSegments();
     return _qualifiedNameSegments;
 
     /*PROTECTED REGION END*/

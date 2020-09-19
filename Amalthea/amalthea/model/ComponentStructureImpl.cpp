@@ -95,25 +95,30 @@ std::vector< ::ecore::EString > ComponentStructure::getNamePrefixSegments()
     // This is the original body of the EOperation as specified in
     // the ecore. If you want to replace it by C++ code, enable
     // the following protected region and implement it there.
-    <%org.eclipse.emf.common.util.EList%><<%java.lang.String%>> _xifexpression = null;
+    <%org.eclipse.emf.common.util.EList%><<%java.lang.String%>> _elvis = null;
 <%org.eclipse.app4mc.amalthea.model.ComponentStructure%> _containingStructure = this.getContainingStructure();
-boolean _tripleEquals = (_containingStructure == null);
-if (_tripleEquals)
+<%org.eclipse.emf.common.util.EList%><<%java.lang.String%>> _qualifiedNameSegments = null;
+if (_containingStructure!=null)
 {
-	_xifexpression = <%org.eclipse.emf.ecore.xcore.lib.XcoreCollectionLiterals%>.<<%java.lang.String%>>newBasicEList();
+	_qualifiedNameSegments=_containingStructure.getQualifiedNameSegments();
 }
-else
+if (_qualifiedNameSegments != null)
 {
-	_xifexpression = this.getContainingStructure().getQualifiedNameSegments();
+	_elvis = _qualifiedNameSegments;
+} else
+{
+	<%org.eclipse.emf.common.util.BasicEList%><<%java.lang.String%>> _newBasicEList = <%org.eclipse.emf.ecore.xcore.lib.XcoreCollectionLiterals%>.<<%java.lang.String%>>newBasicEList();
+	_elvis = _newBasicEList;
 }
-return _xifexpression;
+return _elvis;
 #endif
     /*PROTECTED REGION ID(ComponentStructureImpl_getNamePrefixSegments) ENABLED START*/
 
     std::vector < ::ecore::EString > _qualifiedNameSegments;
     auto _containingStructure = getContainingStructure();
     if (_containingStructure)
-        _qualifiedNameSegments = _containingStructure->getQualifiedNameSegments();
+        _qualifiedNameSegments =
+                _containingStructure->getQualifiedNameSegments();
     return _qualifiedNameSegments;
 
     /*PROTECTED REGION END*/

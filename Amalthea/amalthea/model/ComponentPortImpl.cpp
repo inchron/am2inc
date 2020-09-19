@@ -76,7 +76,8 @@ return _elvis;
     std::vector < ::ecore::EString > _qualifiedNameSegments;
     auto _containingComponent = getContainingComponent();
     if (_containingComponent)
-        _qualifiedNameSegments = _containingComponent->getQualifiedNameSegments();
+        _qualifiedNameSegments =
+                _containingComponent->getQualifiedNameSegments();
     return _qualifiedNameSegments;
 
     /*PROTECTED REGION END*/

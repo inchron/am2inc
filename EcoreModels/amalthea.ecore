@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="model" nsURI="http://app4mc.eclipse.org/amalthea/0.9.8" nsPrefix="am">
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="model" nsURI="http://app4mc.eclipse.org/amalthea/0.9.9" nsPrefix="am">
   <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
     <details key="documentation" value="*&#xA;*******************************************************************************&#xA;Copyright (c) 2015-2020 Robert Bosch GmbH and others.&#xA;&#xA;This program and the accompanying materials are made&#xA;available under the terms of the Eclipse Public License 2.0&#xA;which is available at https://www.eclipse.org/legal/epl-2.0/&#xA;&#xA;SPDX-License-Identifier: EPL-2.0&#xA;*******************************************************************************"/>
     <details key="modelName" value="Amalthea"/>
@@ -8,8 +8,8 @@
     <details key="modelDirectory" value="/org.eclipse.app4mc.amalthea.model/xcore-gen"/>
     <details key="editDirectory" value="/org.eclipse.app4mc.amalthea.model.edit/src-gen"/>
     <details key="editorDirectory" value="/org.eclipse.app4mc.amalthea.model.editor/src-gen"/>
-    <details key="rootExtendsClass" value="org.eclipse.app4mc.amalthea.sphinx.AmaltheaExtendedEObjectImpl"/>
-    <details key="providerRootExtendsClass" value="org.eclipse.app4mc.amalthea.sphinx.AmaltheaExtendedItemProviderAdapter"/>
+    <details key="rootExtendsClass" value="org.eclipse.app4mc.amalthea.model.emf.AmaltheaEObjectImpl"/>
+    <details key="providerRootExtendsClass" value="org.eclipse.app4mc.amalthea.model.emf.AmaltheaItemProviderAdapter"/>
     <details key="creationIcons" value="false"/>
     <details key="forceOverwrite" value="true"/>
     <details key="creationSubmenus" value="true"/>
@@ -28,7 +28,7 @@
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
         changeable="false" volatile="true" transient="true" derived="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="get" value="return &quot;0.9.8&quot;;"/>
+        <details key="get" value="return &quot;0.9.9&quot;;"/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="commonElements" eType="#//CommonElements"
@@ -120,7 +120,7 @@
     <eOperations name="getNamePrefixSegments" unique="false" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Overwrite this method to define a specific prefix (used by name-based references)."/>
-        <details key="body" value="&lt;%org.eclipse.emf.common.util.EList%>&lt;&lt;%java.lang.String%>> _xifexpression = null;&#xA;&lt;%org.eclipse.app4mc.amalthea.model.Namespace%> _namespace = this.getNamespace();&#xA;boolean _tripleEquals = (_namespace == null);&#xA;if (_tripleEquals)&#xA;{&#xA;&#x9;_xifexpression = &lt;%org.eclipse.emf.ecore.xcore.lib.XcoreCollectionLiterals%>.&lt;&lt;%java.lang.String%>>newBasicEList();&#xA;}&#xA;else&#xA;{&#xA;&#x9;_xifexpression = this.getNamespace().getQualifiedNameSegments();&#xA;}&#xA;return _xifexpression;"/>
+        <details key="body" value="&lt;%org.eclipse.emf.common.util.EList%>&lt;&lt;%java.lang.String%>> _elvis = null;&#xA;&lt;%org.eclipse.app4mc.amalthea.model.Namespace%> _namespace = this.getNamespace();&#xA;&lt;%org.eclipse.emf.common.util.EList%>&lt;&lt;%java.lang.String%>> _qualifiedNameSegments = null;&#xA;if (_namespace!=null)&#xA;{&#xA;&#x9;_qualifiedNameSegments=_namespace.getQualifiedNameSegments();&#xA;}&#xA;if (_qualifiedNameSegments != null)&#xA;{&#xA;&#x9;_elvis = _qualifiedNameSegments;&#xA;} else&#xA;{&#xA;&#x9;&lt;%org.eclipse.emf.common.util.BasicEList%>&lt;&lt;%java.lang.String%>> _newBasicEList = &lt;%org.eclipse.emf.ecore.xcore.lib.XcoreCollectionLiterals%>.&lt;&lt;%java.lang.String%>>newBasicEList();&#xA;&#x9;_elvis = _newBasicEList;&#xA;}&#xA;return _elvis;"/>
       </eAnnotations>
     </eOperations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
@@ -151,7 +151,7 @@
     </eOperations>
     <eOperations name="validateInvariants" unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="body" value="return &lt;%org.eclipse.app4mc.amalthea.model.AmaltheaValidations%>.validateInvariants(this, diagnostics, context);"/>
+        <details key="body" value="return &lt;%org.eclipse.app4mc.amalthea.model.AmaltheaValidations%>.validateInvariants(this, diagnostics);"/>
       </eAnnotations>
       <eParameters name="diagnostics" unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDiagnosticChain"/>
       <eParameters name="context" unique="false">
@@ -559,7 +559,7 @@
     </eAnnotations>
     <eOperations name="validateInvariants" unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="body" value="return &lt;%org.eclipse.app4mc.amalthea.model.AmaltheaValidations%>.validateInvariants(this, diagnostics, context);"/>
+        <details key="body" value="return &lt;%org.eclipse.app4mc.amalthea.model.AmaltheaValidations%>.validateInvariants(this, diagnostics);"/>
       </eAnnotations>
       <eParameters name="diagnostics" unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDiagnosticChain"/>
       <eParameters name="context" unique="false">
@@ -604,7 +604,7 @@
     </eOperations>
     <eOperations name="validateInvariants" unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="body" value="return &lt;%org.eclipse.app4mc.amalthea.model.AmaltheaValidations%>.validateInvariants(this, diagnostics, context);"/>
+        <details key="body" value="return &lt;%org.eclipse.app4mc.amalthea.model.AmaltheaValidations%>.validateInvariants(this, diagnostics);"/>
       </eAnnotations>
       <eParameters name="diagnostics" unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDiagnosticChain"/>
       <eParameters name="context" unique="false">
@@ -667,7 +667,7 @@
       eSuperTypes="#//ITimeDeviation">
     <eOperations name="validateInvariants" unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="body" value="return &lt;%org.eclipse.app4mc.amalthea.model.AmaltheaValidations%>.validateInvariants(this, diagnostics, context);"/>
+        <details key="body" value="return &lt;%org.eclipse.app4mc.amalthea.model.AmaltheaValidations%>.validateInvariants(this, diagnostics);"/>
       </eAnnotations>
       <eParameters name="diagnostics" unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDiagnosticChain"/>
       <eParameters name="context" unique="false">
@@ -752,7 +752,7 @@
     </eOperations>
     <eOperations name="validateInvariants" unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="body" value="return &lt;%org.eclipse.app4mc.amalthea.model.AmaltheaValidations%>.validateInvariants(this, diagnostics, context);"/>
+        <details key="body" value="return &lt;%org.eclipse.app4mc.amalthea.model.AmaltheaValidations%>.validateInvariants(this, diagnostics);"/>
       </eAnnotations>
       <eParameters name="diagnostics" unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDiagnosticChain"/>
       <eParameters name="context" unique="false">
@@ -819,7 +819,7 @@
       abstract="true" eSuperTypes="#//IDiscreteValueDeviation">
     <eOperations name="validateInvariants" unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="body" value="return &lt;%org.eclipse.app4mc.amalthea.model.AmaltheaValidations%>.validateInvariants(this, diagnostics, context);"/>
+        <details key="body" value="return &lt;%org.eclipse.app4mc.amalthea.model.AmaltheaValidations%>.validateInvariants(this, diagnostics);"/>
       </eAnnotations>
       <eParameters name="diagnostics" unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDiagnosticChain"/>
       <eParameters name="context" unique="false">
@@ -908,7 +908,7 @@
     </eOperations>
     <eOperations name="validateInvariants" unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="body" value="return &lt;%org.eclipse.app4mc.amalthea.model.AmaltheaValidations%>.validateInvariants(this, diagnostics, context);"/>
+        <details key="body" value="return &lt;%org.eclipse.app4mc.amalthea.model.AmaltheaValidations%>.validateInvariants(this, diagnostics);"/>
       </eAnnotations>
       <eParameters name="diagnostics" unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDiagnosticChain"/>
       <eParameters name="context" unique="false">
@@ -975,7 +975,7 @@
       abstract="true" eSuperTypes="#//IContinuousValueDeviation">
     <eOperations name="validateInvariants" unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="body" value="return &lt;%org.eclipse.app4mc.amalthea.model.AmaltheaValidations%>.validateInvariants(this, diagnostics, context);"/>
+        <details key="body" value="return &lt;%org.eclipse.app4mc.amalthea.model.AmaltheaValidations%>.validateInvariants(this, diagnostics);"/>
       </eAnnotations>
       <eParameters name="diagnostics" unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDiagnosticChain"/>
       <eParameters name="context" unique="false">
@@ -1084,7 +1084,7 @@
   <eClassifiers xsi:type="ecore:EDataType" name="Address" instanceClassName="long">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="Hardware Address (long; specified as hexadecimal value)"/>
-      <details key="create" value="&lt;%java.lang.Long%> _xifexpression = null;&#xA;if ((it != null))&#xA;{&#xA;&#x9;&lt;%java.lang.Long%> _xifexpression_1 = null;&#xA;&#x9;if ((it.startsWith(&quot;-&quot;) || it.startsWith(&quot;+&quot;)))&#xA;&#x9;{&#xA;&#x9;&#x9;throw new &lt;%java.lang.NumberFormatException%>(&quot;Sign character&quot;);&#xA;&#x9;}&#xA;&#x9;else&#xA;&#x9;{&#xA;&#x9;&#x9;_xifexpression_1 = &lt;%java.lang.Long%>.decode(it);&#xA;&#x9;}&#xA;&#x9;_xifexpression = _xifexpression_1;&#xA;}&#xA;return (_xifexpression).longValue();"/>
+      <details key="create" value="&lt;%java.lang.Long%> _xifexpression = null;&#xA;if ((it == null))&#xA;{&#xA;&#x9;throw new &lt;%java.lang.NumberFormatException%>(&quot;Null&quot;);&#xA;}&#xA;else&#xA;{&#xA;&#x9;&lt;%java.lang.Long%> _xifexpression_1 = null;&#xA;&#x9;if ((it.startsWith(&quot;-&quot;) || it.startsWith(&quot;+&quot;)))&#xA;&#x9;{&#xA;&#x9;&#x9;throw new &lt;%java.lang.NumberFormatException%>(&quot;Sign character&quot;);&#xA;&#x9;}&#xA;&#x9;else&#xA;&#x9;{&#xA;&#x9;&#x9;_xifexpression_1 = &lt;%java.lang.Long%>.decode(it);&#xA;&#x9;}&#xA;&#x9;_xifexpression = _xifexpression_1;&#xA;}&#xA;return (_xifexpression).longValue();"/>
       <details key="convert" value="&lt;%java.lang.String%> _hexString = &lt;%java.lang.Long%>.toHexString(it);&#xA;return (&quot;0x&quot; + _hexString);"/>
     </eAnnotations>
     <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
@@ -1215,7 +1215,7 @@
     </eOperations>
     <eOperations name="getNamePrefixSegments" unique="false" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="body" value="&lt;%org.eclipse.emf.common.util.EList%>&lt;&lt;%java.lang.String%>> _xifexpression = null;&#xA;&lt;%org.eclipse.app4mc.amalthea.model.ComponentStructure%> _containingStructure = this.getContainingStructure();&#xA;boolean _tripleEquals = (_containingStructure == null);&#xA;if (_tripleEquals)&#xA;{&#xA;&#x9;_xifexpression = &lt;%org.eclipse.emf.ecore.xcore.lib.XcoreCollectionLiterals%>.&lt;&lt;%java.lang.String%>>newBasicEList();&#xA;}&#xA;else&#xA;{&#xA;&#x9;_xifexpression = this.getContainingStructure().getQualifiedNameSegments();&#xA;}&#xA;return _xifexpression;"/>
+        <details key="body" value="&lt;%org.eclipse.emf.common.util.EList%>&lt;&lt;%java.lang.String%>> _elvis = null;&#xA;&lt;%org.eclipse.app4mc.amalthea.model.ComponentStructure%> _containingStructure = this.getContainingStructure();&#xA;&lt;%org.eclipse.emf.common.util.EList%>&lt;&lt;%java.lang.String%>> _qualifiedNameSegments = null;&#xA;if (_containingStructure!=null)&#xA;{&#xA;&#x9;_qualifiedNameSegments=_containingStructure.getQualifiedNameSegments();&#xA;}&#xA;if (_qualifiedNameSegments != null)&#xA;{&#xA;&#x9;_elvis = _qualifiedNameSegments;&#xA;} else&#xA;{&#xA;&#x9;&lt;%org.eclipse.emf.common.util.BasicEList%>&lt;&lt;%java.lang.String%>> _newBasicEList = &lt;%org.eclipse.emf.ecore.xcore.lib.XcoreCollectionLiterals%>.&lt;&lt;%java.lang.String%>>newBasicEList();&#xA;&#x9;_elvis = _newBasicEList;&#xA;}&#xA;return _elvis;"/>
       </eAnnotations>
     </eOperations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="structureType" unique="false"
@@ -3020,7 +3020,7 @@
   <eClassifiers xsi:type="ecore:EClass" name="ModeValue" abstract="true" eSuperTypes="#//BaseObject">
     <eOperations name="validateInvariants" unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="body" value="return &lt;%org.eclipse.app4mc.amalthea.model.AmaltheaValidations%>.validateInvariants(this, diagnostics, context);"/>
+        <details key="body" value="return &lt;%org.eclipse.app4mc.amalthea.model.AmaltheaValidations%>.validateInvariants(this, diagnostics);"/>
       </eAnnotations>
       <eParameters name="diagnostics" unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDiagnosticChain"/>
       <eParameters name="context" unique="false">
@@ -3820,7 +3820,7 @@
   <eClassifiers xsi:type="ecore:EClass" name="ModeLabel" eSuperTypes="#//AbstractMemoryElement #//IDisplayName">
     <eOperations name="validateInvariants" unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="body" value="return &lt;%org.eclipse.app4mc.amalthea.model.AmaltheaValidations%>.validateInvariants(this, diagnostics, context);"/>
+        <details key="body" value="return &lt;%org.eclipse.app4mc.amalthea.model.AmaltheaValidations%>.validateInvariants(this, diagnostics);"/>
       </eAnnotations>
       <eParameters name="diagnostics" unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDiagnosticChain"/>
       <eParameters name="context" unique="false">
@@ -3925,7 +3925,7 @@
     </eAnnotations>
     <eOperations name="validateInvariants" unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="body" value="return &lt;%org.eclipse.app4mc.amalthea.model.AmaltheaValidations%>.validateInvariants(this, diagnostics, context);"/>
+        <details key="body" value="return &lt;%org.eclipse.app4mc.amalthea.model.AmaltheaValidations%>.validateInvariants(this, diagnostics);"/>
       </eAnnotations>
       <eParameters name="diagnostics" unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDiagnosticChain"/>
       <eParameters name="context" unique="false">
@@ -4195,14 +4195,14 @@
       <details key="documentation" value="Couple of compound data types"/>
     </eAnnotations>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Struct" eSuperTypes="#//CompoundType">
+  <eClassifiers xsi:type="ecore:EClass" name="Struct" eSuperTypes="#//CompoundType #//ITaggable">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="Representing a struct definition, containing different entries"/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="entries" upperBound="-1"
         eType="#//StructEntry" containment="true" resolveProxies="false"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="StructEntry" eSuperTypes="#//BaseObject #//INamed">
+  <eClassifiers xsi:type="ecore:EClass" name="StructEntry" eSuperTypes="#//BaseObject #//INamed #//ITaggable">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="Representation of one struct entry"/>
     </eAnnotations>
@@ -4341,6 +4341,9 @@
     <eLiterals name="QM"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="MeasurementModel" eSuperTypes="#//BaseObject">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="@deprecated (0.9.9) use the Amalthea Trace Database (ATDB) instead."/>
+    </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="measurements" upperBound="-1"
         eType="#//Measurement" containment="true" resolveProxies="false"/>
   </eClassifiers>
