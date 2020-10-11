@@ -36,6 +36,16 @@ QMAKE_RPATHDIR += ../lib
 # uses definitions above
 include(../install.pri)
 
+unix:debian {
+	unset(MANGLED_INSTALLS)
+	for(x, INSTALLS):MANGLED_INSTALLS += install_$${x}
+
+	deploy.path = $$(OUT_PWD)/bin
+	deploy.commands = linuxdeployqt $${PREFIX}/bin/$${TARGET}
+	deploy.depends = $${MANGLED_INSTALLS}
+
+	INSTALLS += deploy
+}
 
 
 # Input
