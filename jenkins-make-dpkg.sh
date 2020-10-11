@@ -3,15 +3,6 @@
 set -e
 
 #
-# The default build container is only prepared for the main tools. Others must
-# be setup manually.
-#
-USER=$(id -u)
-sudo mkdir $PREFIX && sudo chown $USER $PREFIX
-mkdir -p $PREFIX/lib/checkinstall
-ln -s /usr/lib/checkinstall/installwatch.so $PREFIX/lib/checkinstall/installwatch.so
-
-#
 # checkinstall tracks all filesystem operations of "make install". Files,
 # which are created, are packed into the installer. Hence it is important,
 # that "make all" does not install anything or that "make install" copies
