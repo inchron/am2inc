@@ -61,7 +61,7 @@ Referable::~Referable()
     return m_intrinsicId;
 }
 
-void Referable::setIntrinsicId(::ecore::EString const &_intrinsicId)
+void Referable::setIntrinsicId(::ecore::EString const& _intrinsicId)
 {
 #ifdef ECORECPP_NOTIFICATION_API
     ::ecore::EString _old_intrinsicId = m_intrinsicId;
@@ -76,7 +76,7 @@ void Referable::setIntrinsicId(::ecore::EString const &_intrinsicId)
                 ::root::RootPackage::_instance()->getReferable__intrinsicId(),
                 _old_intrinsicId,
                 m_intrinsicId
-            );
+        );
         eNotify(&notification);
     }
 #endif

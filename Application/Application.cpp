@@ -39,14 +39,14 @@ Application::Application(int &argc, char **argv)
 	/* Disable required minimum number of CpuCores in this application. */
 	auto sm3Pkg = sm3::ModelPackage::_instance();
 	sm3Pkg->getCpu__cores()->setLowerBound(0);
-	sm3Pkg->getCpuCore__connectedSlave()->setLowerBound(0);
+	sm3Pkg->getCpuCore__initiator()->setLowerBound(0);
 	sm3Pkg->getModeCondition__conjunctions()->setLowerBound(0);
 
 	auto memPkg = sm3m::MemoryPackage::_instance();
-	memPkg->getMemory__connectedMaster()->setLowerBound(0);
-	memPkg->getCacheMemory__connectedSlave()->setLowerBound(0);
-	memPkg->getInterconnect__connectedMasters()->setLowerBound(0);
-	memPkg->getInterconnect__connectedSlaves()->setLowerBound(0);
+	memPkg->getMemory__responder()->setLowerBound(0);
+	memPkg->getCacheMemory__initiator()->setLowerBound(0);
+	memPkg->getInterconnect__responders()->setLowerBound(0);
+	memPkg->getInterconnect__initiators()->setLowerBound(0);
 }
 
 Application::~Application() = default;

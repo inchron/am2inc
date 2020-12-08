@@ -155,7 +155,6 @@ void Converter::work(const am::LabelAccess_ptr& am, am::LabelAccess*) {
 	if (_mode == PreOrder) {
 		auto rc = _oc.make<sm3::ModelFactory, sm3::ResourceConsumption>(am, ObjectCache::Default);
 		_callSequence->getCalls().push_back(rc);
-		rc->getStackUsage()->setValue(0);
 
 		setName(*rc, "LabelAccess_" + am->getData()->getName());
 
@@ -220,7 +219,7 @@ void Converter::work(const am::WaitEvent_ptr& am, am::WaitEvent*) {
 void Converter::work(const am::ClearEvent_ptr& am, am::ClearEvent*) {
 	if (_mode == PreOrder) {
 		auto clear = _oc.make<sm3::ModelFactory, sm3::SetEvent>(am);
-		clear->setIsReset(true);
+		clear->setReset(true);
 		_callSequence->getCalls().push_back(clear);
 
 		for (auto&& amEvent : am->getEventMask()->getEvents()) {
@@ -354,7 +353,6 @@ void Converter::work(const am::Ticks_ptr& am, am::Ticks*) {
 	if (_mode == PreOrder) {
 		auto consumption = _oc.make<sm3::ModelFactory, sm3::ResourceConsumption>(am);
 		setName(*consumption, "Tick");
-		consumption->getStackUsage()->setValue(0);
 		_callSequence->getCalls().push_back(consumption);
 
 		auto value = am->getDefault();

@@ -5,12 +5,12 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
     name="root"
-    nsURI="http://inchron.com/realtime/root/2.98.16"
+    nsURI="http://inchron.com/realtime/root/3.0.1"
     nsPrefix="root">
   <eAnnotations
       source="http://www.eclipse.org/emf/2002/GenModel">
     <details
-        key="copyright"
+        key="copyrightText"
         value="Copyright (c) 2017-2020 INCHRON AG&#xA;&#xA;This program and the accompanying materials are made&#xA;available under the terms of the Eclipse Public License 2.0&#xA;which is available at https://www.eclipse.org/legal/epl-2.0/&#xA;&#xA;SPDX-License-Identifier: EPL-2.0&#xA;&#xA;Contributors:&#xA;  INCHRON AG - Metamodel design and implementation"/>
   </eAnnotations>
   <eClassifiers
@@ -20,7 +20,7 @@
         source="http://www.eclipse.org/emf/2002/GenModel">
       <details
           key="documentation"
-          value="A Referable has an ID attribute 'intrinsicId' which can be used as reference instead of a xpath. To this end the attribute must be initialized in the constructor of the ReferableImpl class with a guid."/>
+          value="A Referable has an ID attribute 'intrinsicId' which can be used as reference instead of a xpath. To this end the attribute must be initialized with a guid."/>
     </eAnnotations>
     <eStructuralFeatures
         xsi:type="ecore:EAttribute"
@@ -52,7 +52,7 @@
       instanceClassName="java.lang.String"/>
   <eSubpackages
       name="model"
-      nsURI="http://inchron.com/realtime/root/2.98.16/model"
+      nsURI="http://inchron.com/realtime/root/3.0.1/model"
       nsPrefix="model">
     <eClassifiers
         xsi:type="ecore:EClass"
@@ -94,6 +94,7 @@
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="activators"
+          ordered="false"
           lowerBound="1"
           upperBound="-1"
           eType="#//model/ActivationItem"
@@ -191,7 +192,6 @@
       <eStructuralFeatures
           xsi:type="ecore:EAttribute"
           name="base"
-          ordered="false"
           lowerBound="1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong"
           defaultValueLiteral="0">
@@ -302,6 +302,17 @@
     </eClassifiers>
     <eClassifiers
         xsi:type="ecore:EClass"
+        name="Break"
+        eSuperTypes="#//model/CallSequenceItem">
+      <eAnnotations
+          source="http://www.eclipse.org/emf/2002/GenModel">
+        <details
+            key="documentation"
+            value="When this CallSequenceItem is executed, the next outer WhileLoop (limited to the current Function if any) is immediately left. It can only appear within the loop body."/>
+      </eAnnotations>
+    </eClassifiers>
+    <eClassifiers
+        xsi:type="ecore:EClass"
         name="CallbackFunction"
         eSuperTypes="#//model/ModelObject">
       <eAnnotations
@@ -343,7 +354,7 @@
           source="http://www.eclipse.org/emf/2002/GenModel">
         <details
             key="documentation"
-            value="This enumeration is used to specify the various types of CallbackFunctions supported by the simulation kernel for Schedulers with strategy of type UserDefined."/>
+            value="This enumeration is used to specify the various types of CallbackFunctions supported by the simulation kernel for Schedulers with the UserDefined strategy."/>
       </eAnnotations>
       <eLiterals
           name="Init"/>
@@ -379,19 +390,6 @@
             value="A CallGraph is used to specify the execution behavior of a Process or Function in the simulation. A restricted version is also used to specify the effects triggered by a StimuliGenerator. It contains an ordered list of entries which are executed sequentially."/>
       </eAnnotations>
       <eStructuralFeatures
-          xsi:type="ecore:EAttribute"
-          name="endlessLoop"
-          lowerBound="1"
-          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
-          defaultValueLiteral="false">
-        <eAnnotations
-            source="http://www.eclipse.org/emf/2002/GenModel">
-          <details
-              key="documentation"
-              value="If endlessLoop is set to true, the CallGraph will restart whenever it ends.&#xD;&#xA;&#xD;&#xA;This attribute shall be interpreted independently of other attributes like Schedulable::extendedTask or Schedulable::idleTask.&#xD;&#xA;&#xD;&#xA;"/>
-        </eAnnotations>
-      </eStructuralFeatures>
-      <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="graphEntries"
           upperBound="-1"
@@ -401,7 +399,19 @@
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="documentation"
-              value="The list of entries to be executed in this CallGraph. These can be of type CallSequence, ModeSwitch, or ProbabilitySwitch."/>
+              value="The list of entries to be executed in this CallGraph. These can be of type CallSequence, ModeSwitch, ProbabilitySwitch, or WhileLoop."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="stackUsage"
+          eType="#//model/DataSize"
+          containment="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The amount of stack memory that is used by this CallGraph in the simulation. The attribute is optional, if not set, a value of zero is assumed."/>
         </eAnnotations>
       </eStructuralFeatures>
     </eClassifiers>
@@ -426,6 +436,18 @@
           <details
               key="documentation"
               value="The list of CallSequenceItems to be executed in this CallSequence."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="stackUsage"
+          eType="#//model/DataSize"
+          containment="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The amount of stack memory that is used by this CallSequence in the simulation. The attribute is optional, if not set, a value of zero is assumed."/>
         </eAnnotations>
       </eStructuralFeatures>
     </eClassifiers>
@@ -566,7 +588,6 @@
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="period"
-          ordered="false"
           eType="#//model/Time"
           containment="true">
         <eAnnotations
@@ -579,7 +600,6 @@
       <eStructuralFeatures
           xsi:type="ecore:EAttribute"
           name="drift"
-          ordered="false"
           lowerBound="1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong"
           defaultValueLiteral="0">
@@ -593,7 +613,6 @@
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="range"
-          ordered="false"
           lowerBound="1"
           eType="#//model/Time"
           containment="true">
@@ -659,7 +678,6 @@
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="startValue"
-          ordered="false"
           lowerBound="1"
           eType="#//model/Time"
           containment="true">
@@ -673,6 +691,7 @@
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="users"
+          ordered="false"
           upperBound="-1"
           eType="#//model/ClockUser"
           eOpposite="#//model/ClockUser/clock">
@@ -721,6 +740,7 @@
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="contents"
+          ordered="false"
           upperBound="-1"
           eType="#//model/ContainerElement"
           containment="true">
@@ -745,21 +765,32 @@
     </eClassifiers>
     <eClassifiers
         xsi:type="ecore:EClass"
+        name="Continue"
+        eSuperTypes="#//model/CallSequenceItem">
+      <eAnnotations
+          source="http://www.eclipse.org/emf/2002/GenModel">
+        <details
+            key="documentation"
+            value="Causes the remaining portion of the enclosing WhileLoop body to be skipped. It can only appear within the loop body."/>
+      </eAnnotations>
+    </eClassifiers>
+    <eClassifiers
+        xsi:type="ecore:EClass"
         name="CompilerSettings">
       <eAnnotations
           source="http://www.eclipse.org/emf/2002/GenModel">
         <details
             key="documentation"
-            value="The compiler settings are used to parse and estimate the user's TranslationUnits. The SpecSettings (i.e. optimizer options etc.) are something different and are used in addition with the settings."/>
+            value="The compiler settings are used to parse and estimate the user's TranslationUnits. The SpecSettings (i.e., optimizer options etc.) are something different and are used in addition with the settings."/>
       </eAnnotations>
       <eStructuralFeatures
           xsi:type="ecore:EAttribute"
-          name="isTargetCompiler"
+          name="targetCompiler"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
           defaultValueLiteral="false"/>
       <eStructuralFeatures
           xsi:type="ecore:EAttribute"
-          name="isTargetCompilerOverrideValues"
+          name="targetCompilerOverrideValues"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
           defaultValueLiteral="false"/>
       <eStructuralFeatures
@@ -792,6 +823,7 @@
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="variables"
+          ordered="false"
           upperBound="-1"
           eType="#//model/memory/DataObject"
           containment="true">
@@ -805,6 +837,7 @@
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="functions"
+          ordered="false"
           upperBound="-1"
           eType="#//model/Function"
           containment="true">
@@ -818,6 +851,7 @@
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="translationUnits"
+          ordered="false"
           upperBound="-1"
           eType="#//model/TranslationUnit">
         <eAnnotations
@@ -1080,12 +1114,11 @@
           source="http://www.eclipse.org/emf/2002/GenModel">
         <details
             key="documentation"
-            value="A Cpu is used to model various types of processor hardware and their features. It can contain additional hardware elements, e.g. Memories, Interconnects, and other Peripherals."/>
+            value="A Cpu is used to model various types of processor hardware and their features. It can contain additional hardware elements, e.g., Memories, Interconnects, and other Peripherals."/>
       </eAnnotations>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="cores"
-          ordered="false"
           lowerBound="1"
           upperBound="-1"
           eType="#//model/CpuCore"
@@ -1129,12 +1162,13 @@
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="documentation"
-              value="A HyperVisorConfig that is used to define the scheduling of virual machines on virtual cores."/>
+              value="A HyperVisorConfig that is used to define the scheduling of virtual machines on virtual cores."/>
         </eAnnotations>
       </eStructuralFeatures>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="interconnects"
+          ordered="false"
           upperBound="-1"
           eType="#//model/memory/Interconnect"
           containment="true">
@@ -1148,6 +1182,7 @@
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="memories"
+          ordered="false"
           upperBound="-1"
           eType="#//model/memory/Memory"
           containment="true">
@@ -1161,12 +1196,14 @@
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="memoryRegions"
+          ordered="false"
           upperBound="-1"
           eType="#//model/MemoryRegion"
           containment="true"/>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="partitions"
+          ordered="false"
           upperBound="-1"
           eType="#//model/Partition"
           containment="true">
@@ -1180,6 +1217,7 @@
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="peripherals"
+          ordered="false"
           upperBound="-1"
           eType="#//model/peripheral/Peripheral"
           containment="true">
@@ -1228,7 +1266,7 @@
       </eStructuralFeatures>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
-          name="connectedSlave"
+          name="initiator"
           lowerBound="1"
           eType="#//model/memory/InitiatorPort"
           containment="true">
@@ -1236,7 +1274,7 @@
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="documentation"
-              value="The InitiatorPort of this CpuCore. It can be used to connect the CpuCore with an Interconnect or Memory."/>
+              value="The CpuCore's InitiatorPort connects it downstream to a Memory, Interconnect or CacheMemory ResponderPort."/>
         </eAnnotations>
       </eStructuralFeatures>
     </eClassifiers>
@@ -1302,6 +1340,7 @@
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="edges"
+          ordered="false"
           upperBound="-1"
           eType="#//model/DataFlowEdge"
           containment="true">
@@ -1315,6 +1354,7 @@
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="references"
+          ordered="false"
           upperBound="-1"
           eType="#//model/DataFlowReference"
           containment="true">
@@ -1391,6 +1431,7 @@
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="requesters"
+          ordered="false"
           lowerBound="1"
           upperBound="-1"
           eType="#//model/VariableReadAccess"
@@ -1457,7 +1498,7 @@
           source="http://www.eclipse.org/emf/2002/GenModel">
         <details
             key="documentation"
-            value="A DataFlowReference is used to reference all or part of a DataFlow."/>
+            value="A DataFlowReference is used to reference an entire DataFlow or a part of it."/>
       </eAnnotations>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
@@ -1714,7 +1755,6 @@
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="lower"
-          ordered="false"
           lowerBound="1"
           eType="#//model/Time"
           containment="true">
@@ -1728,7 +1768,6 @@
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="upper"
-          ordered="false"
           lowerBound="1"
           eType="#//model/Time"
           containment="true">
@@ -1799,11 +1838,13 @@
       <eStructuralFeatures
           xsi:type="ecore:EAttribute"
           name="optLabels"
+          ordered="false"
           upperBound="-1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
       <eStructuralFeatures
           xsi:type="ecore:EAttribute"
           name="optFlags"
+          ordered="false"
           upperBound="-1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
       <eStructuralFeatures
@@ -1832,7 +1873,7 @@
           source="http://www.eclipse.org/emf/2002/GenModel">
         <details
             key="documentation"
-            value="The abstract base class for different modeling concepts, with which causal or temporal correlations between TraceEvents are defined and which offer the possibility to analyze timing and data consistency issues in relation to distributed functions in embedded real-time systems."/>
+            value="The abstract base class for different modeling concepts, with which causal or temporal correlations between TraceEvents are defined. EventChains offer the possibility to analyze timing and data consistency issues in relation to distributed functions in embedded real-time systems."/>
       </eAnnotations>
     </eClassifiers>
     <eClassifiers
@@ -2033,6 +2074,7 @@
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="guards"
+          ordered="false"
           upperBound="-1"
           eType="#//model/SetGuard"
           eOpposite="#//model/SetGuard/functionCall">
@@ -2200,6 +2242,7 @@
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="vmSchedulers"
+          ordered="false"
           upperBound="-1"
           eType="#//model/Scheduler"
           containment="true">
@@ -2249,7 +2292,7 @@
           source="http://www.eclipse.org/emf/2002/GenModel">
         <details
             key="documentation"
-            value="The abstract base class for ModelObjects, for which a load metric can be calculated, e.g. a CpuCore."/>
+            value="The abstract base class for ModelObjects, for which a load metric can be calculated (e.g. a CpuCore)."/>
       </eAnnotations>
     </eClassifiers>
     <eClassifiers
@@ -2444,11 +2487,12 @@
           source="http://www.eclipse.org/emf/2002/GenModel">
         <details
             key="documentation"
-            value="A ModeCondition is used to define a logical expression, which can be checked by ModeSwitches inside a CallGraph. It evaluates to true, if at least one of the ModeConjunctions in the list of conjunctions is true."/>
+            value="A ModeCondition is used to define a logical expression, which can be checked by ModeSwitches or WhileLoops inside a CallGraph. It evaluates to true, if at least one of the ModeConjunctions in the list of conjunctions is true."/>
       </eAnnotations>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="conjunctions"
+          ordered="false"
           lowerBound="1"
           upperBound="-1"
           eType="#//model/ModeConjunction"
@@ -2496,6 +2540,7 @@
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="expressions"
+          ordered="false"
           lowerBound="1"
           upperBound="-1"
           eType="#//model/RelationalExpression"
@@ -2613,36 +2658,42 @@
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="busPeripherals"
+          ordered="false"
           upperBound="-1"
           eType="#//model/peripheral/Bus"
           containment="true"/>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="clocks"
+          ordered="false"
           upperBound="-1"
           eType="#//model/Clock"
           containment="true"/>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="cpus"
+          ordered="false"
           upperBound="-1"
           eType="#//model/Cpu"
           containment="true"/>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="connections"
+          ordered="false"
           upperBound="-1"
           eType="#//model/Connection"
           containment="true"/>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="eventChains"
+          ordered="false"
           upperBound="-1"
           eType="#//model/EventChain"
           containment="true"/>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="events"
+          ordered="false"
           upperBound="-1"
           eType="#//model/Event"
           containment="true"/>
@@ -2673,12 +2724,14 @@
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="globalCounters"
+          ordered="false"
           upperBound="-1"
           eType="#//model/Counter"
           containment="true"/>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="globalModeConditions"
+          ordered="false"
           upperBound="-1"
           eType="#//model/ModeCondition"
           containment="true">
@@ -2692,36 +2745,42 @@
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="globalModeGroups"
+          ordered="false"
           upperBound="-1"
           eType="#//model/ModeGroup"
           containment="true"/>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="interconnects"
+          ordered="false"
           upperBound="-1"
           eType="#//model/memory/Interconnect"
           containment="true"/>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="memories"
+          ordered="false"
           upperBound="-1"
           eType="#//model/memory/Memory"
           containment="true"/>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="metrics"
+          ordered="false"
           upperBound="-1"
           eType="#//model/metric/Template"
           containment="true"/>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="peripheralPortConnections"
+          ordered="false"
           upperBound="-1"
           eType="#//model/peripheral/PortConnection"
           containment="true"/>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="requirements"
+          ordered="false"
           upperBound="-1"
           eType="#//model/requirement/Requirement"
           containment="true"/>
@@ -2742,6 +2801,7 @@
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="scenarios"
+          ordered="false"
           upperBound="-1"
           eType="#//model/stimulation/Scenario"
           containment="true"/>
@@ -2759,6 +2819,7 @@
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="systems"
+          ordered="false"
           upperBound="-1"
           eType="#//model/System"
           containment="true"/>
@@ -3045,7 +3106,6 @@
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="sigma"
-          ordered="false"
           lowerBound="1"
           eType="#//model/Time"
           containment="true">
@@ -3103,6 +3163,7 @@
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="entries"
+          ordered="false"
           upperBound="-1"
           eType="#//model/ProbabilitySwitchEntry"
           containment="true">
@@ -3238,7 +3299,6 @@
       <eStructuralFeatures
           xsi:type="ecore:EAttribute"
           name="isr"
-          ordered="false"
           lowerBound="1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
           defaultValueLiteral="false">
@@ -3394,6 +3454,7 @@
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="dataAccess"
+          ordered="false"
           upperBound="-1"
           eType="#//model/memory/DataAccess"
           containment="true">
@@ -3413,19 +3474,6 @@
           <details
               key="documentation"
               value="A reference to a SourceFunction, which can be used to replace the simulation behavior of this RessourceConsumption by the C/C++ implementation of the referenced SourceFunction."/>
-        </eAnnotations>
-      </eStructuralFeatures>
-      <eStructuralFeatures
-          xsi:type="ecore:EReference"
-          name="stackUsage"
-          lowerBound="1"
-          eType="#//model/DataSize"
-          containment="true">
-        <eAnnotations
-            source="http://www.eclipse.org/emf/2002/GenModel">
-          <details
-              key="documentation"
-              value="The amount of stack memory that is used by this ResourceConsumption in the simulation."/>
         </eAnnotations>
       </eStructuralFeatures>
       <eStructuralFeatures
@@ -3545,6 +3593,7 @@
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="events"
+          ordered="false"
           upperBound="-1"
           eType="#//model/Event"
           containment="true">
@@ -3620,6 +3669,7 @@
       <eStructuralFeatures
           xsi:type="ecore:EAttribute"
           name="stateNames"
+          ordered="false"
           upperBound="-1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
       <eStructuralFeatures
@@ -3736,7 +3786,6 @@
       <eStructuralFeatures
           xsi:type="ecore:EAttribute"
           name="type"
-          ordered="false"
           lowerBound="1"
           eType="#//model/SchedulerType"
           defaultValueLiteral="Preemptive">
@@ -3750,7 +3799,6 @@
       <eStructuralFeatures
           xsi:type="ecore:EAttribute"
           name="strategy"
-          ordered="false"
           lowerBound="1"
           eType="#//model/SchedulerStrategy"
           defaultValueLiteral="FixedPriority">
@@ -3860,6 +3908,7 @@
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="callbacks"
+          ordered="false"
           upperBound="-1"
           eType="#//model/CallbackFunction"
           containment="true">
@@ -4133,7 +4182,7 @@
       </eStructuralFeatures>
       <eStructuralFeatures
           xsi:type="ecore:EAttribute"
-          name="isReset"
+          name="reset"
           lowerBound="1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
           defaultValueLiteral="false">
@@ -4187,31 +4236,31 @@
           source="http://www.eclipse.org/emf/2002/GenModel">
         <details
             key="documentation"
-            value="This class is used to define include paths and preprocessor macros."/>
+            value="This class is used to define include paths, preprocessor macros, and additional CFlags."/>
       </eAnnotations>
       <eStructuralFeatures
           xsi:type="ecore:EAttribute"
           name="includes"
-          ordered="false"
+          upperBound="-1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
           defaultValueLiteral=" ">
         <eAnnotations
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="documentation"
-              value="A string that contains include paths separated by semicolons."/>
+              value="A string list that contains include paths."/>
         </eAnnotations>
       </eStructuralFeatures>
       <eStructuralFeatures
           xsi:type="ecore:EAttribute"
           name="prependSettings"
-          ordered="false"
           lowerBound="1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
           defaultValueLiteral="false"/>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="macros"
+          ordered="false"
           upperBound="-1"
           eType="#//model/StringToStringMapEntry"
           containment="true">
@@ -4220,6 +4269,18 @@
           <details
               key="documentation"
               value="A map that contains preprocessor macro definitions."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures
+          xsi:type="ecore:EAttribute"
+          name="additionalCFlags"
+          upperBound="-1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="A string list that contains additional CFlags."/>
         </eAnnotations>
       </eStructuralFeatures>
     </eClassifiers>
@@ -4338,6 +4399,7 @@
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="components"
+          ordered="false"
           upperBound="-1"
           eType="#//model/Component"
           containment="true">
@@ -4351,6 +4413,7 @@
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="counters"
+          ordered="false"
           upperBound="-1"
           eType="#//model/Counter"
           containment="true">
@@ -4364,6 +4427,7 @@
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="modeConditions"
+          ordered="false"
           upperBound="-1"
           eType="#//model/ModeCondition"
           containment="true">
@@ -4377,6 +4441,7 @@
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="modeGroups"
+          ordered="false"
           upperBound="-1"
           eType="#//model/ModeGroup"
           containment="true">
@@ -4414,6 +4479,7 @@
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="translationUnits"
+          ordered="false"
           upperBound="-1"
           eType="#//model/TranslationUnit"
           containment="true">
@@ -4449,6 +4515,7 @@
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="threads"
+          ordered="false"
           upperBound="-1"
           eType="#//model/FunctionCall">
         <eAnnotations
@@ -4491,7 +4558,6 @@
       <eStructuralFeatures
           xsi:type="ecore:EAttribute"
           name="value"
-          ordered="false"
           lowerBound="1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong"
           defaultValueLiteral="0">
@@ -4505,7 +4571,6 @@
       <eStructuralFeatures
           xsi:type="ecore:EAttribute"
           name="unit"
-          ordered="false"
           lowerBound="1"
           eType="#//model/TimeUnit"
           defaultValueLiteral="ps">
@@ -4555,7 +4620,6 @@
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="mean"
-          ordered="false"
           lowerBound="1"
           eType="#//model/Time"
           containment="true">
@@ -4569,7 +4633,6 @@
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="sigma"
-          ordered="false"
           lowerBound="1"
           eType="#//model/Time"
           containment="true">
@@ -4607,7 +4670,6 @@
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="discreteDistribution"
-          ordered="false"
           upperBound="-1"
           eType="#//model/DiscreteDistributionEntry"
           containment="true">
@@ -4956,7 +5018,6 @@
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="specSettings"
-          ordered="false"
           eType="#//model/SpecSettings"
           containment="true">
         <eAnnotations
@@ -5377,9 +5438,69 @@
           value="-1"
           literal="Unknown"/>
     </eClassifiers>
+    <eClassifiers
+        xsi:type="ecore:EClass"
+        name="WhileLoop"
+        eSuperTypes="#//model/GraphEntryBase">
+      <eAnnotations
+          source="http://www.eclipse.org/emf/2002/GenModel">
+        <details
+            key="documentation"
+            value="A structural element that can be used to define while loops inside a CallGraph of a Process or a Function. It can not be used in the context of Connections or StimuliGenerators."/>
+      </eAnnotations>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="condition"
+          eType="#//model/ModeCondition">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="While the given condition evaluates to true, the loop body is repeated. If no condition is set, the condition check evaluates to true."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="graphEntries"
+          lowerBound="1"
+          upperBound="-1"
+          eType="#//model/GraphEntryBase"
+          containment="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The list of GraphEntries defines the loop body."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures
+          xsi:type="ecore:EAttribute"
+          name="negated"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+          defaultValueLiteral="false">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="If negated is set to true, the loop body repeats as long as the condition evaluates to false."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures
+          xsi:type="ecore:EAttribute"
+          name="postConditionCheck"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+          defaultValueLiteral="false">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The condition is tested before executing the loop body, unless postConditionCheck is set to true. In that case, the condition is tested after executing the loop body."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
     <eSubpackages
         name="autosar"
-        nsURI="http://inchron.com/realtime/root/2.98.16/model/autosar"
+        nsURI="http://inchron.com/realtime/root/3.0.1/model/autosar"
         nsPrefix="autosar">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -5392,7 +5513,7 @@
             containment="true"/>
         <eStructuralFeatures
             xsi:type="ecore:EAttribute"
-            name="isOsek"
+            name="osek"
             lowerBound="1"
             eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
             defaultValueLiteral="false"/>
@@ -5404,6 +5525,7 @@
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="events"
+            ordered="false"
             lowerBound="1"
             upperBound="-1"
             eType="#//model/autosar/OsEvent"/>
@@ -5441,7 +5563,6 @@
         <eStructuralFeatures
             xsi:type="ecore:EAttribute"
             name="autostart"
-            ordered="false"
             lowerBound="1"
             eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
             defaultValueLiteral="false"/>
@@ -5458,7 +5579,6 @@
         <eStructuralFeatures
             xsi:type="ecore:EAttribute"
             name="type"
-            ordered="false"
             lowerBound="1"
             eType="#//model/autosar/OsAlarmActionType"
             defaultValueLiteral="ActivateTask"/>
@@ -5508,11 +5628,13 @@
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="alarms"
+            ordered="false"
             upperBound="-1"
             eType="#//model/autosar/OsAlarm"/>
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="counters"
+            ordered="false"
             upperBound="-1"
             eType="#//model/autosar/OsCounter"/>
         <eStructuralFeatures
@@ -5526,27 +5648,30 @@
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="isrs"
+            ordered="false"
             upperBound="-1"
             eType="#//model/autosar/OsIsr"/>
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="scheduleTables"
+            ordered="false"
             upperBound="-1"
             eType="#//model/autosar/OsScheduleTable"/>
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="tasks"
+            ordered="false"
             upperBound="-1"
             eType="#//model/autosar/OsTask"/>
         <eStructuralFeatures
             xsi:type="ecore:EAttribute"
-            name="isTrusted"
+            name="trusted"
             lowerBound="1"
             eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
             defaultValueLiteral="false"/>
         <eStructuralFeatures
             xsi:type="ecore:EAttribute"
-            name="isTrustedWithProtection"
+            name="trustedWithProtection"
             lowerBound="1"
             eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
             defaultValueLiteral="false"/>
@@ -5558,54 +5683,63 @@
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="alarms"
+            ordered="false"
             upperBound="-1"
             eType="#//model/autosar/OsAlarm"
             containment="true"/>
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="applications"
+            ordered="false"
             upperBound="-1"
             eType="#//model/autosar/OsApplication"
             containment="true"/>
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="counters"
+            ordered="false"
             upperBound="-1"
             eType="#//model/autosar/OsCounter"
             containment="true"/>
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="events"
+            ordered="false"
             upperBound="-1"
             eType="#//model/autosar/OsEvent"
             containment="true"/>
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="isrs"
+            ordered="false"
             upperBound="-1"
             eType="#//model/autosar/OsIsr"
             containment="true"/>
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="resources"
+            ordered="false"
             upperBound="-1"
             eType="#//model/autosar/OsResource"
             containment="true"/>
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="scheduleTables"
+            ordered="false"
             upperBound="-1"
             eType="#//model/autosar/OsScheduleTable"
             containment="true"/>
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="spinlocks"
+            ordered="false"
             upperBound="-1"
             eType="#//model/autosar/OsSpinlock"
             containment="true"/>
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="tasks"
+            ordered="false"
             upperBound="-1"
             eType="#//model/autosar/OsTask"
             containment="true"/>
@@ -5617,42 +5751,36 @@
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="delay"
-            ordered="false"
             lowerBound="1"
             eType="#//model/Time"
             containment="true"/>
         <eStructuralFeatures
             xsi:type="ecore:EAttribute"
             name="granularity"
-            ordered="false"
             lowerBound="1"
             eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong"
             defaultValueLiteral="1"/>
         <eStructuralFeatures
             xsi:type="ecore:EAttribute"
             name="hardware"
-            ordered="false"
             lowerBound="1"
             eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
             defaultValueLiteral="true"/>
         <eStructuralFeatures
             xsi:type="ecore:EAttribute"
             name="mincycle"
-            ordered="false"
             lowerBound="1"
             eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong"
             defaultValueLiteral="0"/>
         <eStructuralFeatures
             xsi:type="ecore:EAttribute"
             name="range"
-            ordered="false"
             lowerBound="1"
             eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong"
             defaultValueLiteral="1000"/>
         <eStructuralFeatures
             xsi:type="ecore:EAttribute"
             name="referenceTicks"
-            ordered="false"
             lowerBound="1"
             eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong"
             defaultValueLiteral="1"/>
@@ -5681,13 +5809,13 @@
         <eStructuralFeatures
             xsi:type="ecore:EAttribute"
             name="offset"
-            ordered="false"
             lowerBound="1"
             eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong"
             defaultValueLiteral="0"/>
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="actions"
+            ordered="false"
             upperBound="-1"
             eType="#//model/autosar/OsAlarmAction"
             containment="true"/>
@@ -5699,6 +5827,7 @@
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="resources"
+            ordered="false"
             upperBound="-1"
             eType="#//model/autosar/OsResource"/>
         <eStructuralFeatures
@@ -5746,7 +5875,6 @@
         <eStructuralFeatures
             xsi:type="ecore:EAttribute"
             name="autostart"
-            ordered="false"
             lowerBound="1"
             eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
             defaultValueLiteral="true"/>
@@ -5757,13 +5885,13 @@
         <eStructuralFeatures
             xsi:type="ecore:EAttribute"
             name="duration"
-            ordered="false"
             lowerBound="1"
             eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong"
             defaultValueLiteral="1"/>
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="expiryPoints"
+            ordered="false"
             upperBound="-1"
             eType="#//model/autosar/OsExpiryPoint"
             containment="true"/>
@@ -5776,7 +5904,6 @@
         <eStructuralFeatures
             xsi:type="ecore:EAttribute"
             name="startType"
-            ordered="false"
             lowerBound="1"
             eType="#//model/autosar/OsScheduleTableStartType"
             defaultValueLiteral="Absolute"/>
@@ -5832,11 +5959,13 @@
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="events"
+            ordered="false"
             upperBound="-1"
             eType="#//model/autosar/OsEvent"/>
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="resources"
+            ordered="false"
             upperBound="-1"
             eType="#//model/autosar/OsResource"/>
         <eStructuralFeatures
@@ -5887,6 +6016,7 @@
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="events"
+            ordered="false"
             lowerBound="1"
             upperBound="-1"
             eType="#//model/autosar/OsEvent"/>
@@ -5913,6 +6043,7 @@
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="operations"
+            ordered="false"
             upperBound="-1"
             eType="#//model/autosar/Operation"
             containment="true"/>
@@ -5924,6 +6055,7 @@
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="events"
+            ordered="false"
             lowerBound="1"
             upperBound="-1"
             eType="#//model/autosar/OsEvent"/>
@@ -5931,7 +6063,7 @@
     </eSubpackages>
     <eSubpackages
         name="fmi"
-        nsURI="http://inchron.com/realtime/root/2.98.16/model/fmi"
+        nsURI="http://inchron.com/realtime/root/3.0.1/model/fmi"
         nsPrefix="fmi">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -5996,6 +6128,7 @@
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="typeDefinitions"
+            ordered="false"
             upperBound="-1"
             eType="#//model/fmi/type/SimpleType"
             unsettable="true"
@@ -6003,6 +6136,7 @@
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="unitDefinitions"
+            ordered="false"
             upperBound="-1"
             eType="#//model/fmi/unit/Unit"
             unsettable="true"
@@ -6085,7 +6219,7 @@
       </eClassifiers>
       <eSubpackages
           name="type"
-          nsURI="http://inchron.com/realtime/root/2.98.16/model/fmi/type"
+          nsURI="http://inchron.com/realtime/root/3.0.1/model/fmi/type"
           nsPrefix="type">
         <eClassifiers
             xsi:type="ecore:EClass"
@@ -6098,6 +6232,7 @@
           <eStructuralFeatures
               xsi:type="ecore:EReference"
               name="items"
+              ordered="false"
               lowerBound="1"
               upperBound="-1"
               eType="#//model/fmi/type/Item"
@@ -6180,7 +6315,7 @@
       </eSubpackages>
       <eSubpackages
           name="unit"
-          nsURI="http://inchron.com/realtime/root/2.98.16/model/fmi/unit"
+          nsURI="http://inchron.com/realtime/root/3.0.1/model/fmi/unit"
           nsPrefix="unit">
         <eClassifiers
             xsi:type="ecore:EClass"
@@ -6347,6 +6482,7 @@
           <eStructuralFeatures
               xsi:type="ecore:EReference"
               name="displayUnits"
+              ordered="false"
               upperBound="-1"
               eType="#//model/fmi/unit/DisplayUnit"
               containment="true"/>
@@ -6354,7 +6490,7 @@
       </eSubpackages>
       <eSubpackages
           name="variable"
-          nsURI="http://inchron.com/realtime/root/2.98.16/model/fmi/variable"
+          nsURI="http://inchron.com/realtime/root/3.0.1/model/fmi/variable"
           nsPrefix="variable">
         <eClassifiers
             xsi:type="ecore:EClass"
@@ -6633,7 +6769,7 @@
     </eSubpackages>
     <eSubpackages
         name="memory"
-        nsURI="http://inchron.com/realtime/root/2.98.16/model/memory"
+        nsURI="http://inchron.com/realtime/root/3.0.1/model/memory"
         nsPrefix="memory">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -6647,7 +6783,7 @@
         </eAnnotations>
         <eStructuralFeatures
             xsi:type="ecore:EReference"
-            name="connectedSlave"
+            name="initiator"
             lowerBound="1"
             eType="#//model/memory/InitiatorPort"
             containment="true">
@@ -6655,7 +6791,7 @@
               source="http://www.eclipse.org/emf/2002/GenModel">
             <details
                 key="documentation"
-                value="This CacheMemory's InitiatorPort is connected to a memory system slave (like Interconnect or Memory)."/>
+                value="The CacheMemory's InitiatorPort connects it downstream to a Memory, Interconnect or CacheMemory ResponderPort."/>
           </eAnnotations>
         </eStructuralFeatures>
         <eStructuralFeatures
@@ -6766,7 +6902,7 @@
               source="http://www.eclipse.org/emf/2002/GenModel">
             <details
                 key="documentation"
-                value="Defines, if the DataAccess is a Read or a Write. ReadModifyWrite is reserved for future use and currently interpreted as Write."/>
+                value="Defines whether the DataAccess is a Read or a Write. ReadModifyWrite is reserved for future use and currently interpreted as Write."/>
           </eAnnotations>
         </eStructuralFeatures>
         <eStructuralFeatures
@@ -6779,12 +6915,12 @@
               source="http://www.eclipse.org/emf/2002/GenModel">
             <details
                 key="documentation"
-                value="The bandwidth with which the current process would read or write to the relevant memory, if no other processes or execution units would interfer."/>
+                value="The bandwidth with which the current process would read or write to the relevant memory, if no other processes or execution units would interfere."/>
           </eAnnotations>
         </eStructuralFeatures>
         <eStructuralFeatures
             xsi:type="ecore:EAttribute"
-            name="isAsynchronous"
+            name="asynchronous"
             lowerBound="1"
             eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
             defaultValueLiteral="false">
@@ -6792,7 +6928,7 @@
               source="http://www.eclipse.org/emf/2002/GenModel">
             <details
                 key="documentation"
-                value="An asynchronous DataAccess does not prolongen its containing ResourceConsumption. However, it continues to be executed in the context of the calling process and is preempted, resumed and terminated accordingly."/>
+                value="An asynchronous DataAccess does not prolong its containing ResourceConsumption. However, the DataAccess continues to be executed in the context of the calling process and is preempted, resumed and terminated accordingly."/>
           </eAnnotations>
         </eStructuralFeatures>
         <eStructuralFeatures
@@ -6928,7 +7064,7 @@
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="documentation"
-              value="An InitiatorPort is part of memory system masters (like CpuCores) and connects them to ResponderPorts of memory system slaves (like Memories)."/>
+              value="An InitiatorPort is contained in memory system masters (like CpuCores) and connects them to ResponderPorts of memory system slaves (like Memories)."/>
         </eAnnotations>
         <eStructuralFeatures
             xsi:type="ecore:EAttribute"
@@ -6975,7 +7111,7 @@
               source="http://www.eclipse.org/emf/2002/GenModel">
             <details
                 key="documentation"
-                value="The bitwidth of the Interconnect. Together with the clock and prescaler, this determines the maximum bandwidth this Interconnect can handle."/>
+                value="Together with the clock and prescaler, the bitWidth determines the maximum bandwidth this Interconnect can handle."/>
           </eAnnotations>
         </eStructuralFeatures>
         <eStructuralFeatures
@@ -6987,12 +7123,13 @@
               source="http://www.eclipse.org/emf/2002/GenModel">
             <details
                 key="documentation"
-                value="The scheduling policy of this Interconnect: The default Priority, RoundRobin or FCFS."/>
+                value="The scheduling policy of this Interconnect defaults to Priority. RoundRobin or FCFS are also possible."/>
           </eAnnotations>
         </eStructuralFeatures>
         <eStructuralFeatures
             xsi:type="ecore:EReference"
-            name="connectedSlaves"
+            name="initiators"
+            ordered="false"
             lowerBound="1"
             upperBound="-1"
             eType="#//model/memory/InitiatorPort"
@@ -7001,12 +7138,13 @@
               source="http://www.eclipse.org/emf/2002/GenModel">
             <details
                 key="documentation"
-                value="The InitiatorPorts connected to ResponderPorts of memory system slaves (like Memories or other Interconnects)."/>
+                value="The Interconnect's InitiatorPorts connect it downstream to Memory, CacheMemory or Interconnect ResponderPorts."/>
           </eAnnotations>
         </eStructuralFeatures>
         <eStructuralFeatures
             xsi:type="ecore:EReference"
-            name="connectedMasters"
+            name="responders"
+            ordered="false"
             lowerBound="1"
             upperBound="-1"
             eType="#//model/memory/ResponderPort"
@@ -7015,7 +7153,7 @@
               source="http://www.eclipse.org/emf/2002/GenModel">
             <details
                 key="documentation"
-                value="The ResponderPorts connected to InitiatorPorts of memory system masters (like CpuCores or CacheMemories)."/>
+                value="The Interconnect's ResponderPorts connect it upstream to CpuCore, Interconnect or CacheMemory InitiatorPorts."/>
           </eAnnotations>
         </eStructuralFeatures>
         <eStructuralFeatures
@@ -7033,6 +7171,7 @@
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="qosEntries"
+            ordered="false"
             upperBound="-1"
             eType="#//model/memory/QosEntry"
             containment="true">
@@ -7070,7 +7209,7 @@
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="documentation"
-              value="Memory represents physical memory inside the modeled system. You can use it to represent DRAM, DRAM banks, Flash, or even Scratchpad memory. It works DataAccesses received from its one upstream connection."/>
+              value="Memory represents physical memory inside the modeled system. It can be used to represent, e.g., ROM, DRAM, DRAM banks, Flash, or even Scratchpad memory. It processes on DataAccesses received from its ResponderPort."/>
         </eAnnotations>
         <eStructuralFeatures
             xsi:type="ecore:EReference"
@@ -7124,7 +7263,7 @@
         </eStructuralFeatures>
         <eStructuralFeatures
             xsi:type="ecore:EReference"
-            name="connectedMaster"
+            name="responder"
             lowerBound="1"
             eType="#//model/memory/ResponderPort"
             containment="true">
@@ -7132,7 +7271,7 @@
               source="http://www.eclipse.org/emf/2002/GenModel">
             <details
                 key="documentation"
-                value="This Memory's ResponderPort is connected to a memory system master (like Interconnect or CpuCore)."/>
+                value="The Memory's ResponderPort connects it upstream to a CpuCore, Interconnect or CacheMemory InitiatorPort."/>
           </eAnnotations>
         </eStructuralFeatures>
       </eClassifiers>
@@ -7235,7 +7374,7 @@
               source="http://www.eclipse.org/emf/2002/GenModel">
             <details
                 key="documentation"
-                value="The memory from which this RateBasedDataAccess reads."/>
+                value="The Memory from which this RateBasedDataAccess reads."/>
           </eAnnotations>
         </eStructuralFeatures>
       </eClassifiers>
@@ -7289,7 +7428,7 @@
     </eSubpackages>
     <eSubpackages
         name="metric"
-        nsURI="http://inchron.com/realtime/root/2.98.16/model/metric"
+        nsURI="http://inchron.com/realtime/root/3.0.1/model/metric"
         nsPrefix="metric">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -7925,11 +8064,15 @@
             name="PreemptionTime"
             value="3"/>
         <eLiterals
-            name="ActivationToStartTime"
+            name="InitialPendingTime"
             value="4"/>
         <eLiterals
             name="StartToStartTime"
             value="5"/>
+        <eLiterals
+            name="SlackTime"
+            value="6"
+            literal="SlackTime"/>
       </eClassifiers>
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -7993,18 +8136,21 @@
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="freeArguments"
+            ordered="false"
             upperBound="-1"
             eType="#//model/metric/TemplateArgument"
             containment="true"/>
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="metrics"
+            ordered="false"
             upperBound="-1"
             eType="#//model/metric/Metric"
             containment="true"/>
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="output"
+            ordered="false"
             upperBound="-1"
             eType="#//model/metric/Metric"/>
       </eClassifiers>
@@ -8299,7 +8445,7 @@
     </eSubpackages>
     <eSubpackages
         name="peripheral"
-        nsURI="http://inchron.com/realtime/root/2.98.16/model/peripheral"
+        nsURI="http://inchron.com/realtime/root/3.0.1/model/peripheral"
         nsPrefix="peripheral">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -8384,6 +8530,7 @@
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="events"
+            ordered="false"
             upperBound="-1"
             eType="#//model/TraceEvent"
             containment="true"/>
@@ -8404,7 +8551,6 @@
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="addressRange"
-            ordered="false"
             lowerBound="1"
             eType="#//model/AddressRange"
             containment="true"/>
@@ -8542,6 +8688,7 @@
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="afdxPorts"
+            ordered="false"
             upperBound="-1"
             eType="#//model/peripheral/AFDXPort"
             containment="true"/>
@@ -8960,7 +9107,7 @@
     </eSubpackages>
     <eSubpackages
         name="requirement"
-        nsURI="http://inchron.com/realtime/root/2.98.16/model/requirement"
+        nsURI="http://inchron.com/realtime/root/3.0.1/model/requirement"
         nsPrefix="requirement">
       <eAnnotations
           source="http://www.eclipse.org/emf/2002/GenModel">
@@ -9084,7 +9231,7 @@
               source="http://www.eclipse.org/emf/2002/GenModel">
             <details
                 key="documentation"
-                value="If true, gaps in the sequence of steps (like e.g. a step 4 after step 2 with step 3 lacking) will not be evaluated as a requirement failure."/>
+                value="If this is set to true, gaps in the sequence of steps will not be evaluated as a requirement failure."/>
           </eAnnotations>
         </eStructuralFeatures>
         <eStructuralFeatures
@@ -9213,7 +9360,7 @@
               source="http://www.eclipse.org/emf/2002/GenModel">
             <details
                 key="documentation"
-                value="An integer offset that specifies the instance number of the event chain of the last step relative to the instance number of the start step. I.e. with a value of zero (the default), the considered start and end step in the same chain instance will be considered."/>
+                value="An integer offset that specifies the instance number of the event chain of the last step relative to the instance number of the start step. That is, with a value of zero (the default), the considered start and end step in the same chain instance will be considered."/>
           </eAnnotations>
         </eStructuralFeatures>
         <eStructuralFeatures
@@ -9296,7 +9443,7 @@
               source="http://www.eclipse.org/emf/2002/GenModel">
             <details
                 key="documentation"
-                value="The event where the latency measurements 'starts."/>
+                value="The event where the latency measurement starts."/>
           </eAnnotations>
         </eStructuralFeatures>
       </eClassifiers>
@@ -9314,14 +9461,7 @@
             xsi:type="ecore:EReference"
             name="end"
             lowerBound="1"
-            eType="#//model/TraceEvent">
-          <eAnnotations
-              source="http://www.eclipse.org/emf/2002/GenModel">
-            <details
-                key="documentation"
-                value=""/>
-          </eAnnotations>
-        </eStructuralFeatures>
+            eType="#//model/TraceEvent"/>
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="process"
@@ -9338,14 +9478,7 @@
             xsi:type="ecore:EReference"
             name="start"
             lowerBound="1"
-            eType="#//model/TraceEvent">
-          <eAnnotations
-              source="http://www.eclipse.org/emf/2002/GenModel">
-            <details
-                key="documentation"
-                value=""/>
-          </eAnnotations>
-        </eStructuralFeatures>
+            eType="#//model/TraceEvent"/>
       </eClassifiers>
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -9365,7 +9498,7 @@
               source="http://www.eclipse.org/emf/2002/GenModel">
             <details
                 key="documentation"
-                value="This event triggers the evaluation of the latency between the last preceding pair of the start and end event."/>
+                value="This event triggers the evaluation of the latency between the last preceding start and end event."/>
           </eAnnotations>
         </eStructuralFeatures>
         <eStructuralFeatures
@@ -9406,6 +9539,7 @@
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="requirements"
+            ordered="false"
             upperBound="-1"
             eType="#//model/requirement/Requirement"
             containment="true">
@@ -9448,7 +9582,7 @@
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="documentation"
-              value="A requirement that is used check where a LoadResource (e.g. a CPU) exceeds or falls below a certain load limit."/>
+              value="A requirement that is used to check whether a LoadResource (e.g. a CPU) exceeds or falls below a certain load limit."/>
         </eAnnotations>
         <eStructuralFeatures
             xsi:type="ecore:EReference"
@@ -9494,7 +9628,7 @@
               source="http://www.eclipse.org/emf/2002/GenModel">
             <details
                 key="documentation"
-                value="In order to obtain evaluations with the verdict 'Critical' you have to specify a margin relative to the given 'limit'."/>
+                value="In order to obtain evaluations with the verdict 'Critical', a margin relative to the given 'limit' has to be specified."/>
           </eAnnotations>
         </eStructuralFeatures>
         <eStructuralFeatures
@@ -9506,7 +9640,7 @@
               source="http://www.eclipse.org/emf/2002/GenModel">
             <details
                 key="documentation"
-                value="This operator"/>
+                value="This operator defines how to interpret the 'limit' constraint."/>
           </eAnnotations>
         </eStructuralFeatures>
         <eStructuralFeatures
@@ -9518,7 +9652,7 @@
               source="http://www.eclipse.org/emf/2002/GenModel">
             <details
                 key="documentation"
-                value="Load values before being evaluated are subject to smoothing. This parameter specifies the size of the averaging window. E.g. with a granularity of 1 ms and 20 steps each load value represents an average of a 20 ms time interval."/>
+                value="Before being evaluated, load values are subject to smoothing. This parameter specifies the size of the averaging window. E.g., with a granularity of 1 ms and 20 steps, each load value represents an average of a 20 ms time interval."/>
           </eAnnotations>
         </eStructuralFeatures>
       </eClassifiers>
@@ -9575,7 +9709,7 @@
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="documentation"
-              value="The enumeration type defines two different ways to define the slack time of a process"/>
+              value="The enumeration type defines two different ways to define the slack time of a process."/>
         </eAnnotations>
         <eLiterals
             name="Undefined"/>
@@ -9594,7 +9728,7 @@
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="documentation"
-              value="A requirement used to chek if the net slack time of a process exceeds or falls below a certain limit. See also the NetSlackTime metric."/>
+              value="A requirement used to check if the net slack time of a process exceeds or falls below a certain limit. See also the NetSlackTime metric."/>
         </eAnnotations>
         <eStructuralFeatures
             xsi:type="ecore:EReference"
@@ -9617,7 +9751,7 @@
               source="http://www.eclipse.org/emf/2002/GenModel">
             <details
                 key="documentation"
-                value="This specifies the deadline of the proces by the occurrence of an abitrary trace event. This means that the event in order to always match will have to occur with the same frequency as the process is activated. By choosing the process' activate event the semantic of the ASAM ARTI slack time will be achieved."/>
+                value="This specifies the process' deadline by the occurrence of an arbitrary trace event. This means that the event in order to always match will have to occur with the same frequency as the process is activated. By choosing the process' activate event the semantic of the ASAM ARTI slack time will be achieved."/>
           </eAnnotations>
         </eStructuralFeatures>
         <eStructuralFeatures
@@ -9790,7 +9924,7 @@
               source="http://www.eclipse.org/emf/2002/GenModel">
             <details
                 key="documentation"
-                value="The Process to be evaluated"/>
+                value="The Process to be evaluated."/>
           </eAnnotations>
         </eStructuralFeatures>
       </eClassifiers>
@@ -9807,6 +9941,7 @@
         <eStructuralFeatures
             xsi:type="ecore:EAttribute"
             name="enabledRtosFailures"
+            ordered="false"
             upperBound="-1"
             eType="#//model/requirement/RTOSFailure">
           <eAnnotations
@@ -9819,6 +9954,7 @@
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="blacklist"
+            ordered="false"
             upperBound="-1"
             eType="#//model/Process">
           <eAnnotations
@@ -9947,7 +10083,7 @@
               source="http://www.eclipse.org/emf/2002/GenModel">
             <details
                 key="documentation"
-                value="This flag inverts the timing criterion, i.e. if true successful evaluation is a measured time being outside the given time interval."/>
+                value="This flag inverts the timing criterion, i.e., if the flag is true then a time measurement being outside the given time interval is a successful evaluation."/>
           </eAnnotations>
         </eStructuralFeatures>
         <eStructuralFeatures
@@ -9980,7 +10116,7 @@
     </eSubpackages>
     <eSubpackages
         name="stimulation"
-        nsURI="http://inchron.com/realtime/root/2.98.16/model/stimulation"
+        nsURI="http://inchron.com/realtime/root/3.0.1/model/stimulation"
         nsPrefix="stimulation">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -10051,6 +10187,7 @@
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="scenarios"
+            ordered="false"
             upperBound="-1"
             eType="#//model/stimulation/StimulationScenario"/>
       </eClassifiers>
@@ -10182,6 +10319,7 @@
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="entries"
+            ordered="false"
             upperBound="-1"
             eType="#//model/Time"
             containment="true">
@@ -10384,6 +10522,7 @@
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="generators"
+            ordered="false"
             upperBound="-1"
             eType="#//model/stimulation/StimuliGenerator"
             containment="true"/>
@@ -10402,6 +10541,7 @@
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="filters"
+            ordered="false"
             upperBound="-1"
             eType="#//model/stimulation/StimulationFilter"
             containment="true"/>

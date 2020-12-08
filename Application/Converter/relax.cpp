@@ -44,54 +44,54 @@ void Converter::relaxHardware() {
 			auto ic = cpu->getInterconnects().get(0);
 
 			/* Connect all CpuCores. */
-			while (ic->getConnectedMasters().size() < numberOfCores) {
+			while (ic->getResponders().size() < numberOfCores) {
 				auto port = sm3m::create<sm3m::ResponderPort>();
-				ic->getConnectedMasters().push_back(port);
+				ic->getResponders().push_back(port);
 			}
 			for (auto i = 0u; i < numberOfCores; ++i) {
-				ic->getConnectedMasters().get(i)->setName(
+				ic->getResponders().get(i)->setName(
 					"to_" + cpu->getCores().get(i)->getName() );
-				ic->getConnectedMasters().get(i)->setInitiator(
-					cpu->getCores().get(i)->getConnectedSlave() );
+				ic->getResponders().get(i)->setInitiator(
+					cpu->getCores().get(i)->getInitiator() );
 			}
 
 			sm3m::CacheMemory* theCache{nullptr};
 
 			for (auto&& memory : cpu->getMemories()) {
-				if (!memory->getConnectedMaster()) {
+				if (!memory->getResponder()) {
 					auto port = sm3m::create<sm3m::ResponderPort>();
 					port->setName("to_CpuInterconnect");
-					memory->setConnectedMaster(port);
+					memory->setResponder(port);
 				}
 				if (memory->eClass()->getClassifierID() == sm3m::MemoryPackage::CACHEMEMORY) {
 					theCache = ecore::as<sm3m::CacheMemory>(memory.get());
-					if (!theCache->getConnectedSlave()) {
+					if (!theCache->getInitiator()) {
 						auto port = sm3m::create<sm3m::InitiatorPort>();
 						port->setName("to_SystemInterconnect");
-						theCache->setConnectedSlave(port);
+						theCache->setInitiator(port);
 					}
 				}
 			}
 
 			/* Connect all Memories. */
 			const auto neededInitiatorPorts = numberOfMemories + (theCache ? 0 : 1);
-			while (ic->getConnectedSlaves().size() < neededInitiatorPorts) {
+			while (ic->getInitiators().size() < neededInitiatorPorts) {
 				auto port = sm3m::create<sm3m::InitiatorPort>();
-				ic->getConnectedSlaves().push_back(port);
+				ic->getInitiators().push_back(port);
 			}
 			for (auto i = 0u; i < numberOfMemories; ++i) {
-				ic->getConnectedSlaves().get(i)->setName(
+				ic->getInitiators().get(i)->setName(
 					"to_" + cpu->getMemories().get(i)->getName() );
-				ic->getConnectedSlaves().get(i)->setResponder(
-					cpu->getMemories().get(i)->getConnectedMaster() );
+				ic->getInitiators().get(i)->setResponder(
+					cpu->getMemories().get(i)->getResponder() );
 			}
 
 			/* Set outgoing port to upper level network. */
 			sm3m::InitiatorPort_ptr port;
 			if (theCache)
-				port = theCache->getConnectedSlave();
+				port = theCache->getInitiator();
 			else
-				port = ic->getConnectedSlaves().get(numberOfMemories);
+				port = ic->getInitiators().get(numberOfMemories);
 			auto amStructure = _oc.reverseFind<am::HwStructure>(cpu);
 			_oc.add(amStructure, ObjectCache::Sub2, port);
 
@@ -113,30 +113,30 @@ void Converter::relaxHardware() {
 		auto ic = _model->getInterconnects().get(0);
 
 		/* Connect all substructures */
-		while (ic->getConnectedMasters().size() < numberOfSubStructures) {
+		while (ic->getResponders().size() < numberOfSubStructures) {
 			auto port = sm3m::create<sm3m::ResponderPort>();
-			ic->getConnectedMasters().push_back(port);
+			ic->getResponders().push_back(port);
 		}
 		for (auto i = 0u; i < numberOfSubStructures; ++i) {
 			auto cpu = _model->getCpus().get(i);
-			ic->getConnectedMasters().get(i)->setName(
+			ic->getResponders().get(i)->setName(
 				"to_" + cpu->getName() );
 			auto amStructure = _oc.reverseFind<am::HwStructure>(cpu);
 			auto port = _oc.find<sm3m::InitiatorPort>(amStructure, ObjectCache::Sub2);
-			ic->getConnectedMasters().get(i)->setInitiator(port);
+			ic->getResponders().get(i)->setInitiator(port);
 		}
 
 		/* Connect all Memories. */
-		while (ic->getConnectedSlaves().size() < numberOfMemories) {
+		while (ic->getInitiators().size() < numberOfMemories) {
 			auto port = sm3m::create<sm3m::InitiatorPort>();
-			ic->getConnectedSlaves().push_back(port);
+			ic->getInitiators().push_back(port);
 		}
 		for (auto i = 0u; i < numberOfMemories; ++i) {
 			auto memory = _model->getMemories().get(i);
-			ic->getConnectedSlaves().get(i)->setName(
+			ic->getInitiators().get(i)->setName(
 				"to_" + memory->getName() );
-			auto port = memory->getConnectedMaster();
-			ic->getConnectedSlaves().get(i)->setResponder(port);
+			auto port = memory->getResponder();
+			ic->getInitiators().get(i)->setResponder(port);
 		}
 	} // if (numberOfSubStructures > 0 || numberOfMemories > 0)
 }

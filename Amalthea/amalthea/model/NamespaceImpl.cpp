@@ -34,7 +34,7 @@ void Namespace::_initialize()
     ::amalthea::model::ReferableObject::_initialize();
 
     // References
-    for (const auto &ref : getNextSegments())
+    for (const auto& ref : getNextSegments())
     {
         ref->_initialize();
     }
@@ -54,21 +54,22 @@ std::vector< ::ecore::EString > Namespace::getNamePrefixSegments()
     // the ecore. If you want to replace it by C++ code, enable
     // the following protected region and implement it there.
     <%org.eclipse.emf.common.util.EList%><<%java.lang.String%>> _elvis = null;
-<%org.eclipse.app4mc.amalthea.model.Namespace%> _previousSegment = this.getPreviousSegment();
-<%org.eclipse.emf.common.util.EList%><<%java.lang.String%>> _qualifiedNameSegments = null;
-if (_previousSegment!=null)
-{
-	_qualifiedNameSegments=_previousSegment.getQualifiedNameSegments();
-}
-if (_qualifiedNameSegments != null)
-{
-	_elvis = _qualifiedNameSegments;
-} else
-{
-	<%org.eclipse.emf.common.util.BasicEList%><<%java.lang.String%>> _newBasicEList = <%org.eclipse.emf.ecore.xcore.lib.XcoreCollectionLiterals%>.<<%java.lang.String%>>newBasicEList();
-	_elvis = _newBasicEList;
-}
-return _elvis;
+    <%org.eclipse.app4mc.amalthea.model.Namespace%> _previousSegment = this.getPreviousSegment();
+    <%org.eclipse.emf.common.util.EList%><<%java.lang.String%>> _qualifiedNameSegments = null;
+    if (_previousSegment!=null)
+    {
+        _qualifiedNameSegments=_previousSegment.getQualifiedNameSegments();
+    }
+    if (_qualifiedNameSegments != null)
+    {
+        _elvis = _qualifiedNameSegments;
+    }
+    else
+    {
+        <%org.eclipse.emf.common.util.BasicEList%><<%java.lang.String%>> _newBasicEList = <%org.eclipse.emf.ecore.xcore.lib.XcoreCollectionLiterals%>.<<%java.lang.String%>>newBasicEList();
+        _elvis = _newBasicEList;
+    }
+    return _elvis;
 #endif
     /*PROTECTED REGION ID(NamespaceImpl_getNamePrefixSegments) ENABLED START*/
 
@@ -127,7 +128,7 @@ return _elvis;
 }
 
 void Namespace::eSet(::ecore::EInt _featureID,
-        ::ecore::EJavaObject const &_newValue)
+        ::ecore::EJavaObject const& _newValue)
 {
     switch (_featureID)
     {
@@ -195,7 +196,7 @@ void Namespace::eUnset(::ecore::EInt _featureID)
 /** Set the local end of a reference with an EOpposite property.
  */
 void Namespace::_inverseAdd(::ecore::EInt _featureID,
-        ::ecore::EJavaObject const &_newValue)
+        ::ecore::EJavaObject const& _newValue)
 {
     switch (_featureID)
     {
@@ -207,7 +208,7 @@ void Namespace::_inverseAdd(::ecore::EInt _featureID,
                 < ::amalthea::model::Namespace > (_t0);
 
         // add to a list
-        auto &container =
+        auto& container =
                 (::ecorecpp::mapping::ReferenceEListImpl<
                         ::amalthea::model::Namespace_ptr, -1, true, true >&) ::amalthea::model::Namespace::getNextSegments();
         container.basicAdd(_t1);
@@ -242,7 +243,7 @@ void Namespace::_inverseAdd(::ecore::EInt _featureID,
 /** Unset the local end of a reference with an EOpposite property.
  */
 void Namespace::_inverseRemove(::ecore::EInt _featureID,
-        ::ecore::EJavaObject const &_oldValue)
+        ::ecore::EJavaObject const& _oldValue)
 {
     switch (_featureID)
     {
@@ -254,7 +255,7 @@ void Namespace::_inverseRemove(::ecore::EInt _featureID,
                 < ::amalthea::model::Namespace > (_t0);
 
         // add to a list
-        auto &container =
+        auto& container =
                 (::ecorecpp::mapping::ReferenceEListImpl<
                         ::amalthea::model::Namespace_ptr, -1, true, true >&) ::amalthea::model::Namespace::getNextSegments();
         container.basicRemove(_t1);

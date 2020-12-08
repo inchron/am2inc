@@ -135,15 +135,15 @@ void Converter::work(const am::HwPort_ptr& am, am::HwPort*) {
 			port->setPriority(am->getPriority());
 
 			if (auto p = ecore::as<sm3m::Interconnect>(inchron)) {
-				p->getConnectedSlaves().push_back(port);
+				p->getInitiators().push_back(port);
 			} else if (auto p = ecore::as<sm3::CpuCore>(inchron)) {
-				p->setConnectedSlave(port);
+				p->setInitiator(port);
 				p->setBitWidth(
 					AttributeCreator<sm3::DataSize>()(am->getBitWidth(),
 													 sm3::DataSizeUnit::B));
 			// } else if (auto p = ecore::as<sm3m::Memory>(inchron)) {
 			} else if (auto p = ecore::as<sm3m::CacheMemory>(inchron)) {
-				p->setConnectedSlave(port);
+				p->setInitiator(port);
 				p->setBitWidth(
 					AttributeCreator<sm3::DataSize>()(am->getBitWidth(),
 													 sm3::DataSizeUnit::B));
@@ -154,15 +154,15 @@ void Converter::work(const am::HwPort_ptr& am, am::HwPort*) {
 			port->setName(am->getName());
 
 			if (auto p = ecore::as<sm3m::Interconnect>(inchron)) {
-				p->getConnectedMasters().push_back(port);
+				p->getResponders().push_back(port);
 			// } else if (auto p = ecore::as<sm3::CpuCore>(inchron)) {
 			} else if (auto p = ecore::as<sm3m::Memory>(inchron)) {
-				p->setConnectedMaster(port);
+				p->setResponder(port);
 				p->setBitWidth(
 					AttributeCreator<sm3::DataSize>()(am->getBitWidth(),
 													 sm3::DataSizeUnit::B));
 			} else if (auto p = ecore::as<sm3m::CacheMemory>(inchron)) {
-				p->setConnectedMaster(port);
+				p->setResponder(port);
 				p->setBitWidth(
 					AttributeCreator<sm3::DataSize>()(am->getBitWidth(),
 													 sm3::DataSizeUnit::B));

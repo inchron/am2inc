@@ -55,21 +55,22 @@ std::vector< ::ecore::EString > RunnableParameter::getNamePrefixSegments()
     // the ecore. If you want to replace it by C++ code, enable
     // the following protected region and implement it there.
     <%org.eclipse.emf.common.util.EList%><<%java.lang.String%>> _elvis = null;
-<%org.eclipse.app4mc.amalthea.model.Runnable%> _containingRunnable = this.getContainingRunnable();
-<%org.eclipse.emf.common.util.EList%><<%java.lang.String%>> _qualifiedNameSegments = null;
-if (_containingRunnable!=null)
-{
-	_qualifiedNameSegments=_containingRunnable.getQualifiedNameSegments();
-}
-if (_qualifiedNameSegments != null)
-{
-	_elvis = _qualifiedNameSegments;
-} else
-{
-	<%org.eclipse.emf.common.util.BasicEList%><<%java.lang.String%>> _newBasicEList = <%org.eclipse.emf.ecore.xcore.lib.XcoreCollectionLiterals%>.<<%java.lang.String%>>newBasicEList();
-	_elvis = _newBasicEList;
-}
-return _elvis;
+    <%org.eclipse.app4mc.amalthea.model.Runnable%> _containingRunnable = this.getContainingRunnable();
+    <%org.eclipse.emf.common.util.EList%><<%java.lang.String%>> _qualifiedNameSegments = null;
+    if (_containingRunnable!=null)
+    {
+        _qualifiedNameSegments=_containingRunnable.getQualifiedNameSegments();
+    }
+    if (_qualifiedNameSegments != null)
+    {
+        _elvis = _qualifiedNameSegments;
+    }
+    else
+    {
+        <%org.eclipse.emf.common.util.BasicEList%><<%java.lang.String%>> _newBasicEList = <%org.eclipse.emf.ecore.xcore.lib.XcoreCollectionLiterals%>.<<%java.lang.String%>>newBasicEList();
+        _elvis = _newBasicEList;
+    }
+    return _elvis;
 #endif
     /*PROTECTED REGION ID(RunnableParameterImpl_getNamePrefixSegments) ENABLED START*/
 
@@ -90,34 +91,34 @@ return _elvis;
     // the ecore. If you want to replace it by C++ code, enable
     // the following protected region and implement it there.
     <%org.eclipse.app4mc.amalthea.model.Runnable%> _containingRunnable = this.getContainingRunnable();
-<%java.lang.String%> _name = null;
-if (_containingRunnable!=null)
-{
-	_name=_containingRunnable.getName();
-}
-final <%java.lang.String%> runName = _name;
-<%java.lang.String%> _xifexpression = null;
-boolean _isNullOrEmpty = <%org.eclipse.xtext.xbase.lib.StringExtensions%>.isNullOrEmpty(runName);
-if (_isNullOrEmpty)
-{
-	_xifexpression = "<runnable>";
-}
-else
-{
-	_xifexpression = runName;
-}
-<%java.lang.String%> _plus = (_xifexpression + "::");
-<%java.lang.String%> _xifexpression_1 = null;
-boolean _isNullOrEmpty_1 = <%org.eclipse.xtext.xbase.lib.StringExtensions%>.isNullOrEmpty(this.getName());
-if (_isNullOrEmpty_1)
-{
-	_xifexpression_1 = "<parameter>";
-}
-else
-{
-	_xifexpression_1 = this.getName();
-}
-return (_plus + _xifexpression_1);
+    <%java.lang.String%> _name = null;
+    if (_containingRunnable!=null)
+    {
+        _name=_containingRunnable.getName();
+    }
+    final <%java.lang.String%> runName = _name;
+    <%java.lang.String%> _xifexpression = null;
+    boolean _isNullOrEmpty = <%org.eclipse.xtext.xbase.lib.StringExtensions%>.isNullOrEmpty(runName);
+    if (_isNullOrEmpty)
+    {
+        _xifexpression = "<runnable>";
+    }
+    else
+    {
+        _xifexpression = runName;
+    }
+    <%java.lang.String%> _plus = (_xifexpression + "::");
+    <%java.lang.String%> _xifexpression_1 = null;
+    boolean _isNullOrEmpty_1 = <%org.eclipse.xtext.xbase.lib.StringExtensions%>.isNullOrEmpty(this.getName());
+    if (_isNullOrEmpty_1)
+    {
+        _xifexpression_1 = "<parameter>";
+    }
+    else
+    {
+        _xifexpression_1 = this.getName();
+    }
+    return (_plus + _xifexpression_1);
 #endif
     /*PROTECTED REGION ID(RunnableParameterImpl_toString) START*/
     // Please, enable the protected region if you add manually written code.
@@ -183,7 +184,7 @@ return (_plus + _xifexpression_1);
 }
 
 void RunnableParameter::eSet(::ecore::EInt _featureID,
-        ::ecore::EJavaObject const &_newValue)
+        ::ecore::EJavaObject const& _newValue)
 {
     switch (_featureID)
     {
@@ -280,7 +281,7 @@ void RunnableParameter::eUnset(::ecore::EInt _featureID)
 /** Set the local end of a reference with an EOpposite property.
  */
 void RunnableParameter::_inverseAdd(::ecore::EInt _featureID,
-        ::ecore::EJavaObject const &_newValue)
+        ::ecore::EJavaObject const& _newValue)
 {
     switch (_featureID)
     {
@@ -325,7 +326,7 @@ void RunnableParameter::_inverseAdd(::ecore::EInt _featureID,
 /** Unset the local end of a reference with an EOpposite property.
  */
 void RunnableParameter::_inverseRemove(::ecore::EInt _featureID,
-        ::ecore::EJavaObject const &_oldValue)
+        ::ecore::EJavaObject const& _oldValue)
 {
     switch (_featureID)
     {

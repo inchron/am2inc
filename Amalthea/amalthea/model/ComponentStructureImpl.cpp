@@ -35,7 +35,7 @@ void ComponentStructure::_initialize()
     ::amalthea::model::ReferableObject::_initialize();
 
     // References
-    for (const auto &ref : getSubStructures())
+    for (const auto& ref : getSubStructures())
     {
         ref->_initialize();
     }
@@ -55,17 +55,17 @@ void ComponentStructure::_initialize()
     // the ecore. If you want to replace it by C++ code, enable
     // the following protected region and implement it there.
     <%org.eclipse.app4mc.amalthea.model.ComponentStructure%> _xifexpression = null;
-<%org.eclipse.emf.ecore.EObject%> _eContainer = this.eContainer();
-if ((_eContainer instanceof <%org.eclipse.app4mc.amalthea.model.ComponentStructure%>))
-{
-	<%org.eclipse.emf.ecore.EObject%> _eContainer_1 = this.eContainer();
-	_xifexpression = ((<%org.eclipse.app4mc.amalthea.model.ComponentStructure%>) _eContainer_1);
-}
-else
-{
-	_xifexpression = null;
-}
-return _xifexpression;
+    <%org.eclipse.emf.ecore.EObject%> _eContainer = this.eContainer();
+    if ((_eContainer instanceof <%org.eclipse.app4mc.amalthea.model.ComponentStructure%>))
+    {
+        <%org.eclipse.emf.ecore.EObject%> _eContainer_1 = this.eContainer();
+        _xifexpression = ((<%org.eclipse.app4mc.amalthea.model.ComponentStructure%>) _eContainer_1);
+    }
+    else
+    {
+        _xifexpression = null;
+    }
+    return _xifexpression;
 #endif
     /*PROTECTED REGION ID(ComponentStructureImpl_getContainingStructure) START*/
     // Please, enable the protected region if you add manually written code.
@@ -96,21 +96,22 @@ std::vector< ::ecore::EString > ComponentStructure::getNamePrefixSegments()
     // the ecore. If you want to replace it by C++ code, enable
     // the following protected region and implement it there.
     <%org.eclipse.emf.common.util.EList%><<%java.lang.String%>> _elvis = null;
-<%org.eclipse.app4mc.amalthea.model.ComponentStructure%> _containingStructure = this.getContainingStructure();
-<%org.eclipse.emf.common.util.EList%><<%java.lang.String%>> _qualifiedNameSegments = null;
-if (_containingStructure!=null)
-{
-	_qualifiedNameSegments=_containingStructure.getQualifiedNameSegments();
-}
-if (_qualifiedNameSegments != null)
-{
-	_elvis = _qualifiedNameSegments;
-} else
-{
-	<%org.eclipse.emf.common.util.BasicEList%><<%java.lang.String%>> _newBasicEList = <%org.eclipse.emf.ecore.xcore.lib.XcoreCollectionLiterals%>.<<%java.lang.String%>>newBasicEList();
-	_elvis = _newBasicEList;
-}
-return _elvis;
+    <%org.eclipse.app4mc.amalthea.model.ComponentStructure%> _containingStructure = this.getContainingStructure();
+    <%org.eclipse.emf.common.util.EList%><<%java.lang.String%>> _qualifiedNameSegments = null;
+    if (_containingStructure!=null)
+    {
+        _qualifiedNameSegments=_containingStructure.getQualifiedNameSegments();
+    }
+    if (_qualifiedNameSegments != null)
+    {
+        _elvis = _qualifiedNameSegments;
+    }
+    else
+    {
+        <%org.eclipse.emf.common.util.BasicEList%><<%java.lang.String%>> _newBasicEList = <%org.eclipse.emf.ecore.xcore.lib.XcoreCollectionLiterals%>.<<%java.lang.String%>>newBasicEList();
+        _elvis = _newBasicEList;
+    }
+    return _elvis;
 #endif
     /*PROTECTED REGION ID(ComponentStructureImpl_getNamePrefixSegments) ENABLED START*/
 
@@ -171,7 +172,7 @@ return _elvis;
 }
 
 void ComponentStructure::eSet(::ecore::EInt _featureID,
-        ::ecore::EJavaObject const &_newValue)
+        ::ecore::EJavaObject const& _newValue)
 {
     switch (_featureID)
     {
@@ -248,7 +249,7 @@ void ComponentStructure::eUnset(::ecore::EInt _featureID)
 /** Set the local end of a reference with an EOpposite property.
  */
 void ComponentStructure::_inverseAdd(::ecore::EInt _featureID,
-        ::ecore::EJavaObject const &_newValue)
+        ::ecore::EJavaObject const& _newValue)
 {
     switch (_featureID)
     {
@@ -264,7 +265,7 @@ void ComponentStructure::_inverseAdd(::ecore::EInt _featureID,
 /** Unset the local end of a reference with an EOpposite property.
  */
 void ComponentStructure::_inverseRemove(::ecore::EInt _featureID,
-        ::ecore::EJavaObject const &_oldValue)
+        ::ecore::EJavaObject const& _oldValue)
 {
     switch (_featureID)
     {
