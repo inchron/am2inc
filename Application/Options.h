@@ -1,11 +1,12 @@
 /* -*- C++ -*-
  *
- * FILE: Options.h
+ * Copyright (c) 2020-2021 INCHRON AG <info@inchron.com>
  *
- * URL: $HeadURL$
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * https://www.eclipse.org/legal/epl-2.0/
  *
- * @(#) $Id$
- *
+ * SPDX-License-Identifier: EPL-2.0
  */
 #ifndef Options_H
 #define Options_H

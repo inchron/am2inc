@@ -1,7 +1,14 @@
 
 gitversion.h
 
-**/Makefile*
 *~
+
+**/Makefile*
 **/release/
 **/debug/
+samples/
+.container
+.qmake.stash
+.ycm_extra_conf.py
+local.pri
+log.txt
