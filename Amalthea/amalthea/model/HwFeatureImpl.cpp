@@ -1,7 +1,7 @@
 // -*- mode: c++; c-basic-style: "bsd"; c-basic-offset: 4; -*-
 /*
  * amalthea/model/HwFeatureImpl.cpp
- * This file was created by EMF4CPP 2.0.0 and is copyrighted by the
+ * This file was created by EMF4CPP 3.0.0 and is copyrighted by the
  * respective user and/or provider of the processed ECORE model.
  *
  * EMF4CPP is free software. You can obtain it from
@@ -51,22 +51,21 @@ std::vector< ::ecore::EString > HwFeature::getNamePrefixSegments()
     // the ecore. If you want to replace it by C++ code, enable
     // the following protected region and implement it there.
     <%org.eclipse.emf.common.util.EList%><<%java.lang.String%>> _elvis = null;
-    <%org.eclipse.app4mc.amalthea.model.HwFeatureCategory%> _containingCategory = this.getContainingCategory();
-    <%org.eclipse.emf.common.util.EList%><<%java.lang.String%>> _qualifiedNameSegments = null;
-    if (_containingCategory!=null)
-    {
-        _qualifiedNameSegments=_containingCategory.getQualifiedNameSegments();
-    }
-    if (_qualifiedNameSegments != null)
-    {
-        _elvis = _qualifiedNameSegments;
-    }
-    else
-    {
-        <%org.eclipse.emf.common.util.BasicEList%><<%java.lang.String%>> _newBasicEList = <%org.eclipse.emf.ecore.xcore.lib.XcoreCollectionLiterals%>.<<%java.lang.String%>>newBasicEList();
-        _elvis = _newBasicEList;
-    }
-    return _elvis;
+<%org.eclipse.app4mc.amalthea.model.HwFeatureCategory%> _containingCategory = this.getContainingCategory();
+<%org.eclipse.emf.common.util.EList%><<%java.lang.String%>> _qualifiedNameSegments = null;
+if (_containingCategory!=null)
+{
+	_qualifiedNameSegments=_containingCategory.getQualifiedNameSegments();
+}
+if (_qualifiedNameSegments != null)
+{
+	_elvis = _qualifiedNameSegments;
+} else
+{
+	<%org.eclipse.emf.common.util.BasicEList%><<%java.lang.String%>> _newBasicEList = <%org.eclipse.emf.ecore.xcore.lib.XcoreCollectionLiterals%>.<<%java.lang.String%>>newBasicEList();
+	_elvis = _newBasicEList;
+}
+return _elvis;
 #endif
     /*PROTECTED REGION ID(HwFeatureImpl_getNamePrefixSegments) ENABLED START*/
 
@@ -87,34 +86,34 @@ std::vector< ::ecore::EString > HwFeature::getNamePrefixSegments()
     // the ecore. If you want to replace it by C++ code, enable
     // the following protected region and implement it there.
     <%org.eclipse.app4mc.amalthea.model.HwFeatureCategory%> _containingCategory = this.getContainingCategory();
-    <%java.lang.String%> _name = null;
-    if (_containingCategory!=null)
-    {
-        _name=_containingCategory.getName();
-    }
-    final <%java.lang.String%> featureName = _name;
-    <%java.lang.String%> _xifexpression = null;
-    boolean _isNullOrEmpty = <%org.eclipse.xtext.xbase.lib.StringExtensions%>.isNullOrEmpty(featureName);
-    if (_isNullOrEmpty)
-    {
-        _xifexpression = "<category>";
-    }
-    else
-    {
-        _xifexpression = featureName;
-    }
-    <%java.lang.String%> _plus = (_xifexpression + "::");
-    <%java.lang.String%> _xifexpression_1 = null;
-    boolean _isNullOrEmpty_1 = <%org.eclipse.xtext.xbase.lib.StringExtensions%>.isNullOrEmpty(this.getName());
-    if (_isNullOrEmpty_1)
-    {
-        _xifexpression_1 = "<feature>";
-    }
-    else
-    {
-        _xifexpression_1 = this.getName();
-    }
-    return (_plus + _xifexpression_1);
+<%java.lang.String%> _name = null;
+if (_containingCategory!=null)
+{
+	_name=_containingCategory.getName();
+}
+final <%java.lang.String%> featureName = _name;
+<%java.lang.String%> _xifexpression = null;
+boolean _isNullOrEmpty = <%org.eclipse.xtext.xbase.lib.StringExtensions%>.isNullOrEmpty(featureName);
+if (_isNullOrEmpty)
+{
+	_xifexpression = "<category>";
+}
+else
+{
+	_xifexpression = featureName;
+}
+<%java.lang.String%> _plus = (_xifexpression + "::");
+<%java.lang.String%> _xifexpression_1 = null;
+boolean _isNullOrEmpty_1 = <%org.eclipse.xtext.xbase.lib.StringExtensions%>.isNullOrEmpty(this.getName());
+if (_isNullOrEmpty_1)
+{
+	_xifexpression_1 = "<feature>";
+}
+else
+{
+	_xifexpression_1 = this.getName();
+}
+return (_plus + _xifexpression_1);
 #endif
     /*PROTECTED REGION ID(HwFeatureImpl_toString) START*/
     // Please, enable the protected region if you add manually written code.
@@ -170,7 +169,7 @@ std::vector< ::ecore::EString > HwFeature::getNamePrefixSegments()
 }
 
 void HwFeature::eSet(::ecore::EInt _featureID,
-        ::ecore::EJavaObject const& _newValue)
+        ::ecore::EJavaObject const &_newValue)
 {
     switch (_featureID)
     {
@@ -246,7 +245,7 @@ void HwFeature::eUnset(::ecore::EInt _featureID)
 /** Set the local end of a reference with an EOpposite property.
  */
 void HwFeature::_inverseAdd(::ecore::EInt _featureID,
-        ::ecore::EJavaObject const& _newValue)
+        ::ecore::EJavaObject const &_newValue)
 {
     switch (_featureID)
     {
@@ -283,7 +282,7 @@ void HwFeature::_inverseAdd(::ecore::EInt _featureID,
 /** Unset the local end of a reference with an EOpposite property.
  */
 void HwFeature::_inverseRemove(::ecore::EInt _featureID,
-        ::ecore::EJavaObject const& _oldValue)
+        ::ecore::EJavaObject const &_oldValue)
 {
     switch (_featureID)
     {

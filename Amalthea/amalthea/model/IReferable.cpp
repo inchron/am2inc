@@ -1,7 +1,7 @@
 // -*- mode: c++; c-basic-style: "bsd"; c-basic-offset: 4; -*-
 /*
  * amalthea/model/IReferable.cpp
- * This file was created by EMF4CPP 2.0.0 and is copyrighted by the
+ * This file was created by EMF4CPP 3.0.0 and is copyrighted by the
  * respective user and/or provider of the processed ECORE model.
  *
  * EMF4CPP is free software. You can obtain it from
@@ -53,9 +53,9 @@ IReferable::~IReferable()
     // the ecore. If you want to replace it by C++ code, enable
     // the following protected region and implement it there.
     <%java.lang.String%> _encodedQualifiedName = this.getEncodedQualifiedName();
-    <%java.lang.String%> _plus = (_encodedQualifiedName + "?type=");
-    <%java.lang.String%> _name = this.eClass().getName();
-    return (_plus + _name);
+<%java.lang.String%> _plus = (_encodedQualifiedName + "?type=");
+<%java.lang.String%> _name = this.eClass().getName();
+return (_plus + _name);
 #endif
     /*PROTECTED REGION ID(IReferableImpl_Getter_uniqueName) ENABLED START*/
 

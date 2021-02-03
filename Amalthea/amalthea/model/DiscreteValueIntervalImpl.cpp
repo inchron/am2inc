@@ -1,7 +1,7 @@
 // -*- mode: c++; c-basic-style: "bsd"; c-basic-offset: 4; -*-
 /*
  * amalthea/model/DiscreteValueIntervalImpl.cpp
- * This file was created by EMF4CPP 2.0.0 and is copyrighted by the
+ * This file was created by EMF4CPP 3.0.0 and is copyrighted by the
  * respective user and/or provider of the processed ECORE model.
  *
  * EMF4CPP is free software. You can obtain it from
@@ -95,7 +95,7 @@ void DiscreteValueInterval::_initialize()
 }
 
 void DiscreteValueInterval::eSet(::ecore::EInt _featureID,
-        ::ecore::EJavaObject const& _newValue)
+        ::ecore::EJavaObject const &_newValue)
 {
     switch (_featureID)
     {
@@ -152,7 +152,7 @@ void DiscreteValueInterval::eUnset(::ecore::EInt _featureID)
 /** Set the local end of a reference with an EOpposite property.
  */
 void DiscreteValueInterval::_inverseAdd(::ecore::EInt _featureID,
-        ::ecore::EJavaObject const& _newValue)
+        ::ecore::EJavaObject const &_newValue)
 {
     switch (_featureID)
     {
@@ -164,7 +164,7 @@ void DiscreteValueInterval::_inverseAdd(::ecore::EInt _featureID,
 /** Unset the local end of a reference with an EOpposite property.
  */
 void DiscreteValueInterval::_inverseRemove(::ecore::EInt _featureID,
-        ::ecore::EJavaObject const& _oldValue)
+        ::ecore::EJavaObject const &_oldValue)
 {
     switch (_featureID)
     {

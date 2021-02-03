@@ -1,7 +1,7 @@
 // -*- mode: c++; c-basic-style: "bsd"; c-basic-offset: 4; -*-
 /*
  * root/Referable.cpp
- * This file was created by EMF4CPP 2.0.0 and is copyrighted by the
+ * This file was created by EMF4CPP 3.0.0 and is copyrighted by the
  * respective user and/or provider of the processed ECORE model.
  *
  * EMF4CPP is free software. You can obtain it from
@@ -61,7 +61,7 @@ Referable::~Referable()
     return m_intrinsicId;
 }
 
-void Referable::setIntrinsicId(::ecore::EString const& _intrinsicId)
+void Referable::setIntrinsicId(::ecore::EString const &_intrinsicId)
 {
 #ifdef ECORECPP_NOTIFICATION_API
     ::ecore::EString _old_intrinsicId = m_intrinsicId;
@@ -76,7 +76,7 @@ void Referable::setIntrinsicId(::ecore::EString const& _intrinsicId)
                 ::root::RootPackage::_instance()->getReferable__intrinsicId(),
                 _old_intrinsicId,
                 m_intrinsicId
-        );
+            );
         eNotify(&notification);
     }
 #endif
