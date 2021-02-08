@@ -22,6 +22,9 @@ void Converter::relax() {
 }
 
 void Converter::relaxHardware() {
+	if (_connectionHandlersDefined)
+		return;
+
 	/* Add Interconnect to Cpus. */
 	for (auto&& cpu : _model->getCpus()) {
 		const auto numberOfCores = cpu->getCores().size();
@@ -34,9 +37,12 @@ void Converter::relaxHardware() {
 
 				ic->setName(cpu->getName() + "_Interconnect");
 				ic->setClock(cpu->getClock());
-				auto bitWidth = sm3::create<sm3::DataSize>();
-				*bitWidth = *(cpu->getCores().get(0)->getBitWidth());
-				ic->setBitWidth(bitWidth);
+
+				if (numberOfCores > 0) {
+					auto bitWidth = sm3::create<sm3::DataSize>();
+					*bitWidth = *(cpu->getCores().get(0)->getBitWidth());
+					ic->setBitWidth(bitWidth);
+				}
 
 				cpu->getInterconnects().push_back(ic);
 			}
@@ -123,6 +129,7 @@ void Converter::relaxHardware() {
 				"to_" + cpu->getName() );
 			auto amStructure = _oc.reverseFind<am::HwStructure>(cpu);
 			auto port = _oc.find<sm3m::InitiatorPort>(amStructure, ObjectCache::Sub2);
+			port->setName("from_" + cpu->getName());
 			ic->getResponders().get(i)->setInitiator(port);
 		}
 
@@ -211,7 +218,10 @@ void Converter::relaxFreeObjects() {
 
 			} else {
 				std::cerr << "Ignoring object w/o container of type "
-						  << object->eClass()->getName() << "\n";
+						  << object->eClass()->getName();
+				if (auto mo = ecore::as<sm3::ModelObject>(object))
+					std::cerr << ": " << mo->getName();
+				std::cerr << "\n";
 			}
 		}
 	}

@@ -39,55 +39,28 @@ void Converter::work(const am::HwFeature_ptr&, am::HwFeature*) {
 
 void Converter::work(const am::HwStructure_ptr& am, am::HwStructure*) {
 	if (_mode == PreOrder) {
-		switch (am->getStructureType()) {
-		case am::StructureType::System:
+		if (am->getStructureType() == am::StructureType::System) {
 			_model->setName(am->getName());
-			break;
+		}
 
-		case am::StructureType::ECU:
-		case am::StructureType::Microcontroller:
-		case am::StructureType::SoC:
-		case am::StructureType::Cluster:
-		{
+		/* If there are CpuCores, this will be a Cpu. */
+		auto numberOfProcessingUnits =
+			std::count_if( am->getModules().begin(), am->getModules().end(),
+						   [](am::HwModule_ptr child){
+							   return !!ecore::as<am::ProcessingUnit>(child); });
+		if (numberOfProcessingUnits) {
 			auto cpu = _oc.make<sm3::ModelFactory, sm3::Cpu>(am, ObjectCache::Default);
 			_model->getCpus().push_back(cpu);
 			cpu->setName(am->getName());
-			if (am->getModules().size() == 0) {
-				cpu->setClock(_idealClock);
-			} else {
-				auto firstModuleClock = am->getModules().get(0)->getFrequencyDomain();
-				auto clock = _oc.make<sm3::ModelFactory, sm3::Clock>(firstModuleClock);
-				cpu->setClock(clock);
-			}
-		} break;
+			cpu->setCpuModel("generic");
+			cpu->setReloadCpuModel(true);
 
-		default:
-			break;
+			auto firstModuleClock = am->getModules().get(0)->getFrequencyDomain();
+			auto clock = _oc.make<sm3::ModelFactory, sm3::Clock>(firstModuleClock);
+			cpu->setClock(clock);
 		}
 
 	} else { /* PostOrder */
-		switch (am->getStructureType()) {
-		case am::StructureType::System:
-			break;
-
-		case am::StructureType::ECU:
-		case am::StructureType::Microcontroller:
-		case am::StructureType::SoC:
-		case am::StructureType::Cluster:
-		{
-			auto cpu = _oc.make<sm3::ModelFactory, sm3::Cpu>(am, ObjectCache::Default);
-			const auto numberOfCores = cpu->getCores().size();
-
-			if (numberOfCores > 0) {
-				cpu->setCpuModel("generic");
-				cpu->setReloadCpuModel(true);
-			}
-
-		} break;
-
-		default:
-			break;
-		}
 	}
 }
 
@@ -179,20 +152,25 @@ void Converter::work(const am::HwPort_ptr& am, am::HwPort*) {
 
 void Converter::work(const am::ProcessingUnit_ptr& am, am::ProcessingUnit*) {
 	if (_mode == PreOrder) {
-		auto cpuCore = _oc.make<sm3::ModelFactory, sm3::CpuCore>(am);
-		cpuCore->setName(am->getName());
+		if (auto hwStructure = ecore::as<am::HwStructure>(am->eContainer())) {
+			auto cpuCore = _oc.make<sm3::ModelFactory, sm3::CpuCore>(am);
+			cpuCore->setName(am->getName());
+			cpuCore->setBitWidth(AttributeCreator<sm3::DataSize>()(64, sm3::DataSizeUnit::bit));
+			cpuCore->setInitiator(sm3m::create<sm3m::InitiatorPort>());
+			cpuCore->getInitiator()->setName("from_" + am->getName());
 
-		auto cpu = _oc.make<sm3::ModelFactory, sm3::Cpu>(am->eContainer());
-		cpu->getCores().push_back(cpuCore);
+			sm3::Cpu_ptr cpu = _oc.find<sm3::Cpu>(hwStructure, ObjectCache::Default);
+			cpu->getCores().push_back(cpuCore);
 
-		auto cpuClock = cpu->getClock();
-		auto coreClock = _oc.make<sm3::ModelFactory, sm3::Clock>(am->getFrequencyDomain());
-		if (cpuClock == coreClock)
-			cpuCore->setPrescaler(1.);
-		else {
-			// @todo derive prescaler from relation of referenced
-			// FrequencyDomain and parent Clock.
-			cpuCore->setPrescaler(-1.);
+			auto cpuClock = cpu->getClock();
+			auto coreClock = _oc.make<sm3::ModelFactory, sm3::Clock>(am->getFrequencyDomain());
+			if (cpuClock == coreClock)
+				cpuCore->setPrescaler(1.);
+			else {
+				// @todo derive prescaler from relation of referenced
+				// FrequencyDomain and parent Clock.
+				cpuCore->setPrescaler(-1.);
+			}
 		}
 	}
 }
@@ -201,6 +179,10 @@ void Converter::work(const am::Memory_ptr& am, am::Memory*) {
 	if (_mode == PreOrder) {
 		auto memory = _oc.make<sm3m::MemoryFactory, sm3m::Memory>(am);
 		memory->setName(am->getName());
+		memory->setBitWidth(AttributeCreator<sm3::DataSize>()(64, sm3::DataSizeUnit::bit));
+		memory->setResponder(sm3m::create<sm3m::ResponderPort>());
+		memory->getResponder()->setName("ResponderPort");
+
 		if (am->getFrequencyDomain()) {
 			auto clock = _oc.make<sm3::ModelFactory, sm3::Clock>(am->getFrequencyDomain());
 			memory->setClock(clock);
@@ -216,19 +198,13 @@ void Converter::work(const am::Memory_ptr& am, am::Memory*) {
 		// am->getMappings() - ignored
 
 		if (auto hwStructure = ecore::as<am::HwStructure>(am->eContainer())) {
-			switch (hwStructure->getStructureType()) {
-			case am::StructureType::System:
-			case am::StructureType::ECU:
-			case am::StructureType::SoC:
+			sm3m::Interconnect_ptr interconnect;
+
+			sm3::Cpu_ptr cpu = _oc.find<sm3::Cpu>(hwStructure, ObjectCache::Default);
+			if (!cpu) {
 				_model->getMemories().push_back(memory);
-				break;
-			case am::StructureType::Microcontroller:
-			{
-				auto cpu = _oc.make<sm3::ModelFactory, sm3::Cpu>(hwStructure);
+			} else {
 				cpu->getMemories().push_back(memory);
-			} break;
-			default:
-				break;
 			}
 		}
 	}
@@ -265,7 +241,7 @@ sm3m::CacheWritePolicy convert(am::WriteStrategy s) {
  *
  * As a L1 Cache it is container at am::ProcessingUnit::caches, while as a L2
  * Cache it lives in am::HwStructure::modules (where the am::HwStructure probably
- * has the am::StructureType MicroController.
+ * has the am::StructureType Microcontroller.
  *
  * Are L3 caches contained by an am::HwStructure with the am::StructureType ECU?
  */
@@ -314,6 +290,8 @@ void Converter::work(const am::ConnectionHandler_ptr& am, am::ConnectionHandler*
 			return; /* unsupported type */
 		}
 
+		_connectionHandlersDefined = true;
+
 		auto ic = _oc.make<sm3m::MemoryFactory, sm3m::Interconnect>(am);
 		ic->setName(am->getName());
 		// am->getDefinition() - ignored
@@ -332,20 +310,10 @@ void Converter::work(const am::ConnectionHandler_ptr& am, am::ConnectionHandler*
 		}
 
 		if (auto hwStructure = ecore::as<am::HwStructure>(am->eContainer())) {
-			switch (hwStructure->getStructureType()) {
-			case am::StructureType::System:
-			case am::StructureType::ECU:
-			case am::StructureType::SoC:
-				_model->getInterconnects().push_back(ic);
-				break;
-			case am::StructureType::Microcontroller:
-			{
-				auto cpu = _oc.make<sm3::ModelFactory, sm3::Cpu>(hwStructure);
+			if (auto cpu = _oc.find<sm3::Cpu>(hwStructure, ObjectCache::Default))
 				cpu->getInterconnects().push_back(ic);
-			} break;
-			default:
-				break;
-			}
+			else
+				_model->getInterconnects().push_back(ic);
 		}
 	}
 }

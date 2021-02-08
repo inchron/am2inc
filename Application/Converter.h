@@ -182,4 +182,6 @@ private:
 
 	/** This counter is used for various ModelObjects. */
 	std::uint32_t _moCounter{0};
+
+	bool _connectionHandlersDefined{false};
 };
