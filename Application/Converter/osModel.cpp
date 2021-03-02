@@ -32,6 +32,23 @@ void Converter::work(const amalthea::model::OperatingSystem_ptr& am,
 	}
 }
 
+/** All InterruptController instances are to the RtosConfig of the current
+ * OperatingSystem. In a later phase the will be unified to a single top level
+ * Scheduler.
+ */
+void Converter::work(const amalthea::model::InterruptController_ptr& am,
+					 amalthea::model::InterruptController*) {
+	if (_mode == PreOrder) {
+		if (auto os = ecore::as<amalthea::model::OperatingSystem>(am->eContainer())) {
+			auto isrScheduler = _oc.make<sm3::ModelFactory, sm3::Scheduler>(am);
+			isrScheduler->setName(am->getName());
+
+			auto system = _oc.find<sm3::GenericSystem>(os, ObjectCache::Default);
+			system->getRtosConfig()->getSchedulables().push_back(isrScheduler);
+		}
+	}
+}
+
 void Converter::work(const amalthea::model::TaskScheduler_ptr& am,
 					 amalthea::model::TaskScheduler*) {
 	if (_mode == PreOrder) {

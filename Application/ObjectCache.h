@@ -98,6 +98,23 @@ public:
 
 	const Map& getContent() const { return _content; }
 
+	void reverseRemove(const Ptr& inc) {
+		auto it = _reverseContent.find(inc);
+		if (it == _reverseContent.end())
+			return;
+
+		Ptr am = it->second;
+		_reverseContent.erase(it);
+
+		auto it2 = _content.find(am);
+		if (it2 == _content.end())
+			return;
+
+		for (int k = Default; k < MaxSubKey; ++k)
+			if (it2->second[k] == inc)
+				it2->second[k] = Ptr();
+	}
+
 private:
 	Map _content;
 	std::map< Ptr, Ptr > _reverseContent;

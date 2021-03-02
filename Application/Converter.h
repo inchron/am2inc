@@ -122,16 +122,19 @@ public:
 
 	/* Amalthea osModel */
 	void work(const amalthea::model::OperatingSystem_ptr&, amalthea::model::OperatingSystem*);
+	void work(const amalthea::model::InterruptController_ptr&, amalthea::model::InterruptController*);
 	void work(const amalthea::model::TaskScheduler_ptr&, amalthea::model::TaskScheduler*);
 	void work(const amalthea::model::TaskSchedulingAlgorithm_ptr&, amalthea::model::TaskSchedulingAlgorithm*);
 	void work(const amalthea::model::SchedulerAssociation_ptr&, amalthea::model::SchedulerAssociation*);
 	void work(const amalthea::model::Semaphore_ptr&, amalthea::model::Semaphore*);
 
 	/* Amalthea mappingModel */
+	void work(const amalthea::model::MappingModel_ptr&, amalthea::model::MappingModel*);
 	void work(const amalthea::model::MemoryMapping_ptr&, amalthea::model::MemoryMapping*);
 	void work(const amalthea::model::PhysicalSectionMapping_ptr&, amalthea::model::PhysicalSectionMapping*);
 	void work(const amalthea::model::RunnableAllocation_ptr&, amalthea::model::RunnableAllocation*);
 	void work(const amalthea::model::SchedulerAllocation_ptr&, amalthea::model::SchedulerAllocation*);
+	void work(const amalthea::model::ISRAllocation_ptr&, amalthea::model::ISRAllocation*);
 	void work(const amalthea::model::TaskAllocation_ptr&, amalthea::model::TaskAllocation*);
 
 
