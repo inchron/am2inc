@@ -25,12 +25,17 @@ void Converter::relaxHardware() {
 	if (_connectionHandlersDefined)
 		return;
 
+	const auto numberOfCpus = _model->getCpus().size();
+	const auto numberOfGlobalMemories = _model->getMemories().size();
+	const bool interconnectNeededGlobally = (numberOfCpus + numberOfGlobalMemories) > 1;
+
 	/* Add Interconnect to Cpus. */
 	for (auto&& cpu : _model->getCpus()) {
 		const auto numberOfCores = cpu->getCores().size();
-		const auto numberOfMemories = cpu->getMemories().size();
+		const auto numberOfLocalMemories = cpu->getMemories().size();
+		const bool interconnectNeededLocally = (numberOfCores + numberOfLocalMemories) > 1;
 
-		if (numberOfCores > 0 || numberOfMemories > 0) {
+		if ( interconnectNeededLocally || interconnectNeededGlobally ) {
 			/* Ensure there is a cpu-level interconnect. */
 			if (cpu->getInterconnects().size() == 0) {
 				auto ic = sm3m::create<sm3m::Interconnect>();
@@ -80,12 +85,14 @@ void Converter::relaxHardware() {
 			}
 
 			/* Connect all Memories. */
-			const auto neededInitiatorPorts = numberOfMemories + (theCache ? 0 : 1);
+			const auto neededInitiatorPorts = numberOfLocalMemories
+				+ (theCache ? 0 : (interconnectNeededGlobally ? 1 : 0));
+
 			while (ic->getInitiators().size() < neededInitiatorPorts) {
 				auto port = sm3m::create<sm3m::InitiatorPort>();
 				ic->getInitiators().push_back(port);
 			}
-			for (auto i = 0u; i < numberOfMemories; ++i) {
+			for (auto i = 0u; i < numberOfLocalMemories; ++i) {
 				ic->getInitiators().get(i)->setName(
 					"to_" + cpu->getMemories().get(i)->getName() );
 				ic->getInitiators().get(i)->setResponder(
@@ -93,21 +100,20 @@ void Converter::relaxHardware() {
 			}
 
 			/* Set outgoing port to upper level network. */
-			sm3m::InitiatorPort_ptr port;
-			if (theCache)
-				port = theCache->getInitiator();
-			else
-				port = ic->getInitiators().get(numberOfMemories);
 			auto amStructure = _oc.reverseFind<am::HwStructure>(cpu);
-			_oc.add(amStructure, ObjectCache::Sub2, port);
+			if (theCache)
+				_oc.add(amStructure, ObjectCache::Sub2, theCache->getInitiator());
+			else if (interconnectNeededGlobally) {
+				_oc.add(amStructure, ObjectCache::Sub2,
+						ic->getInitiators().get(numberOfLocalMemories));
+				ic->getInitiators().get(numberOfLocalMemories)->setName("to_SystemInterconnect");
+			}
 
-		} // if (numberOfCores > 0 || numberOfMemories > 0)
+		} // if (numberOfCores > 0 || numberOfLocalMemories > 0)
 	}
 
 	/* Add Interconnect at Model level. */
-	const auto numberOfSubStructures = _model->getCpus().size();
-	const auto numberOfMemories = _model->getMemories().size();
-	if (numberOfSubStructures > 0 || numberOfMemories > 0) {
+	if (numberOfCpus + numberOfGlobalMemories > 1) {
 		/* Ensure there is a model-level interconnect. */
 		if (_model->getInterconnects().size() == 0) {
 			auto ic = sm3m::create<sm3m::Interconnect>();
@@ -119,11 +125,11 @@ void Converter::relaxHardware() {
 		auto ic = _model->getInterconnects().get(0);
 
 		/* Connect all substructures */
-		while (ic->getResponders().size() < numberOfSubStructures) {
+		while (ic->getResponders().size() < numberOfCpus) {
 			auto port = sm3m::create<sm3m::ResponderPort>();
 			ic->getResponders().push_back(port);
 		}
-		for (auto i = 0u; i < numberOfSubStructures; ++i) {
+		for (auto i = 0u; i < numberOfCpus; ++i) {
 			auto cpu = _model->getCpus().get(i);
 			ic->getResponders().get(i)->setName(
 				"to_" + cpu->getName() );
@@ -134,18 +140,18 @@ void Converter::relaxHardware() {
 		}
 
 		/* Connect all Memories. */
-		while (ic->getInitiators().size() < numberOfMemories) {
+		while (ic->getInitiators().size() < numberOfGlobalMemories) {
 			auto port = sm3m::create<sm3m::InitiatorPort>();
 			ic->getInitiators().push_back(port);
 		}
-		for (auto i = 0u; i < numberOfMemories; ++i) {
+		for (auto i = 0u; i < numberOfGlobalMemories; ++i) {
 			auto memory = _model->getMemories().get(i);
 			ic->getInitiators().get(i)->setName(
 				"to_" + memory->getName() );
 			auto port = memory->getResponder();
 			ic->getInitiators().get(i)->setResponder(port);
 		}
-	} // if (numberOfSubStructures > 0 || numberOfMemories > 0)
+	} // if (numberOfCpus > 0 || numberOfGlobalMemories > 0)
 }
 
 
