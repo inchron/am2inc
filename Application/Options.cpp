@@ -11,6 +11,7 @@
 #include "Options.h"
 
 #include <iostream>
+#include <QSettings>
 
 #include <amalthea/model/ModelPackage.hpp>
 #include <root/RootPackage.hpp>
@@ -72,6 +73,11 @@ Options::Options() {
 			QStringList() << "relax",
 			"Accept input models, which do not strictly adhere to the model constraints. A post processing step tries to repair as much as possible."
 			) );
+	_parser.addOption(
+		QCommandLineOption(
+			QStringList() << "i" << "install",
+			"Install this model importer to be used with the Tool-Suite 3.x."
+			) );
 
 	// Add more options here.
 }
@@ -90,6 +96,9 @@ Options::Options(QCoreApplication& app) : Options() {
 
 	if ( _parser.isSet("help") )
 		showHelp(Ok);
+
+	if ( _parser.isSet("install") )
+		installImporter();
 
 	auto allGivenOptions = _parser.optionNames();
 	for ( const auto optionName : allGivenOptions ) {
@@ -151,4 +160,32 @@ void Options::showHelp(int exitCode) {
 			  <<   "  2      if serious errors, e.g. file access or translations issues.\n";
 
 	::exit(exitCode);
+}
+
+/** Create entries in QSettings according to [SUITE3-2575].
+ */
+void Options::installImporter() {
+	{
+		/* The local scope is required because ::exit() below does not return
+		 * and destructors are not executed.
+		 *
+		 * For history reasons the windows and the linux version registry keys
+		 * resp. files for the external trace and model importers. */
+#if defined(__WIN32__) || defined(_WIN32)
+		QSettings settings("INCHRON", "chronsim");
+#else
+		QSettings settings("INCHRON", "ModelImporter");
+#endif
+		settings.beginGroup("ModelImporter");
+		settings.beginGroup("AmaltheaImporter");
+		settings.setValue("commandline", QCoreApplication::applicationFilePath());
+		settings.setValue("arguments", "-o %t %f");
+		settings.setValue("filter", "AMALTHEA Model (*.amxmi)");
+		settings.setValue("CurrentVersion", VERSION "000");
+		settings.endGroup();
+		settings.endGroup();
+	}
+
+	std::cout << "am2inc has been registered as model importer.\n";
+	::exit(Ok);
 }

@@ -70,6 +70,7 @@ private:
 
 	Q_NORETURN void showVersion();
 	Q_NORETURN void showHelp(int exitCode);
+	Q_NORETURN void installImporter();
 
 	Verbosity _verbosity{1};
 	bool _noOutput{false};
