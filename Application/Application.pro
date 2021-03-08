@@ -22,6 +22,15 @@ INCLUDEPATH += ../Mapping
 INCLUDEPATH += ../Root/model
 INCLUDEPATH += $${EMF4CPP}/include/emf4cpp
 
+# When an ecore changes, emf4cpp will regenerate the .pri file. Then we need
+# to rerun qmake to update the dependencies.
+Makefile.target = $(MAKEFILE)
+Makefile.depends += \
+    $$relative_path($$PWD/../Amalthea/amalthea_model.pri, $$OUT_PWD) \
+    $$relative_path($$PWD/../Root/model/root.pri, $$OUT_PWD) \
+    $$relative_path($$PWD/../Mapping/am2inc.pri, $$OUT_PWD)
+QMAKE_EXTRA_TARGETS += Makefile
+
 DEFINES += VERSION=\\\"$$VERSION\\\"
 
 QMAKE_CXXFLAGS += -Wno-unused-parameter

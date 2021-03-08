@@ -1538,26 +1538,6 @@ namespace amalthea
         class RunEntityCallStatistic;
         using RunEntityCallStatistic_ptr = ::ecore::Ptr<RunEntityCallStatistic>;
 
-// MeasurementModel
-        class MeasurementModel;
-        using MeasurementModel_ptr = ::ecore::Ptr<MeasurementModel>;
-
-// Measurement
-        class Measurement;
-        using Measurement_ptr = ::ecore::Ptr<Measurement>;
-
-// EventChainMeasurement
-        class EventChainMeasurement;
-        using EventChainMeasurement_ptr = ::ecore::Ptr<EventChainMeasurement>;
-
-// TaskMeasurement
-        class TaskMeasurement;
-        using TaskMeasurement_ptr = ::ecore::Ptr<TaskMeasurement>;
-
-// RunnableMeasurement
-        class RunnableMeasurement;
-        using RunnableMeasurement_ptr = ::ecore::Ptr<RunnableMeasurement>;
-
 // EEnum
 
 // RelationalOperator
