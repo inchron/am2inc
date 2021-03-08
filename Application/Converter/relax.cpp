@@ -18,6 +18,7 @@
 void Converter::relax() {
 	relaxHardware();
 	relaxIsrSchedulers();
+	relaxRunnables();
 	relaxFreeObjects();
 }
 
@@ -172,6 +173,96 @@ void Converter::relaxIsrSchedulers() {
 			 * the same Cpu. */
 			for (auto&& core : defaultScheduler->getCpuCores())
 				isrScheduler->getCpuCores().push_back(core);
+		}
+	}
+}
+
+namespace details {
+
+void mapObject2Component(const ecore::EObject_ptr& eObject,
+						 sm3::Component_ptr& component,
+						 const sm3::GenericSystem_ptr& system,
+						 std::vector<sm3::Function_ptr>& toBeDone) {
+
+	if (auto functionCall = ecore::as<sm3::FunctionCall>(eObject)) {
+		auto function = functionCall->getFunction();
+		auto container = function->eContainer();
+		if (not container) {
+			if (not component)
+				component = sm3::create<sm3::Component>();
+			component->getFunctions().push_back(function);
+			toBeDone.push_back(function);
+		} else if (not container->eContainer()) {
+			auto component = ecore::as<sm3::Component>(container);
+			system->getComponents().push_back(component);
+			toBeDone.push_back(function);
+		}
+
+	} else if (auto dataAccess = ecore::as<sm3m::ExplicitDataAccess>(eObject)) {
+		auto dataObject = dataAccess->getDataObject();
+		auto container = dataObject->eContainer();
+		if (not container) {
+			if (not component)
+				component = sm3::create<sm3::Component>();
+			component->getVariables().push_back(dataObject);
+		} else if (not container->eContainer()) {
+			auto component = ecore::as<sm3::Component>(container);
+			system->getComponents().push_back(component);
+		}
+
+	} else {
+		sm3::Event_ptr event;
+		if (auto setEvent = ecore::as<sm3::SetEvent>(eObject))
+			event = setEvent->getEvent();
+		else if (auto waitEvent = ecore::as<sm3::WaitEvent>(eObject))
+			event = waitEvent->getEvent();
+
+		if (event) {
+			auto container = event->eContainer();
+			if (not container) {
+				system->getRtosConfig()->getEvents().push_back(event);
+			}
+		}
+	}
+}
+
+} // namespace details
+
+/** Runnables live in a containment relation with Components. This phase moves
+ * all 'free' Runnables to the place where they are used. If they already live
+ * in a Component, which is 'free', the Component is moved [AM2INC-49].
+ */
+void Converter::relaxRunnables() {
+	std::vector<sm3::Function_ptr> toBeDone;
+
+	for (auto&& system : _model->getSystems()) {
+		sm3::Component_ptr component;
+
+		if (auto genericSystem = ecore::as<sm3::GenericSystem>(system)) {
+			for (auto iter = genericSystem->getRtosConfig()->eAllContents();
+				 *iter; ++iter) {
+				details::mapObject2Component(*iter, component, genericSystem, toBeDone);
+			}
+		}
+
+		if (component) {
+			component->setName(system->getName() + "_Component");
+			system->getComponents().push_back(component);
+		}
+	}
+
+	/* We will call push_back on the live vector, hence indexing instead of
+	 * iterating. */
+	for (std::size_t index = 0; index != toBeDone.size(); ++index) {
+		auto caller = toBeDone[index];
+		auto component = ecore::as<sm3::Component>(caller->eContainer());
+		assert(component); // The Runnable has to be mapped already.
+		auto system = ecore::as<sm3::GenericSystem>(component->eContainer());
+		assert(system); // The Component has to be mapped already.
+
+		for (auto iter = caller->eAllContents();
+			 *iter; ++iter) {
+			details::mapObject2Component(*iter, component, system, toBeDone);
 		}
 	}
 }

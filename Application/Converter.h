@@ -141,6 +141,7 @@ public:
 	/* All relaxations, split according to structure. */
 	void relaxHardware();
 	void relaxIsrSchedulers();
+	void relaxRunnables();
 	void relaxFreeObjects();
 	void setName(root::model::CallSequenceItem&, const std::string&);
 	void setName(root::model::GraphEntryBase&, const std::string& = std::string());
