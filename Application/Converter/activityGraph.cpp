@@ -335,6 +335,8 @@ sm3::TimeDistribution_ptr createTimeDistribution(am::IDiscreteValueDeviation_ptr
 	} break;
 
 	case am::ModelPackage::DISCRETEVALUEGAUSSDISTRIBUTION: {
+		td->setMin(AttributeCreator<sm3::Time>()(am->getLowerBound(), sm3::TimeUnit::T));
+		td->setMax(AttributeCreator<sm3::Time>()(am->getUpperBound(), sm3::TimeUnit::T));
 		auto gauss = ecore::as<am::DiscreteValueGaussDistribution>(am);
 		td->setMean(AttributeCreator<sm3::Time>()(gauss->getMean(), sm3::TimeUnit::T));
 		td->setSigma(AttributeCreator<sm3::Time>()(gauss->getSd(), sm3::TimeUnit::T));
