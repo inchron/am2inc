@@ -179,8 +179,10 @@ void Options::installImporter() {
 		settings.beginGroup("ModelImporter");
 		settings.beginGroup("AmaltheaImporter");
 		settings.setValue("commandline", QCoreApplication::applicationFilePath());
-		settings.setValue("arguments", "-o %t %f");
+		settings.setValue("arguments", "-o %t %f %F");
 		settings.setValue("filter", "AMALTHEA Model (*.amxmi)");
+		settings.setValue("capabilities",
+						  QString("version: %1\ncapabilities: +multi").arg(VERSION));
 		settings.setValue("CurrentVersion", VERSION "000");
 		settings.endGroup();
 		settings.endGroup();
