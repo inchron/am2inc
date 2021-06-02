@@ -61,6 +61,12 @@ void removeIfUnused(const sm3::CallSequence_ptr& cs, ObjectCache& oc) {
 	}
 }
 
+/** addAsSibling() adds the younger value to the same relation as the older
+ * value.
+ *
+ * It is used only in the context of new elements and may therefor use
+ * push_back_unsafe(), which skips the uniqueness test for the new element.
+ */
 template<class T, class U>
 void addAsSibling(const ecore::Ptr<T>& older, const ecore::Ptr<U>& younger) {
 	auto parent = older->eContainer();
@@ -71,7 +77,7 @@ void addAsSibling(const ecore::Ptr<T>& older, const ecore::Ptr<U>& younger) {
 		ecorecpp::mapping::any::any_cast<
 			ecorecpp::mapping::EList<ecore::EObject_ptr>::ptr_type>(any);
 
-	list->push_back(younger);
+	list->push_back_unsafe(younger);
 }
 
 } // namespace details
@@ -102,7 +108,7 @@ void Converter::work(const am::ActivityGraph_ptr& am, am::ActivityGraph*) {
 
 		auto cs = sm3::create<sm3::CallSequence>();
 		setName(*cs);
-		cg->getGraphEntries().push_back(cs);
+		cg->getGraphEntries().push_back_unsafe(cs);
 
 		_callGraph = cg;
 		_callSequence = cs;
@@ -154,12 +160,12 @@ void Converter::work(const am::Group_ptr& am, am::Group*) {
 void Converter::work(const am::LabelAccess_ptr& am, am::LabelAccess*) {
 	if (_mode == PreOrder) {
 		auto rc = _oc.make<sm3::ModelFactory, sm3::ResourceConsumption>(am, ObjectCache::Default);
-		_callSequence->getCalls().push_back(rc);
+		_callSequence->getCalls().push_back_unsafe(rc);
 
 		setName(*rc, "LabelAccess_" + am->getData()->getName());
 
 		auto access = _oc.make<sm3m::MemoryFactory, sm3m::ExplicitDataAccess>(am, ObjectCache::Sub1);
-		rc->getDataAccess().push_back(access);
+		rc->getDataAccess().push_back_unsafe(access);
 		access->setAccessType(am->getAccess() == am::LabelAccessEnum::write ?
 							  sm3m::DataAccessType::Write : sm3m::DataAccessType::Read);
 		access->setDataObject(_oc.make<sm3m::MemoryFactory, sm3m::DataObject>(am->getData()));
@@ -170,7 +176,7 @@ void Converter::work(const am::LabelAccess_ptr& am, am::LabelAccess*) {
 void Converter::work(const am::RunnableCall_ptr& am, am::RunnableCall*) {
 	if (_mode == PreOrder) {
 		auto call = _oc.make<sm3::ModelFactory, sm3::FunctionCall>(am);
-		_callSequence->getCalls().push_back(call);
+		_callSequence->getCalls().push_back_unsafe(call);
 		call->setFunction(_oc.make<sm3::ModelFactory, sm3::Function>(am->getRunnable()));
 		setName(*call, "Call_" + am->getRunnable()->getName());
 	} else {
@@ -180,7 +186,7 @@ void Converter::work(const am::RunnableCall_ptr& am, am::RunnableCall*) {
 void Converter::work(const am::InterProcessTrigger_ptr& am, am::InterProcessTrigger*) {
 	if (_mode == PreOrder) {
 		auto act = _oc.make<sm3::ModelFactory, sm3::ActivationItem>(am);
-		_callSequence->getCalls().push_back(act);
+		_callSequence->getCalls().push_back_unsafe(act);
 		setName(*act, "InterProcessTrigger_" + am->getStimulus()->getName());
 		act->setConnection(_oc.make<sm3::ModelFactory, sm3::ActivationConnection>(am->getStimulus()));
 		if (auto counter = am->getStimulus()->getCounter()) {
@@ -193,7 +199,7 @@ void Converter::work(const am::InterProcessTrigger_ptr& am, am::InterProcessTrig
 void Converter::work(const am::SetEvent_ptr& am, am::SetEvent*) {
 	if (_mode == PreOrder) {
 		auto set = _oc.make<sm3::ModelFactory, sm3::SetEvent>(am);
-		_callSequence->getCalls().push_back(set);
+		_callSequence->getCalls().push_back_unsafe(set);
 
 		for (auto&& amEvent : am->getEventMask()->getEvents()) {
 			auto event = _oc.make<sm3::ModelFactory, sm3::Event>(amEvent);
@@ -206,7 +212,7 @@ void Converter::work(const am::SetEvent_ptr& am, am::SetEvent*) {
 void Converter::work(const am::WaitEvent_ptr& am, am::WaitEvent*) {
 	if (_mode == PreOrder) {
 		auto wait = _oc.make<sm3::ModelFactory, sm3::WaitEvent>(am);
-		_callSequence->getCalls().push_back(wait);
+		_callSequence->getCalls().push_back_unsafe(wait);
 
 		for (auto&& amEvent : am->getEventMask()->getEvents()) {
 			auto event = _oc.make<sm3::ModelFactory, sm3::Event>(amEvent);
@@ -220,7 +226,7 @@ void Converter::work(const am::ClearEvent_ptr& am, am::ClearEvent*) {
 	if (_mode == PreOrder) {
 		auto clear = _oc.make<sm3::ModelFactory, sm3::SetEvent>(am);
 		clear->setReset(true);
-		_callSequence->getCalls().push_back(clear);
+		_callSequence->getCalls().push_back_unsafe(clear);
 
 		for (auto&& amEvent : am->getEventMask()->getEvents()) {
 			auto event = _oc.make<sm3::ModelFactory, sm3::Event>(amEvent);
@@ -261,7 +267,7 @@ sm3::TimeDistribution_ptr createTimeDistribution(am::IDiscreteValueDeviation_ptr
 			dde->setCount(entry->getOccurrences());
 			dde->setLower(AttributeCreator<sm3::Time>()(entry->getLowerBound(), sm3::TimeUnit::T));
 			dde->setUpper(AttributeCreator<sm3::Time>()(entry->getUpperBound(), sm3::TimeUnit::T));
-			td->getDiscreteDistribution().push_back(dde);
+			td->getDiscreteDistribution().push_back_unsafe(dde);
 		}
 		td->setType(sm3::TimeDistributionType::Discrete);
 	} break;
@@ -355,7 +361,7 @@ void Converter::work(const am::Ticks_ptr& am, am::Ticks*) {
 	if (_mode == PreOrder) {
 		auto consumption = _oc.make<sm3::ModelFactory, sm3::ResourceConsumption>(am);
 		setName(*consumption, "Tick");
-		_callSequence->getCalls().push_back(consumption);
+		_callSequence->getCalls().push_back_unsafe(consumption);
 
 		auto value = am->getDefault();
 		if (!value) {
@@ -432,7 +438,7 @@ void Converter::work(const am::ModeSwitchDefault_ptr& am, am::ModeSwitchDefault*
 
 		auto cs = sm3::create<sm3::CallSequence>();
 		setName(*cs);
-		msd->getGraphEntries().push_back(cs);
+		msd->getGraphEntries().push_back_unsafe(cs);
 		_graphEntries.push_back(cs);
 		_callSequence = cs;
 
@@ -449,14 +455,14 @@ void Converter::work(const am::ModeSwitchEntry_ptr& am, am::ModeSwitchEntry*) {
 		setName(*mse);
 		auto modeSwitch = _oc.make<sm3::ModelFactory, sm3::ModeSwitch>(am->eContainer());
 		assert(modeSwitch);
-		modeSwitch->getEntries().push_back(mse);
+		modeSwitch->getEntries().push_back_unsafe(mse);
 
 		auto condition = _oc.make<sm3::ModelFactory, sm3::ModeCondition>(am->getCondition());
 		mse->setCondition(condition);
 
 		auto cs = sm3::create<sm3::CallSequence>();
 		setName(*cs);
-		mse->getGraphEntries().push_back(cs);
+		mse->getGraphEntries().push_back_unsafe(cs);
 		_graphEntries.push_back(cs);
 		_callSequence = cs;
 
@@ -501,14 +507,14 @@ void Converter::work(const am::ProbabilitySwitchEntry_ptr& am, am::ProbabilitySw
 		setName(*pse);
 		auto probSwitch = _oc.make<sm3::ModelFactory, sm3::ProbabilitySwitch>(am->eContainer());
 		assert(probSwitch);
-		probSwitch->getEntries().push_back(pse);
+		probSwitch->getEntries().push_back_unsafe(pse);
 
 		auto probability = am->getProbability();
 		pse->setProbability(probability);
 
 		auto cs = sm3::create<sm3::CallSequence>();
 		setName(*cs);
-		pse->getGraphEntries().push_back(cs);
+		pse->getGraphEntries().push_back_unsafe(cs);
 		_graphEntries.push_back(cs);
 		_callSequence = cs;
 
@@ -526,7 +532,7 @@ void Converter::work(const am::SchedulePoint_ptr&, am::SchedulePoint*) {
 void Converter::work(const am::SemaphoreAccess_ptr& am, am::SemaphoreAccess*) {
 	if (_mode == PreOrder) {
 		auto access = _oc.make<sm3::ModelFactory, sm3::SemaphoreAccess>(am);
-		_callSequence->getCalls().push_back(access);
+		_callSequence->getCalls().push_back_unsafe(access);
 
 		auto theSemaphore = am->getSemaphore();
 		if (theSemaphore) {

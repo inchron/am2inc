@@ -76,12 +76,12 @@ void Converter::addStimulus(const am::Process_ptr& am, const sm3::Process_ptr& p
 
 			if (callGraph->getGraphEntries().size() == 0) {
 				auto cs = sm3::create<sm3::CallSequence>();
-				callGraph->getGraphEntries().push_back(cs);
+				callGraph->getGraphEntries().push_back_unsafe(cs);
 				setName(*cs);
 			}
 			auto callSequence = ecore::as<sm3::CallSequence>(callGraph->getGraphEntries().get(0));
 
-			callSequence->getCalls().push_back(activationAction);
+			callSequence->getCalls().push_back_unsafe(activationAction);
 
 		} else {
 			auto cg = conn->getCallGraph();
@@ -91,12 +91,12 @@ void Converter::addStimulus(const am::Process_ptr& am, const sm3::Process_ptr& p
 			}
 			if (cg->getGraphEntries().size() == 0) {
 				auto cs = sm3::create<sm3::CallSequence>();
-				cg->getGraphEntries().push_back(cs);
+				cg->getGraphEntries().push_back_unsafe(cs);
 				setName(*cs);
 			}
 			auto cs = ecore::as<sm3::CallSequence>(cg->getGraphEntries().get(0));
 
-			cs->getCalls().push_back(activationAction);
+			cs->getCalls().push_back_unsafe(activationAction);
 			auto ips = ecore::as<am::InterProcessStimulus>(stimulus);
 			if (auto counter = ips->getCounter()) {
 				activationAction->setPeriod(counter->getPrescaler());
@@ -124,7 +124,7 @@ void Converter::addEvents(const root::model::Process_ptr& process) {
 		auto event = sm3::create<sm3::TraceEvent>();
 		event->setType(s_events[i].first);
 		event->setName(s_events[i].second);
-		process->getTraceEvents().push_back(event);
+		process->getTraceEvents().push_back_unsafe(event);
 	}
 }
 
@@ -142,7 +142,7 @@ void Converter::addEvents(const root::model::Function_ptr& function) {
 		auto event = sm3::create<sm3::TraceEvent>();
 		event->setType(s_events[i].first);
 		event->setName(s_events[i].second);
-		function->getTraceEvents().push_back(event);
+		function->getTraceEvents().push_back_unsafe(event);
 	}
 }
 
@@ -235,7 +235,7 @@ sm3::ModeGroup_ptr createModeGroup(ObjectCache& oc, const am::ModeLabel_ptr& lab
 	for (auto&& literal : enumMode->getLiterals()) {
 		auto mode = sm3::create<sm3::Mode>();
 		mode->setName(literal->getName());
-		modeGroup->getModes().push_back(mode);
+		modeGroup->getModes().push_back_unsafe(mode);
 		if (literal->getName() == label->getInitialValue())
 			initialMode = mode;
 	}
@@ -298,13 +298,13 @@ void Converter::work(const am::ModeLabel_ptr& label, am::ModeLabel*) {
 
 		if (auto enumMode = ecore::as<am::EnumMode>(modeDefinition)) {
 			auto modeGroup = details::createModeGroup(_oc, label);
-			_model->getGlobalModeGroups().push_back(modeGroup);
+			_model->getGlobalModeGroups().push_back_unsafe(modeGroup);
 
 		} else if (modeDefinition->eClass() == am::ModelPackage::_instance()->getNumericMode()) {
 			/* The am::NumericMode does not have any additional parameters, so
 			 * the default values of a sm3::Counter are used. */
 			auto counter = details::createCounter(_oc, label);
-			_model->getGlobalCounters().push_back(counter);
+			_model->getGlobalCounters().push_back_unsafe(counter);
 		}
 	}
 }
@@ -442,7 +442,7 @@ void Converter::work(const am::ModeConditionDisjunction_ptr& am, am::ModeConditi
 	if (_mode == PreOrder) {
 		auto condition = _oc.make<sm3::ModelFactory, sm3::ModeCondition>(am);
 		setName(*condition);
-		_model->getGlobalModeConditions().push_back(condition);
+		_model->getGlobalModeConditions().push_back_unsafe(condition);
 
 		/* 1..* ModeConditionDisjunctionEntry interface -> ModeCondition interface ->
 		 * ModeValueCondition
@@ -454,8 +454,8 @@ void Converter::work(const am::ModeConditionDisjunction_ptr& am, am::ModeConditi
 				 * sm3::ModeCondition. */
 				auto conjunction = sm3::create<sm3::ModeConjunction>();
 				auto expression = details::createRelationalExpression(_oc, amModeCondition);
-				conjunction->getExpressions().push_back(expression);
-				condition->getConjunctions().push_back(conjunction);
+				conjunction->getExpressions().push_back_unsafe(expression);
+				condition->getConjunctions().push_back_unsafe(conjunction);
 
 			} else if (auto amMcConjunction = ecore::as<am::ModeConditionConjunction>(entry)) {
 				/* Create a sm3::ModeConjunction and add all the
@@ -463,9 +463,9 @@ void Converter::work(const am::ModeConditionDisjunction_ptr& am, am::ModeConditi
 				auto conjunction = sm3::create<sm3::ModeConjunction>();
 				for (auto&& amModeCondition : amMcConjunction->getEntries()) {
 					auto expression = details::createRelationalExpression(_oc, amModeCondition);
-					conjunction->getExpressions().push_back(expression);
+					conjunction->getExpressions().push_back_unsafe(expression);
 				}
-				condition->getConjunctions().push_back(conjunction);
+				condition->getConjunctions().push_back_unsafe(conjunction);
 			}
 		}
 

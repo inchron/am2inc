@@ -86,10 +86,10 @@ void Converter::addMapping(const std::vector<am::ReferableBaseObject_ptr>& am,
 						   const std::vector<root::Referable_ptr>& inc) {
 	auto mapping = am2inc::create<am2inc::Mapping>();
 	for (auto&& a : am)
-		mapping->getAmalthea().push_back(a);
+		mapping->getAmalthea().push_back_unsafe(a);
 	for (auto&& i : inc)
-		mapping->getInchron().push_back(i);
-	_mappings->getMappings().push_back(mapping);
+		mapping->getInchron().push_back_unsafe(i);
+	_mappings->getMappings().push_back_unsafe(mapping);
 }
 
 /** Set an automatic name for a CallSequenceItem.

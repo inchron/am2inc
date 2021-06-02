@@ -37,7 +37,7 @@ void Converter::work(const am::InterProcessStimulus_ptr& am, am::InterProcessSti
 		gen->setName(am->getName());
 		/* am::InterProcessStimulus::counter is ignored here, it must be set
 		 * (multiple times) as ActivationAction::period,offset. */
-		_model->getConnections().push_back(gen);
+		_model->getConnections().push_back_unsafe(gen);
 	}
 }
 
@@ -76,7 +76,7 @@ void Converter::work(const am::PeriodicBurstStimulus_ptr& am, am::PeriodicBurstS
 		gen->setBurstPatternSettings(burst);
 
 		ecore::as<sm3s::StimulationScenario>(_model->getDefaultScenario())
-			->getGenerators().push_back(gen);
+			->getGenerators().push_back_unsafe(gen);
 	}
 }
 
@@ -129,7 +129,7 @@ void Converter::work(const am::PeriodicStimulus_ptr& am, am::PeriodicStimulus*) 
 		}
 
 		ecore::as<sm3s::StimulationScenario>(_model->getDefaultScenario())
-			->getGenerators().push_back(gen);
+			->getGenerators().push_back_unsafe(gen);
 	}
 }
 
@@ -148,7 +148,7 @@ void Converter::work(const am::PeriodicSyntheticStimulus_ptr& am, am::PeriodicSy
 			periodic->setStartOffsetVariation(startOffset);
 		}
 		ecore::as<sm3s::StimulationScenario>(_model->getDefaultScenario())
-			->getGenerators().push_back(periodic);
+			->getGenerators().push_back_unsafe(periodic);
 
 		auto gen = _oc.make<sm3s::StimulationFactory, StimulusTrait<am::PeriodicSyntheticStimulus>::type >(am);
 		gen->setName(am->getName());
@@ -157,11 +157,11 @@ void Converter::work(const am::PeriodicSyntheticStimulus_ptr& am, am::PeriodicSy
 		gen->setSourceGenerator(periodic);
 
 		for (auto&& occurrence : am->getOccurrenceTimes())
-			gen->getEntries().push_back(
+			gen->getEntries().push_back_unsafe(
 				AttributeCreator<sm3::Time>()(occurrence));
 
 		ecore::as<sm3s::StimulationScenario>(_model->getDefaultScenario())
-			->getGenerators().push_back(gen);
+			->getGenerators().push_back_unsafe(gen);
 	}
 }
 
@@ -264,7 +264,7 @@ void Converter::work(const am::RelativePeriodicStimulus_ptr& am, am::RelativePer
 		}
 
 		ecore::as<sm3s::StimulationScenario>(_model->getDefaultScenario())
-			->getGenerators().push_back(gen);
+			->getGenerators().push_back_unsafe(gen);
 	}
 }
 
@@ -274,10 +274,10 @@ void Converter::work(const am::SingleStimulus_ptr& am, am::SingleStimulus*) {
 		gen->setName(am->getName());
 		gen->setClock(_idealClock);
 
-		gen->getEntries().push_back(
+		gen->getEntries().push_back_unsafe(
 			AttributeCreator<sm3::Time>()(am->getOccurrence()));
 		ecore::as<sm3s::StimulationScenario>(_model->getDefaultScenario())
-			->getGenerators().push_back(gen);
+			->getGenerators().push_back_unsafe(gen);
 	}
 }
 

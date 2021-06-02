@@ -50,7 +50,7 @@ void Converter::relaxHardware() {
 					ic->setBitWidth(bitWidth);
 				}
 
-				cpu->getInterconnects().push_back(ic);
+				cpu->getInterconnects().push_back_unsafe(ic);
 			}
 
 			auto ic = cpu->getInterconnects().get(0);
@@ -120,7 +120,7 @@ void Converter::relaxHardware() {
 			auto ic = sm3m::create<sm3m::Interconnect>();
 			ic->setName("Interconnect");
 			ic->setClock(_idealClock);
-			_model->getInterconnects().push_back(ic);
+			_model->getInterconnects().push_back_unsafe(ic);
 		}
 
 		auto ic = _model->getInterconnects().get(0);
@@ -128,7 +128,7 @@ void Converter::relaxHardware() {
 		/* Connect all substructures */
 		while (ic->getResponders().size() < numberOfCpus) {
 			auto port = sm3m::create<sm3m::ResponderPort>();
-			ic->getResponders().push_back(port);
+			ic->getResponders().push_back_unsafe(port);
 		}
 		for (auto i = 0u; i < numberOfCpus; ++i) {
 			auto cpu = _model->getCpus().get(i);
@@ -143,7 +143,7 @@ void Converter::relaxHardware() {
 		/* Connect all Memories. */
 		while (ic->getInitiators().size() < numberOfGlobalMemories) {
 			auto port = sm3m::create<sm3m::InitiatorPort>();
-			ic->getInitiators().push_back(port);
+			ic->getInitiators().push_back_unsafe(port);
 		}
 		for (auto i = 0u; i < numberOfGlobalMemories; ++i) {
 			auto memory = _model->getMemories().get(i);
@@ -194,7 +194,8 @@ void mapObject2Component(const ecore::EObject_ptr& eObject,
 			toBeDone.push_back(function);
 		} else if (not container->eContainer()) {
 			auto component = ecore::as<sm3::Component>(container);
-			system->getComponents().push_back(component);
+			if (not component->eContainer())
+				system->getComponents().push_back(component);
 			toBeDone.push_back(function);
 		}
 
@@ -207,7 +208,8 @@ void mapObject2Component(const ecore::EObject_ptr& eObject,
 			component->getVariables().push_back(dataObject);
 		} else if (not container->eContainer()) {
 			auto component = ecore::as<sm3::Component>(container);
-			system->getComponents().push_back(component);
+			if (not component->eContainer())
+				system->getComponents().push_back(component);
 		}
 
 	} else {
@@ -237,6 +239,7 @@ void Converter::relaxRunnables() {
 
 	for (auto&& system : _model->getSystems()) {
 		sm3::Component_ptr component;
+		assert(not component);
 
 		if (auto genericSystem = ecore::as<sm3::GenericSystem>(system)) {
 			for (auto iter = genericSystem->getRtosConfig()->eAllContents();
@@ -247,7 +250,8 @@ void Converter::relaxRunnables() {
 
 		if (component) {
 			component->setName(system->getName() + "_Component");
-			system->getComponents().push_back(component);
+			if (not component->eContainer())
+				system->getComponents().push_back(component);
 		}
 	}
 

@@ -61,7 +61,7 @@ void EcoreModelChecker::work(const ecore::EObject_ptr& eobj) {
 					for (int idx = eList->size(); idx < reference->getLowerBound(); ++idx) {
 						auto child = createChildIfUnique(reference);
 						if (child)
-							eList->push_back(child);
+							eList->push_back_unsafe(child);
 					}
 				}
 

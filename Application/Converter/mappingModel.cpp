@@ -49,7 +49,7 @@ void Converter::work(const amalthea::model::MappingModel_ptr&,
 					auto schedulable = current.get(0);
 					/* Move to new containment. */
 					current.remove(schedulable);
-					rootScheduler->getSchedulables().push_back(schedulable);
+					rootScheduler->getSchedulables().push_back_unsafe(schedulable);
 
 					/* Copy CpuCore affinity from old scheduler to schedulable
 					 * and add to new scheduler. */
@@ -123,7 +123,8 @@ void Converter::work(const amalthea::model::ISRAllocation_ptr& am,
 		auto isr = _oc.find<sm3::Process>(am->getIsr(), ObjectCache::Default);
 		auto isrScheduler = _oc.find<sm3::Scheduler>(am->getController(), ObjectCache::Default);
 		if (isr && isrScheduler) {
-			isrScheduler->getSchedulables().push_back(isr);
+			/* We assume there is only 1 ISRAllocation per ISR. */
+			isrScheduler->getSchedulables().push_back_unsafe(isr);
 			isr->setPriority(am->getPriority());
 		}
 	}
@@ -133,7 +134,8 @@ void Converter::work(const am::TaskAllocation_ptr& am, am::TaskAllocation*) {
 	if (_mode == PreOrder) {
 		auto task = _oc.find<sm3::Process>(am->getTask(), ObjectCache::Default);
 		auto scheduler = _oc.make<sm3::ModelFactory, sm3::Scheduler>(am->getScheduler());
-		scheduler->getSchedulables().push_back(task);
+		/* We assume there is only 1 TaskAllocation per Task. */
+		scheduler->getSchedulables().push_back_unsafe(task);
 
 		for (auto&& amCore : am->getAffinity()) {
 			auto core = _oc.make<sm3::ModelFactory, sm3::CpuCore>(amCore);

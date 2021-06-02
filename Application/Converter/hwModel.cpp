@@ -17,7 +17,7 @@ void Converter::work(const am::FrequencyDomain_ptr& am, am::FrequencyDomain*) {
 		auto clock = _oc.make<sm3::ModelFactory, sm3::Clock>(am);
 		clock->setName(am->getName());
 		clock->setFrequency(AttributeCreator<sm3::Frequency>()(am->getDefaultValue()));
-		_model->getClocks().push_back(clock);
+		_model->getClocks().push_back_unsafe(clock);
 		addMapping({am}, {clock});
 	}
 }
@@ -50,7 +50,7 @@ void Converter::work(const am::HwStructure_ptr& am, am::HwStructure*) {
 							   return !!ecore::as<am::ProcessingUnit>(child); });
 		if (numberOfProcessingUnits) {
 			auto cpu = _oc.make<sm3::ModelFactory, sm3::Cpu>(am, ObjectCache::Default);
-			_model->getCpus().push_back(cpu);
+			_model->getCpus().push_back_unsafe(cpu);
 			cpu->setName(am->getName());
 			cpu->setCpuModel("generic");
 			cpu->setReloadCpuModel(true);
@@ -108,7 +108,7 @@ void Converter::work(const am::HwPort_ptr& am, am::HwPort*) {
 			port->setPriority(am->getPriority());
 
 			if (auto p = ecore::as<sm3m::Interconnect>(inchron)) {
-				p->getInitiators().push_back(port);
+				p->getInitiators().push_back_unsafe(port);
 			} else if (auto p = ecore::as<sm3::CpuCore>(inchron)) {
 				p->setInitiator(port);
 				p->setBitWidth(
@@ -127,7 +127,7 @@ void Converter::work(const am::HwPort_ptr& am, am::HwPort*) {
 			port->setName(am->getName());
 
 			if (auto p = ecore::as<sm3m::Interconnect>(inchron)) {
-				p->getResponders().push_back(port);
+				p->getResponders().push_back_unsafe(port);
 			// } else if (auto p = ecore::as<sm3::CpuCore>(inchron)) {
 			} else if (auto p = ecore::as<sm3m::Memory>(inchron)) {
 				p->setResponder(port);
@@ -160,7 +160,7 @@ void Converter::work(const am::ProcessingUnit_ptr& am, am::ProcessingUnit*) {
 			cpuCore->getInitiator()->setName("from_" + am->getName());
 
 			sm3::Cpu_ptr cpu = _oc.find<sm3::Cpu>(hwStructure, ObjectCache::Default);
-			cpu->getCores().push_back(cpuCore);
+			cpu->getCores().push_back_unsafe(cpuCore);
 
 			auto cpuClock = cpu->getClock();
 			auto coreClock = _oc.make<sm3::ModelFactory, sm3::Clock>(am->getFrequencyDomain());
@@ -202,9 +202,9 @@ void Converter::work(const am::Memory_ptr& am, am::Memory*) {
 
 			sm3::Cpu_ptr cpu = _oc.find<sm3::Cpu>(hwStructure, ObjectCache::Default);
 			if (!cpu) {
-				_model->getMemories().push_back(memory);
+				_model->getMemories().push_back_unsafe(memory);
 			} else {
-				cpu->getMemories().push_back(memory);
+				cpu->getMemories().push_back_unsafe(memory);
 			}
 		}
 	}
@@ -268,7 +268,7 @@ void Converter::work(const am::Cache_ptr& am, am::Cache*) {
 			cpu = ecore::as<sm3::Cpu>(cpuCore->eContainer());
 		else
 			cpu = _oc.make<sm3::ModelFactory, sm3::Cpu>(am->eContainer());
-		cpu->getMemories().push_back(cache);
+		cpu->getMemories().push_back_unsafe(cache);
 	}
 }
 
@@ -311,9 +311,9 @@ void Converter::work(const am::ConnectionHandler_ptr& am, am::ConnectionHandler*
 
 		if (auto hwStructure = ecore::as<am::HwStructure>(am->eContainer())) {
 			if (auto cpu = _oc.find<sm3::Cpu>(hwStructure, ObjectCache::Default))
-				cpu->getInterconnects().push_back(ic);
+				cpu->getInterconnects().push_back_unsafe(ic);
 			else
-				_model->getInterconnects().push_back(ic);
+				_model->getInterconnects().push_back_unsafe(ic);
 		}
 	}
 }

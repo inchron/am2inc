@@ -18,7 +18,7 @@ void Converter::work(const amalthea::model::OperatingSystem_ptr& am,
 	if (_mode == PreOrder) {
 		auto system = _oc.make<sm3::ModelFactory, sm3::GenericSystem>(am);
 		system->setName(am->getName());
-		_model->getSystems().push_back(system);
+		_model->getSystems().push_back_unsafe(system);
 
 		auto isrScheduler = ecore::as<sm3::Scheduler>(
 			system->getRtosConfig()->getSchedulables().get(0));
@@ -44,7 +44,7 @@ void Converter::work(const amalthea::model::InterruptController_ptr& am,
 			isrScheduler->setName(am->getName());
 
 			auto system = _oc.find<sm3::GenericSystem>(os, ObjectCache::Default);
-			system->getRtosConfig()->getSchedulables().push_back(isrScheduler);
+			system->getRtosConfig()->getSchedulables().push_back_unsafe(isrScheduler);
 		}
 	}
 }
@@ -54,7 +54,7 @@ void Converter::work(const amalthea::model::TaskScheduler_ptr& am,
 	if (_mode == PreOrder) {
 		auto scheduler = _oc.make<sm3::ModelFactory, sm3::Scheduler>(am);
 		scheduler->setName(am->getName());
-		_schedulerHierarchy.back()->getSchedulables().push_back(scheduler);
+		_schedulerHierarchy.back()->getSchedulables().push_back_unsafe(scheduler);
 		_schedulerHierarchy.push_back(scheduler);
 
 	} else {
@@ -81,15 +81,16 @@ void Converter::work(const amalthea::model::SchedulerAssociation_ptr& am,
 	if (_mode == PreOrder) {
 		auto impactedScheduler = _schedulerHierarchy.back();
 		auto parentScheduler = _oc.make<sm3::ModelFactory, sm3::Scheduler>(am->getParent());
+		/* We assume there is only 1 SchedulerAssociation per Scheduler. */
 		if (parentScheduler)
-			parentScheduler->getSchedulables().push_back(impactedScheduler);
+			parentScheduler->getSchedulables().push_back_unsafe(impactedScheduler);
 	}
 }
 
 void Converter::work(const amalthea::model::Semaphore_ptr& am, amalthea::model::Semaphore*) {
 	if (_mode == PreOrder) {
 		auto semaphore = _oc.make<sm3::ModelFactory, sm3::Semaphore>(am);
-		_model->getSemaphores().push_back(semaphore);
+		_model->getSemaphores().push_back_unsafe(semaphore);
 
 		semaphore->setName(am->getName());
 		semaphore->setInitialValue(am->getInitialValue());

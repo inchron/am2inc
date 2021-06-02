@@ -22,8 +22,8 @@ void ModelChecker<root::model::GenericSystem>::work(const ecore::Ptr<sm3::Generi
 	isrScheduler->setName("IsrScheduler");
 	sm3::Scheduler_ptr defaultScheduler(sm3::create<sm3::Scheduler>());
 	defaultScheduler->setName("DefaultScheduler");
-	isrScheduler->getSchedulables().push_back(defaultScheduler);
-	o->getRtosConfig()->getSchedulables().push_back(isrScheduler);
+	isrScheduler->getSchedulables().push_back_unsafe(defaultScheduler);
+	o->getRtosConfig()->getSchedulables().push_back_unsafe(isrScheduler);
 
 	EcoreModelChecker().work(isrScheduler);
 }
