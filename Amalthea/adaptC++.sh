@@ -11,6 +11,8 @@
 set -e
 
 acore=$1
+curl "https://git.eclipse.org/r/plugins/gitiles/app4mc/org.eclipse.app4mc/+/refs/heads/master/plugins/org.eclipse.app4mc.amalthea.model/model-gen/ecore/amalthea.ecore?format=TEXT" | base64 --decode > $acore
+
 if [ ! -f "$acore" ] ; then
     echo "$acore not found, exiting with error"
     exit 2

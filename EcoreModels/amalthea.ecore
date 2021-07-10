@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="model" nsURI="http://app4mc.eclipse.org/amalthea/1.0.0" nsPrefix="am">
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="model" nsURI="http://app4mc.eclipse.org/amalthea/1.1.0" nsPrefix="am">
   <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
     <details key="documentation" value="*&#xA;*******************************************************************************&#xA;Copyright (c) 2015-2020 Robert Bosch GmbH and others.&#xA;&#xA;This program and the accompanying materials are made&#xA;available under the terms of the Eclipse Public License 2.0&#xA;which is available at https://www.eclipse.org/legal/epl-2.0/&#xA;&#xA;SPDX-License-Identifier: EPL-2.0&#xA;*******************************************************************************"/>
     <details key="modelName" value="Amalthea"/>
@@ -9,18 +9,21 @@
     <details key="editDirectory" value="/org.eclipse.app4mc.amalthea.model.edit/src-gen"/>
     <details key="editorDirectory" value="/org.eclipse.app4mc.amalthea.model.editor/src-gen"/>
     <details key="rootExtendsClass" value="org.eclipse.app4mc.amalthea.model.emf.AmaltheaEObjectImpl"/>
-    <details key="providerRootExtendsClass" value="org.eclipse.app4mc.amalthea.model.emf.AmaltheaItemProviderAdapter"/>
+    <details key="providerRootExtendsClass" value="org.eclipse.app4mc.amalthea.model.provider.AmaltheaItemProviderAdapter"/>
     <details key="creationIcons" value="false"/>
     <details key="forceOverwrite" value="true"/>
     <details key="creationSubmenus" value="true"/>
     <details key="publicationLocation" value="org.eclipse.app4mc.amalthea.model/model-gen/xml/amalthea.xml"/>
     <details key="loadInitialization" value="false"/>
-    <details key="copyrightText" value="*******************************************************************************&#xD;&#xA; Copyright (c) 2015-2020 Robert Bosch GmbH and others.&#xD;&#xA;&#xD;&#xA; This program and the accompanying materials are made&#xD;&#xA; available under the terms of the Eclipse Public License 2.0&#xD;&#xA; which is available at https://www.eclipse.org/legal/epl-2.0/&#xD;&#xA;&#xD;&#xA; SPDX-License-Identifier: EPL-2.0&#xD;&#xA;&#xD;&#xA;    Generated using Eclipse EMF&#xD;&#xA;&#xD;&#xA;*******************************************************************************"/>
+    <details key="copyrightText" value="*******************************************************************************&#xD;&#xA; Copyright (c) 2015-2021 Robert Bosch GmbH and others.&#xD;&#xA;&#xD;&#xA; This program and the accompanying materials are made&#xD;&#xA; available under the terms of the Eclipse Public License 2.0&#xD;&#xA; which is available at https://www.eclipse.org/legal/epl-2.0/&#xD;&#xA;&#xD;&#xA; SPDX-License-Identifier: EPL-2.0&#xD;&#xA;&#xD;&#xA;    Generated using Eclipse EMF&#xD;&#xA;&#xD;&#xA;*******************************************************************************"/>
+    <details key="multipleEditorPages" value="false"/>
     <details key="decoration" value="Live"/>
     <details key="collapseAllAction" value="true"/>
     <details key="expandAllAction" value="true"/>
     <details key="autoExpandProperties" value="1"/>
     <details key="eclipsePlatformVersion" value="2019-12"/>
+    <details key="fileExtensions" value="amxmi"/>
+    <details key="pluginKey" value=""/>
     <details key="basePackage" value="org.eclipse.app4mc.amalthea"/>
   </eAnnotations>
   <eClassifiers xsi:type="ecore:EClass" name="Amalthea" eSuperTypes="#//BaseObject">
@@ -28,7 +31,7 @@
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
         changeable="false" volatile="true" transient="true" derived="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="get" value="return &quot;1.0.0&quot;;"/>
+        <details key="get" value="return &quot;1.1.0&quot;;"/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="commonElements" eType="#//CommonElements"
