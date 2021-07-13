@@ -5,7 +5,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
     name="root"
-    nsURI="http://inchron.com/realtime/root/3.0.1"
+    nsURI="http://inchron.com/realtime/root/3.0.3"
     nsPrefix="root">
   <eAnnotations
       source="http://www.eclipse.org/emf/2002/GenModel">
@@ -52,7 +52,7 @@
       instanceClassName="java.lang.String"/>
   <eSubpackages
       name="model"
-      nsURI="http://inchron.com/realtime/root/3.0.1/model"
+      nsURI="http://inchron.com/realtime/root/3.0.3/model"
       nsPrefix="model">
     <eClassifiers
         xsi:type="ecore:EClass"
@@ -3667,11 +3667,11 @@
           name="userHeader"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
       <eStructuralFeatures
-          xsi:type="ecore:EAttribute"
-          name="stateNames"
-          ordered="false"
+          xsi:type="ecore:EReference"
+          name="schedulingStates"
           upperBound="-1"
-          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+          eType="#//model/SchedulingState"
+          containment="true"/>
       <eStructuralFeatures
           xsi:type="ecore:EAttribute"
           name="apiPrefix"
@@ -3721,6 +3721,19 @@
       <eLiterals
           name="Osek"
           value="15"/>
+    </eClassifiers>
+    <eClassifiers
+        xsi:type="ecore:EClass"
+        name="SchedulingState">
+      <eStructuralFeatures
+          xsi:type="ecore:EAttribute"
+          name="encoding"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+          defaultValueLiteral="-1"/>
+      <eStructuralFeatures
+          xsi:type="ecore:EAttribute"
+          name="name"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>
     <eClassifiers
         xsi:type="ecore:EClass"
@@ -4652,7 +4665,7 @@
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="documentation"
-              value="The shape parameter alpha (or k) of the Weibull distribution."/>
+              value="Alpha is used for the Beta distribution and for the Weibull distribution, where it represents the shape parameter k."/>
         </eAnnotations>
       </eStructuralFeatures>
       <eStructuralFeatures
@@ -4664,7 +4677,7 @@
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="documentation"
-              value="The scale parameter beta (equals 1 divided by λ) of the Weibull distribution."/>
+              value="Beta is used for the Beta distribution and for the Weibull distribution, where it represents the scale parameter beta (which equals 1 divided by λ)."/>
         </eAnnotations>
       </eStructuralFeatures>
       <eStructuralFeatures
@@ -4705,28 +4718,132 @@
       </eAnnotations>
       <eLiterals
           name="Min"
-          literal="Min"/>
+          literal="Min">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The constant value min is used."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="Max"
           value="1"
-          literal="Max"/>
+          literal="Max">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The constant value max is used."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="Mean"
-          value="2"/>
+          value="2">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The constant value mean is used."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="Uniform"
-          value="3"/>
+          value="3">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="A uniform distribution between min and max is used."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="Normal"
-          value="4"/>
+          value="4">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The normal distribution, as characterized by mean and sigma, is used. The value is additionally limited between min and max."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="Weibull"
           value="5"
-          literal="Weibull"/>
+          literal="Weibull">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The timing is based on a Weibull distribution with the shape parameter alpha and the scale parameter beta (equals 1 divided by λ), limited by min and max."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="Discrete"
           value="6"
-          literal="Discrete"/>
+          literal="Discrete">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The timing is based on a discrete distribution as given by the list of DiscreteDistributionEntrys."/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals
+          name="Beta"
+          value="7"
+          literal="Beta">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The timing is based on a Beta distribution, as defined by the parameters alpha and beta, limited by min and max."/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals
+          name="BestCase"
+          value="8"
+          literal="BestCase">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The timing is based on a Beta distribution with alpha=0.2 and beta=1.0, limited by min and max."/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals
+          name="WorstCase"
+          value="9"
+          literal="WorstCase">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The timing is based on a Beta distribution with alpha=1.0 and beta=0.2, limited by min and max."/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals
+          name="AverageCase"
+          value="10"
+          literal="AverageCase">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The timing is based on a Beta distribution with alpha=2.0 and beta=2.0, limited by min and max."/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals
+          name="CornerCase"
+          value="11"
+          literal="CornerCase">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The timing is based on a Beta distribution with alpha=0.2 and beta=0.2, limited by min and max."/>
+        </eAnnotations>
+      </eLiterals>
     </eClassifiers>
     <eClassifiers
         xsi:type="ecore:EClass"
@@ -5500,7 +5617,7 @@
     </eClassifiers>
     <eSubpackages
         name="autosar"
-        nsURI="http://inchron.com/realtime/root/3.0.1/model/autosar"
+        nsURI="http://inchron.com/realtime/root/3.0.3/model/autosar"
         nsPrefix="autosar">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -6063,7 +6180,7 @@
     </eSubpackages>
     <eSubpackages
         name="fmi"
-        nsURI="http://inchron.com/realtime/root/3.0.1/model/fmi"
+        nsURI="http://inchron.com/realtime/root/3.0.3/model/fmi"
         nsPrefix="fmi">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -6219,7 +6336,7 @@
       </eClassifiers>
       <eSubpackages
           name="type"
-          nsURI="http://inchron.com/realtime/root/3.0.1/model/fmi/type"
+          nsURI="http://inchron.com/realtime/root/3.0.3/model/fmi/type"
           nsPrefix="type">
         <eClassifiers
             xsi:type="ecore:EClass"
@@ -6315,7 +6432,7 @@
       </eSubpackages>
       <eSubpackages
           name="unit"
-          nsURI="http://inchron.com/realtime/root/3.0.1/model/fmi/unit"
+          nsURI="http://inchron.com/realtime/root/3.0.3/model/fmi/unit"
           nsPrefix="unit">
         <eClassifiers
             xsi:type="ecore:EClass"
@@ -6490,7 +6607,7 @@
       </eSubpackages>
       <eSubpackages
           name="variable"
-          nsURI="http://inchron.com/realtime/root/3.0.1/model/fmi/variable"
+          nsURI="http://inchron.com/realtime/root/3.0.3/model/fmi/variable"
           nsPrefix="variable">
         <eClassifiers
             xsi:type="ecore:EClass"
@@ -6769,7 +6886,7 @@
     </eSubpackages>
     <eSubpackages
         name="memory"
-        nsURI="http://inchron.com/realtime/root/3.0.1/model/memory"
+        nsURI="http://inchron.com/realtime/root/3.0.3/model/memory"
         nsPrefix="memory">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -7428,7 +7545,7 @@
     </eSubpackages>
     <eSubpackages
         name="metric"
-        nsURI="http://inchron.com/realtime/root/3.0.1/model/metric"
+        nsURI="http://inchron.com/realtime/root/3.0.3/model/metric"
         nsPrefix="metric">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -7500,7 +7617,7 @@
             xsi:type="ecore:EReference"
             name="event"
             lowerBound="1"
-            eType="#//model/Event"/>
+            eType="#//model/TraceEvent"/>
       </eClassifiers>
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -7670,6 +7787,134 @@
               key="documentation"
               value="Abstract base class of all metrics returning time intervals combined with a float value and a verdict measure."/>
         </eAnnotations>
+      </eClassifiers>
+      <eClassifiers
+          xsi:type="ecore:EClass"
+          name="FunctionExecution"
+          eSuperTypes="#//model/metric/Metric">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The function execution metric calculates function execution relevant metrics like net execution time or gross execution time in the context of the containing process. The full list of metrics can be found in the FunctionExecutionMetricType enumeration. By chaining a subsequent FunctionExecutionSelector metric a single such execution time may be filtered."/>
+        </eAnnotations>
+        <eStructuralFeatures
+            xsi:type="ecore:EReference"
+            name="function"
+            lowerBound="1"
+            eType="#//model/TraceFunction"/>
+        <eStructuralFeatures
+            xsi:type="ecore:EReference"
+            name="process"
+            lowerBound="1"
+            eType="#//model/Process"/>
+      </eClassifiers>
+      <eClassifiers
+          xsi:type="ecore:EClass"
+          name="FunctionExecutionComparator"
+          eSuperTypes="#//model/metric/TRVMetric #//model/metric/TimeComparator">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The function execution comparator is a special TRComparator for a FunctionExecution metric as source. In addition to the normal TRComparator it allows for the selection of one function execution measure."/>
+        </eAnnotations>
+        <eStructuralFeatures
+            xsi:type="ecore:EAttribute"
+            name="functionExecutionType"
+            eType="#//model/metric/FunctionExecutionMetricType"
+            defaultValueLiteral="NetExecutionTime"/>
+        <eStructuralFeatures
+            xsi:type="ecore:EReference"
+            name="source"
+            lowerBound="1"
+            eType="#//model/metric/FunctionExecution"/>
+      </eClassifiers>
+      <eClassifiers
+          xsi:type="ecore:EClass"
+          name="FunctionExecutionMeanValueCalculator"
+          eSuperTypes="#//model/metric/TTMetric #//model/metric/MeanValueCalculator">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The function execution mean value calculator is a special TRMeanValueCalculator for a FunctionExecution metric as source. In addition to the normal TRMeanValueCalculator it allows for the selection of one function execution measure."/>
+        </eAnnotations>
+        <eStructuralFeatures
+            xsi:type="ecore:EAttribute"
+            name="functionExecutionType"
+            eType="#//model/metric/FunctionExecutionMetricType"
+            defaultValueLiteral="NetExecutionTime"/>
+        <eStructuralFeatures
+            xsi:type="ecore:EReference"
+            name="source"
+            lowerBound="1"
+            eType="#//model/metric/FunctionExecution"/>
+      </eClassifiers>
+      <eClassifiers
+          xsi:type="ecore:EEnum"
+          name="FunctionExecutionMetricType">
+        <eLiterals
+            name="NetExecutionTime"
+            literal="NetExecutionTime">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="The time between the entry and exit event, which the calling process spends in the running state."/>
+          </eAnnotations>
+        </eLiterals>
+        <eLiterals
+            name="GrossExecutionTime"
+            value="1">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="The time between the entry and exit event."/>
+          </eAnnotations>
+        </eLiterals>
+        <eLiterals
+            name="PreemptionTime"
+            value="2">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="The time between the entry and exit event, which the calling process spends in the ready state without entering the waiting state."/>
+          </eAnnotations>
+        </eLiterals>
+        <eLiterals
+            name="DeltaTime"
+            value="3">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="The time between two consecutive entry events."/>
+          </eAnnotations>
+        </eLiterals>
+      </eClassifiers>
+      <eClassifiers
+          xsi:type="ecore:EClass"
+          name="FunctionExecutionSelector"
+          eSuperTypes="#//model/metric/TRMetric">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The FunctionExecutionSelector returns one of the function execution measures calculated by the FunctionExecution source metric."/>
+        </eAnnotations>
+        <eStructuralFeatures
+            xsi:type="ecore:EAttribute"
+            name="functionExecutionType"
+            eType="#//model/metric/FunctionExecutionMetricType"
+            defaultValueLiteral="NetExecutionTime"/>
+        <eStructuralFeatures
+            xsi:type="ecore:EReference"
+            name="source"
+            lowerBound="1"
+            eType="#//model/metric/FunctionExecution"/>
       </eClassifiers>
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -7987,6 +8232,35 @@
             <details
                 key="documentation"
                 value="Relative prewarn margin at the upper limit in percentage of the interval length."/>
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers
+          xsi:type="ecore:EClass"
+          name="PreemptionTime"
+          eSuperTypes="#//model/metric/Metric">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The preemption time metric calculates the accumulated time a process preempts the given process for each process execution. Additionally the total preemption time of the process is calculated for each execution."/>
+        </eAnnotations>
+        <eStructuralFeatures
+            xsi:type="ecore:EReference"
+            name="process"
+            lowerBound="1"
+            eType="#//model/Process"/>
+        <eStructuralFeatures
+            xsi:type="ecore:EAttribute"
+            name="numberOfEvaluations"
+            lowerBound="1"
+            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+            defaultValueLiteral="-1">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="Number of process executions for which the preemption times shall be calculated. The metric will return the executions with the worst response time. If this attribute is set to the default value  (-1) the preemption times are calculated for all process executions."/>
           </eAnnotations>
         </eStructuralFeatures>
       </eClassifiers>
@@ -8445,7 +8719,7 @@
     </eSubpackages>
     <eSubpackages
         name="peripheral"
-        nsURI="http://inchron.com/realtime/root/3.0.1/model/peripheral"
+        nsURI="http://inchron.com/realtime/root/3.0.3/model/peripheral"
         nsPrefix="peripheral">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -9107,7 +9381,7 @@
     </eSubpackages>
     <eSubpackages
         name="requirement"
-        nsURI="http://inchron.com/realtime/root/3.0.1/model/requirement"
+        nsURI="http://inchron.com/realtime/root/3.0.3/model/requirement"
         nsPrefix="requirement">
       <eAnnotations
           source="http://www.eclipse.org/emf/2002/GenModel">
@@ -10116,7 +10390,7 @@
     </eSubpackages>
     <eSubpackages
         name="stimulation"
-        nsURI="http://inchron.com/realtime/root/3.0.1/model/stimulation"
+        nsURI="http://inchron.com/realtime/root/3.0.3/model/stimulation"
         nsPrefix="stimulation">
       <eClassifiers
           xsi:type="ecore:EClass"
