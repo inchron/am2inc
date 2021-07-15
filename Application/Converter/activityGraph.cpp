@@ -525,8 +525,12 @@ void Converter::work(const am::ProbabilitySwitchEntry_ptr& am, am::ProbabilitySw
 	}
 }
 
-void Converter::work(const am::SchedulePoint_ptr&, am::SchedulePoint*) {
-	static Diagnostic::NotImplemented<am::SchedulePoint> message;
+void Converter::work(const am::SchedulePoint_ptr& am, am::SchedulePoint*) {
+	if (_mode == PreOrder) {
+		auto sp = _oc.make<sm3::ModelFactory, sm3::SchedulePoint>(am);
+		setName(*sp);
+		_callSequence->getCalls().push_back_unsafe(sp);
+	}
 }
 
 void Converter::work(const am::SemaphoreAccess_ptr& am, am::SemaphoreAccess*) {
