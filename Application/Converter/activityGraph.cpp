@@ -414,14 +414,60 @@ void Converter::work(const am::GetResultServerCall_ptr&, am::GetResultServerCall
 	static Diagnostic::NotImplemented<am::GetResultServerCall> message;
 }
 
-void Converter::work(const am::ModeLabelAccess_ptr&, am::ModeLabelAccess*) {
-	static Diagnostic::NotImplemented<am::ModeLabelAccess> message;
+void Converter::work(const am::ModeLabelAccess_ptr& am, am::ModeLabelAccess*) {
+	if (_mode == PreOrder) {
+		if (auto&& enumMode = ecore::as<am::EnumMode>(am->getData()->getMode())) {
+			/* A ModeLabelAccess for an EnumMode is translated to a ModeSwitchPoint. */
+			if (am->getAccess() == am::ModeLabelAccessEnum::set) {
+				auto modeGroup = createModeGroup(_oc, am->getData());
+				for (auto&& literal : enumMode->getLiterals()) {
+					if (am->getValue() == literal->getName()) {
+						for (const auto&& mode : modeGroup->getModes()) {
+							if (literal->getName() == mode->getName()) {
+								auto modeSwitchPoint = _oc.make<sm3::ModelFactory, sm3::ModeSwitchPoint>(am);
+								setName(*modeSwitchPoint, "EnumModeLabelAccess");
+								modeSwitchPoint->setMode(mode);
+								_callSequence->getCalls().push_back_unsafe(modeSwitchPoint);
+								break;
+							}
+						}
+						break;
+					}
+				}
+			}
+
+		} else if (auto&& numericMode = ecore::as<am::NumericMode>(am->getData()->getMode())) {
+			/* A ModeLabelAccess for a NumericMode is translated to a CounterModification. */
+			if (am->getAccess() == am::ModeLabelAccessEnum::increment
+				or am->getAccess() == am::ModeLabelAccessEnum::decrement
+				or am->getAccess() == am::ModeLabelAccessEnum::set) {
+				auto counter = createCounter(_oc, am->getData());
+				auto counterModification = _oc.make<sm3::ModelFactory, sm3::CounterModification>(am);
+				setName(*counterModification, "NumericModeLabelAccess");
+				counterModification->setCounter(counter);
+				if (am->getAccess() == am::ModeLabelAccessEnum::increment)
+					counterModification->setType(sm3::CounterModificationType::Increment);
+				else if (am->getAccess() == am::ModeLabelAccessEnum::decrement)
+					counterModification->setType(sm3::CounterModificationType::Decrement);
+				else if (am->getAccess() == am::ModeLabelAccessEnum::set)
+					counterModification->setType(sm3::CounterModificationType::Set);
+				counterModification->setValue(am->getStep());
+				_callSequence->getCalls().push_back_unsafe(counterModification);
+			}
+		}
+
+	} else {
+	}
+
+	/* FIXME? We could also create a an additional conventional
+	 * DataAccess for the memory subsystem. */
 }
 
 void Converter::work(const am::ModeSwitch_ptr& am, am::ModeSwitch*) {
 	if (_mode == PreOrder) {
 		auto modeSwitch = _oc.make<sm3::ModelFactory, sm3::ModeSwitch>(am);
 		setName(*modeSwitch);
+		modeSwitch->setEvaluateConditionsOnEntry(true);
 		details::addAsSibling(_callSequence, modeSwitch);
 		details::removeIfUnused(_callSequence, _oc);
 
@@ -539,6 +585,10 @@ void Converter::work(const am::ProbabilitySwitchEntry_ptr& am, am::ProbabilitySw
 		_callSequence = sm3::CallSequence_ptr();
 		_graphEntries.pop_back();
 	}
+}
+
+void Converter::work(const am::WhileLoop_ptr&, am::WhileLoop*) {
+	static Diagnostic::NotImplemented<am::WhileLoop> message;
 }
 
 void Converter::work(const am::SchedulePoint_ptr& am, am::SchedulePoint*) {

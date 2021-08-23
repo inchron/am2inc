@@ -230,8 +230,6 @@ void Converter::work(const am::Task_ptr& am, am::Task*) {
 	}
 }
 
-namespace details {
-
 /** Create and initialize a sm3::ModeGroup from an am::ModeLabel with a
  * modeDefinition of type am::EnumMode.
  *
@@ -244,7 +242,7 @@ namespace details {
  * created and initialized if it does not exist, hence the order does not
  * matter.
  */
-sm3::ModeGroup_ptr createModeGroup(ObjectCache& oc, const am::ModeLabel_ptr& label) {
+sm3::ModeGroup_ptr Converter::createModeGroup(ObjectCache& oc, const am::ModeLabel_ptr& label) {
 	if (auto ptr = oc.find<sm3::ModeGroup>(label, ObjectCache::Default))
 		return ptr;
 
@@ -275,7 +273,7 @@ sm3::ModeGroup_ptr createModeGroup(ObjectCache& oc, const am::ModeLabel_ptr& lab
  * and details::createRelationalExpression(). The new Counter is only created
  * and initialized if it does not exist, hence the order does not matter.
  */
-sm3::Counter_ptr createCounter(ObjectCache& oc, const am::ModeLabel_ptr& label) {
+sm3::Counter_ptr Converter::createCounter(ObjectCache& oc, const am::ModeLabel_ptr& label) {
 	if (auto ptr = oc.find<sm3::Counter>(label, ObjectCache::Default))
 		return ptr;
 
@@ -299,8 +297,6 @@ sm3::Counter_ptr createCounter(ObjectCache& oc, const am::ModeLabel_ptr& label) 
 	return counter;
 }
 
-}
-
 /** Each am::ModeLabel translates either to a sm3::ModeGroup or to a
  * sm3::Counter, depending on the type of the reference Mode.
  *
@@ -320,13 +316,13 @@ void Converter::work(const am::ModeLabel_ptr& label, am::ModeLabel*) {
 		}
 
 		if (auto enumMode = ecore::as<am::EnumMode>(modeDefinition)) {
-			auto modeGroup = details::createModeGroup(_oc, label);
+			auto modeGroup = createModeGroup(_oc, label);
 			_model->getGlobalModeGroups().push_back_unsafe(modeGroup);
 
 		} else if (modeDefinition->eClass() == am::ModelPackage::_instance()->getNumericMode()) {
 			/* The am::NumericMode does not have any additional parameters, so
 			 * the default values of a sm3::Counter are used. */
-			auto counter = details::createCounter(_oc, label);
+			auto counter = createCounter(_oc, label);
 			_model->getGlobalCounters().push_back_unsafe(counter);
 		}
 	}
@@ -350,10 +346,8 @@ void Converter::work(const am::NumericMode_ptr&, am::NumericMode*) {
 	skipChildren();
 }
 
-namespace details {
-
-sm3::RelationalExpression_ptr createRelationalExpression(ObjectCache& oc,
-														 const am::ModeCondition_ptr& am) {
+sm3::RelationalExpression_ptr Converter::createRelationalExpression(
+	ObjectCache& oc, const am::ModeCondition_ptr& am) {
 	sm3::RelationalExpression_ptr expression;
 
 	if (auto mvc = ecore::as<am::ModeValueCondition>(am)) {
@@ -454,8 +448,6 @@ sm3::RelationalExpression_ptr createRelationalExpression(ObjectCache& oc,
 	return expression;
 }
 
-}
-
 /** An am::ModeConditionDisjunction is aggregated by an
  * am::ModeSwitchEntry::condition, an am::Stimulus::executionCondition, or an
  * am::Runnable::executionCondition. In general, it is translated into a
@@ -476,7 +468,7 @@ void Converter::work(const am::ModeConditionDisjunction_ptr& am, am::ModeConditi
 				 * and a sm3::ModeConjunction, then add it to the
 				 * sm3::ModeCondition. */
 				auto conjunction = sm3::create<sm3::ModeConjunction>();
-				auto expression = details::createRelationalExpression(_oc, amModeCondition);
+				auto expression = createRelationalExpression(_oc, amModeCondition);
 				conjunction->getExpressions().push_back_unsafe(expression);
 				condition->getConjunctions().push_back_unsafe(conjunction);
 
@@ -485,7 +477,7 @@ void Converter::work(const am::ModeConditionDisjunction_ptr& am, am::ModeConditi
 				 * am::ModeConditions as sm3::RelationalExpressions to it. */
 				auto conjunction = sm3::create<sm3::ModeConjunction>();
 				for (auto&& amModeCondition : amMcConjunction->getEntries()) {
-					auto expression = details::createRelationalExpression(_oc, amModeCondition);
+					auto expression = createRelationalExpression(_oc, amModeCondition);
 					conjunction->getExpressions().push_back_unsafe(expression);
 				}
 				condition->getConjunctions().push_back_unsafe(conjunction);

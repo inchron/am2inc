@@ -109,6 +109,7 @@ public:
 	void work(const amalthea::model::ModeSwitchEntry_ptr&, amalthea::model::ModeSwitchEntry*);
 	void work(const amalthea::model::ProbabilitySwitch_ptr&, amalthea::model::ProbabilitySwitch*);
 	void work(const amalthea::model::ProbabilitySwitchEntry_ptr&, amalthea::model::ProbabilitySwitchEntry*);
+	void work(const amalthea::model::WhileLoop_ptr&, amalthea::model::WhileLoop*);
 	void work(const amalthea::model::RunnableCall_ptr&, amalthea::model::RunnableCall*);
 	void work(const amalthea::model::SchedulePoint_ptr&, amalthea::model::SchedulePoint*);
 	void work(const amalthea::model::SemaphoreAccess_ptr&, amalthea::model::SemaphoreAccess*);
@@ -143,11 +144,17 @@ public:
 	void relaxIsrSchedulers();
 	void relaxRunnables();
 	void relaxFreeObjects();
+
 	void setName(root::model::CallSequenceItem&, const std::string&);
 	void setName(root::model::GraphEntryBase&, const std::string& = std::string());
 	void setName(root::model::ModeSwitchEntry&, const std::string& = std::string());
 	void setName(root::model::ProbabilitySwitchEntry&, const std::string& = std::string());
 	void setName(root::model::ModelObject&, const std::string& = std::string());
+
+	/* Helper functions used by multiple modules. */
+	static root::model::ModeGroup_ptr createModeGroup(ObjectCache&, const amalthea::model::ModeLabel_ptr&);
+	static root::model::Counter_ptr createCounter(ObjectCache&, const amalthea::model::ModeLabel_ptr&);
+	static root::model::RelationalExpression_ptr createRelationalExpression(ObjectCache& oc, const amalthea::model::ModeCondition_ptr&);
 
 private:
 	enum Mode { PreOrder, PostOrder } _mode{PreOrder};
