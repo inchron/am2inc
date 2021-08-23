@@ -179,7 +179,7 @@ private:
 	 * own counter. */
 	std::uint32_t _geCounter{0};
 
-	/* ModeSwitchEntrys and ProbablitiySwitchEntrys are named locally to their
+	/** ModeSwitchEntrys and ProbablitiySwitchEntrys are named locally to their
 	 * surrounding ModeSwitch resp. ProbabilitySwitch. Due to nested
 	 * switches this is implemented as a stack. */
 	std::stack<std::uint32_t> _mseCounter;

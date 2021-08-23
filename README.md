@@ -1,8 +1,8 @@
 # am2inc #
 
 am2inc reads [AMALTHEA models](https://www.eclipse.org/app4mc) and converts
-them to INCHRON version 3 models, which are used by the [INCHRON Tool-Suite
-3.x](https://www.inchron.com/tool-suite/). am2inc is implemented in C++ and
+them to INCHRON version 3 models, which are used by [INCHRON's chronSUITE
+3.X](https://www.inchron.com/chronsuite/). am2inc is implemented in C++ and
 uses the [EMF4CPP framework](https://github.com/inchron/emf4cpp).
 
 
@@ -96,7 +96,7 @@ of the Eclipse Public License 2.0 which is available at
 # Contact #
 
 The AMALTHEA to INCHRON Model Importer is actively maintained and provided to
-all users of the INCHRON Tool-Suite. If you would like more information or
+all users of INCHRON's chronSUITE. If you would like more information or
 would like to provide feedback on the conversion strategy or even suggest a
 new one, please feel free to contact us at
 [INCHRON](mailto:support@inchron.com?subject=[am2inc]%20Your%20subject).

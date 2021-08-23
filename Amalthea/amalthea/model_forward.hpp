@@ -166,6 +166,10 @@ namespace amalthea
         class ListObject;
         using ListObject_ptr = ::ecore::Ptr<ListObject>;
 
+// MapObject
+        class MapObject;
+        using MapObject_ptr = ::ecore::Ptr<MapObject>;
+
 // StringObject
         class StringObject;
         using StringObject_ptr = ::ecore::Ptr<StringObject>;
@@ -1234,6 +1238,10 @@ namespace amalthea
         class ProcessChain;
         using ProcessChain_ptr = ::ecore::Ptr<ProcessChain>;
 
+// IExecutable
+        class IExecutable;
+        using IExecutable_ptr = ::ecore::Ptr<IExecutable>;
+
 // Process
         class Process;
         using Process_ptr = ::ecore::Ptr<Process>;
@@ -1269,6 +1277,10 @@ namespace amalthea
 // ProbabilitySwitchEntry
         class ProbabilitySwitchEntry;
         using ProbabilitySwitchEntry_ptr = ::ecore::Ptr<ProbabilitySwitchEntry>;
+
+// WhileLoop
+        class WhileLoop;
+        using WhileLoop_ptr = ::ecore::Ptr<WhileLoop>;
 
 // Counter
         class Counter;

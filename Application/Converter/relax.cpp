@@ -121,6 +121,8 @@ void Converter::relaxHardware() {
 			ic->setName("Interconnect");
 			ic->setClock(_idealClock);
 			_model->getInterconnects().push_back_unsafe(ic);
+			ic->setBitWidth(
+				AttributeCreator<sm3::DataSize>()(256, sm3::DataSizeUnit::bit));
 		}
 
 		auto ic = _model->getInterconnects().get(0);

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="model" nsURI="http://app4mc.eclipse.org/amalthea/1.1.0" nsPrefix="am">
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="model" nsURI="http://app4mc.eclipse.org/amalthea/1.2.0" nsPrefix="am">
   <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-    <details key="documentation" value="*&#xA;*******************************************************************************&#xA;Copyright (c) 2015-2020 Robert Bosch GmbH and others.&#xA;&#xA;This program and the accompanying materials are made&#xA;available under the terms of the Eclipse Public License 2.0&#xA;which is available at https://www.eclipse.org/legal/epl-2.0/&#xA;&#xA;SPDX-License-Identifier: EPL-2.0&#xA;*******************************************************************************"/>
+    <details key="documentation" value="*&#xA;*******************************************************************************&#xA;Copyright (c) 2015-2021 Robert Bosch GmbH and others.&#xA;&#xA;This program and the accompanying materials are made&#xA;available under the terms of the Eclipse Public License 2.0&#xA;which is available at https://www.eclipse.org/legal/epl-2.0/&#xA;&#xA;SPDX-License-Identifier: EPL-2.0&#xA;*******************************************************************************"/>
     <details key="modelName" value="Amalthea"/>
     <details key="prefix" value="Amalthea"/>
     <details key="modelDirectory" value="/org.eclipse.app4mc.amalthea.model/xcore-gen"/>
@@ -31,7 +31,7 @@
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
         changeable="false" volatile="true" transient="true" derived="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="get" value="return &quot;1.1.0&quot;;"/>
+        <details key="get" value="return &quot;1.2.0&quot;;"/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="commonElements" eType="#//CommonElements"
@@ -488,9 +488,16 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="values" upperBound="-1"
         eType="#//Value" containment="true" resolveProxies="false"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MapObject" eSuperTypes="#//Value">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="@since 1.2"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="entries" upperBound="-1"
+        eType="#//CustomProperty" containment="true" resolveProxies="false"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="StringObject" eSuperTypes="#//Value">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Object for using the elementary datatype String as generic parameter"/>
+      <details key="documentation" value="Object for using the elementary datatype String as generic parameter."/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" unique="false" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
@@ -501,7 +508,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="BigIntegerObject" eSuperTypes="#//Value">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Object for using the elementary datatype String as generic parameter"/>
+      <details key="documentation" value="Object for using the elementary datatype BigInteger as generic parameter."/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" unique="false" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigInteger"
@@ -509,13 +516,13 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ReferenceObject" eSuperTypes="#//Value">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Object for using object reference as generic parameter"/>
+      <details key="documentation" value="Object for using object reference as generic parameter."/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="value" eType="#//IReferable"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="IntegerObject" eSuperTypes="#//Value">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Object for using the elementary datatype integer as generic parameter"/>
+      <details key="documentation" value="Object for using the elementary datatype integer as generic parameter."/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" unique="false" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
@@ -523,7 +530,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="LongObject" eSuperTypes="#//Value">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Object for using the elementary datatype long as generic parameter"/>
+      <details key="documentation" value="Object for using the elementary datatype long as generic parameter."/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" unique="false" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong"
@@ -531,7 +538,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FloatObject" eSuperTypes="#//Value">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Object for using the elementary datatype float as generic parameter"/>
+      <details key="documentation" value="Object for using the elementary datatype float as generic parameter."/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" unique="false" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"
@@ -539,7 +546,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="DoubleObject" eSuperTypes="#//Value">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Object for using the elementary datatype double as generic parameter"/>
+      <details key="documentation" value="Object for using the elementary datatype double as generic parameter."/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" unique="false" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
@@ -547,7 +554,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="BooleanObject" eSuperTypes="#//Value">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Object for using the elementary datatype boolean as generic parameter"/>
+      <details key="documentation" value="Object for using the elementary datatype boolean as generic parameter."/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" unique="false" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
@@ -3194,8 +3201,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="occurrenceMinDistance"
         eType="#//Time" containment="true" resolveProxies="false"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="occurrenceCount" unique="false"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
-        defaultValueLiteral="0"/>
+        eType="#//PositiveInt" defaultValueLiteral="1"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EventStimulus" eSuperTypes="#//Stimulus">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -3215,8 +3221,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ArrivalCurveEntry" eSuperTypes="#//BaseObject">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="numberOfOccurrences" unique="false"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
-        defaultValueLiteral="0"/>
+        eType="#//PositiveInt" defaultValueLiteral="1"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="lowerTimeBorder" eType="#//Time"
         containment="true" resolveProxies="false"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="upperTimeBorder" eType="#//Time"
@@ -3340,12 +3345,17 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="processes" upperBound="-1"
         eType="#//Process"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Process" abstract="true" eSuperTypes="#//AbstractProcess">
+  <eClassifiers xsi:type="ecore:EClass" name="IExecutable" abstract="true" interface="true">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="Generalizes interrupt service routines and tasks"/>
+      <details key="documentation" value="@since 1.2"/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="activityGraph" eType="#//ActivityGraph"
         containment="true" resolveProxies="false"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Process" abstract="true" eSuperTypes="#//AbstractProcess #//IExecutable">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="Generalizes interrupt service routines and tasks"/>
+    </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="stimuli" upperBound="-1"
         eType="#//Stimulus"/>
   </eClassifiers>
@@ -3361,11 +3371,21 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ActivityGraphItem" abstract="true" eSuperTypes="#//BaseObject">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="An abstract item of a call graph"/>
+      <details key="documentation" value="An abstract item of a ActivityGraph."/>
     </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="containingExecutable" eType="#//IExecutable"
+        changeable="false" volatile="true" transient="true" derived="true" resolveProxies="false">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="@since 1.2"/>
+        <details key="propertyCategory" value="Read only"/>
+        <details key="propertyFilterFlags" value="org.eclipse.ui.views.properties.expert"/>
+        <details key="get" value="return &lt;%org.eclipse.app4mc.amalthea.model.AmaltheaServices%>.&lt;&lt;%org.eclipse.app4mc.amalthea.model.IExecutable%>>getContainerOfType(this, &lt;%org.eclipse.app4mc.amalthea.model.IExecutable%>.class);"/>
+      </eAnnotations>
+    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="containingProcess" eType="#//Process"
         changeable="false" volatile="true" transient="true" derived="true" resolveProxies="false">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="@deprecated Use getContainingExecutable() instead."/>
         <details key="propertyCategory" value="Read only"/>
         <details key="propertyFilterFlags" value="org.eclipse.ui.views.properties.expert"/>
         <details key="get" value="return &lt;%org.eclipse.app4mc.amalthea.model.AmaltheaServices%>.&lt;&lt;%org.eclipse.app4mc.amalthea.model.Process%>>getContainerOfType(this, &lt;%org.eclipse.app4mc.amalthea.model.Process%>.class);"/>
@@ -3374,6 +3394,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="containingRunnable" eType="#//Runnable"
         changeable="false" volatile="true" transient="true" derived="true" resolveProxies="false">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="@deprecated Use getContainingExecutable() instead."/>
         <details key="propertyCategory" value="Read only"/>
         <details key="propertyFilterFlags" value="org.eclipse.ui.views.properties.expert"/>
         <details key="get" value="return &lt;%org.eclipse.app4mc.amalthea.model.AmaltheaServices%>.&lt;&lt;%org.eclipse.app4mc.amalthea.model.Runnable%>>getContainerOfType(this, &lt;%org.eclipse.app4mc.amalthea.model.Runnable%>.class);"/>
@@ -3391,7 +3412,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ModeSwitch" eSuperTypes="#//ActivityGraphItem">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="A switch in the call graph, the selected path depends on the value of the provided mode conditions"/>
+      <details key="documentation" value="A switch in the ActivityGraph, the selected path depends on the value of the provided mode conditions."/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="entries" upperBound="-1"
         eType="#//ModeSwitchEntry" containment="true" resolveProxies="false"/>
@@ -3400,7 +3421,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ModeSwitchEntry" eSuperTypes="#//BaseObject #//INamed #//IActivityGraphItemContainer">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="A switch entry for a ModeSwitch.&#xA;It describes a path of the switch and the required mode condition to use this path"/>
+      <details key="documentation" value="A switch entry for a ModeSwitch.&#xA;It describes a path of the switch and the required mode condition to use this path."/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="condition" lowerBound="1"
         eType="#//ModeConditionDisjunction" containment="true" resolveProxies="false"/>
@@ -3408,18 +3429,25 @@
   <eClassifiers xsi:type="ecore:EClass" name="ModeSwitchDefault" eSuperTypes="#//BaseObject #//IActivityGraphItemContainer"/>
   <eClassifiers xsi:type="ecore:EClass" name="ProbabilitySwitch" eSuperTypes="#//ActivityGraphItem">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="A switch in the call graph, each path has a probability"/>
+      <details key="documentation" value="A switch in the ActivityGraph, each path has a probability."/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="entries" upperBound="-1"
         eType="#//ProbabilitySwitchEntry" containment="true" resolveProxies="false"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ProbabilitySwitchEntry" eSuperTypes="#//BaseObject #//IActivityGraphItemContainer">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="A switch entry for a ProbabilitySwitch&#xA;It describes a path of the switch and it's probability"/>
+      <details key="documentation" value="A switch entry for a ProbabilitySwitch.&#xA;It describes a path of the switch and it's probability."/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="probability" unique="false"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
         defaultValueLiteral="0.0"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="WhileLoop" eSuperTypes="#//ActivityGraphItem #//IActivityGraphItemContainer">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A While loop in the ActivityGraph.&#xA;The (repeated) execution depends on the value of the provided mode conditions."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="condition" lowerBound="1"
+        eType="#//ModeConditionDisjunction" containment="true" resolveProxies="false"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Counter" eSuperTypes="#//BaseObject">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -3680,7 +3708,7 @@
         eType="#//DirectionType"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="dataType" eType="#//TypeDefinition"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Runnable" eSuperTypes="#//AbstractMemoryElement #//INamespaceMember">
+  <eClassifiers xsi:type="ecore:EClass" name="Runnable" eSuperTypes="#//AbstractMemoryElement #//IExecutable #//INamespaceMember">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="Smallest allocatable unit, which provides additional (optional) attributes for allocation algorithms."/>
       <details key="labelFeature" value="qualifiedName"/>
@@ -3699,8 +3727,6 @@
         containment="true" resolveProxies="false"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="parameters" upperBound="-1"
         eType="#//RunnableParameter" containment="true" resolveProxies="false" eOpposite="#//RunnableParameter/containingRunnable"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="activityGraph" eType="#//ActivityGraph"
-        containment="true" resolveProxies="false"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="activations" upperBound="-1"
         eType="#//Activation"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="callback" unique="false"
@@ -4116,6 +4142,13 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="ordered" unique="false"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
         defaultValueLiteral="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="interruptible" unique="false"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+        defaultValueLiteral="true">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="@since 1.2"/>
+      </eAnnotations>
+    </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="CallArgument" eSuperTypes="#//ReferableObject #//IDependsOn">
     <eOperations name="getName" unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">

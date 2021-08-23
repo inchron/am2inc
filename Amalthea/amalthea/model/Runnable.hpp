@@ -16,6 +16,7 @@
 
 #include <ecore_forward.hpp>
 #include <amalthea/model/AbstractMemoryElement.hpp>
+#include <amalthea/model/IExecutable.hpp>
 #include <amalthea/model/INamespaceMember.hpp>
 #include <amalthea/model/ASILType.hpp>
 
@@ -31,7 +32,7 @@ namespace amalthea
     namespace model
     {
 
-    class EXPORT_AMALTHEA_MODEL_DLL Runnable : public virtual ::amalthea::model::AbstractMemoryElement, public virtual ::amalthea::model::INamespaceMember
+    class EXPORT_AMALTHEA_MODEL_DLL Runnable : public virtual ::amalthea::model::AbstractMemoryElement, public virtual ::amalthea::model::IExecutable, public virtual ::amalthea::model::INamespaceMember
     {
     public:
         Runnable();
@@ -62,9 +63,6 @@ namespace amalthea
 
         virtual const ::ecorecpp::mapping::EList< ::amalthea::model::RunnableParameter_ptr >& getParameters () const;
         virtual ::ecorecpp::mapping::EList< ::amalthea::model::RunnableParameter_ptr >& getParameters ();
-
-        virtual ::amalthea::model::ActivityGraph_ptr getActivityGraph () const;
-        virtual void setActivityGraph (::amalthea::model::ActivityGraph_ptr _activityGraph);
 
         virtual const ::ecorecpp::mapping::EList< ::amalthea::model::Activation_ptr >& getActivations () const;
         virtual ::ecorecpp::mapping::EList< ::amalthea::model::Activation_ptr >& getActivations ();
@@ -120,8 +118,6 @@ namespace amalthea
         ::amalthea::model::ModeConditionDisjunction_ptr m_executionCondition;
 
         ::ecore::EList_ptr< ::amalthea::model::RunnableParameter_ptr > m_parameters;
-
-        ::amalthea::model::ActivityGraph_ptr m_activityGraph;
 
         ::ecore::EList_ptr< ::amalthea::model::Activation_ptr > m_activations;
 

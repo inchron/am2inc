@@ -163,7 +163,6 @@ void Converter::work(const am::LabelAccess_ptr& am, am::LabelAccess*) {
 		_callSequence->getCalls().push_back_unsafe(rc);
 
 		setName(*rc, "LabelAccess_" + am->getData()->getName());
-
 		auto access = _oc.make<sm3m::MemoryFactory, sm3m::ExplicitDataAccess>(am, ObjectCache::Sub1);
 		rc->getDataAccess().push_back_unsafe(access);
 		access->setAccessType(am->getAccess() == am::LabelAccessEnum::write ?
@@ -177,9 +176,13 @@ void Converter::work(const am::RunnableCall_ptr& am, am::RunnableCall*) {
 	if (_mode == PreOrder) {
 		auto call = _oc.make<sm3::ModelFactory, sm3::FunctionCall>(am);
 		_callSequence->getCalls().push_back_unsafe(call);
+
 		call->setFunction(_oc.make<sm3::ModelFactory, sm3::Function>(am->getRunnable()));
 		setName(*call, "Call_" + am->getRunnable()->getName());
-	} else {
+		if (auto&& counter = am->getCounter()) {
+			call->setPeriod(counter->getPrescaler());
+			call->setOffset(counter->getOffset());
+		}
 	}
 }
 
@@ -187,9 +190,10 @@ void Converter::work(const am::InterProcessTrigger_ptr& am, am::InterProcessTrig
 	if (_mode == PreOrder) {
 		auto act = _oc.make<sm3::ModelFactory, sm3::ActivationItem>(am);
 		_callSequence->getCalls().push_back_unsafe(act);
+
 		setName(*act, "InterProcessTrigger_" + am->getStimulus()->getName());
 		act->setConnection(_oc.make<sm3::ModelFactory, sm3::ActivationConnection>(am->getStimulus()));
-		if (auto counter = am->getStimulus()->getCounter()) {
+		if (auto&& counter = am->getCounter()) {
 			act->setPeriod(counter->getPrescaler());
 			act->setOffset(counter->getOffset());
 		}
@@ -206,6 +210,10 @@ void Converter::work(const am::SetEvent_ptr& am, am::SetEvent*) {
 			set->setEvent(event);
 			break;
 		}
+		if (auto&& counter = am->getCounter()) {
+			set->setPeriod(counter->getPrescaler());
+			set->setOffset(counter->getOffset());
+		}
 	}
 }
 
@@ -218,6 +226,10 @@ void Converter::work(const am::WaitEvent_ptr& am, am::WaitEvent*) {
 			auto event = _oc.make<sm3::ModelFactory, sm3::Event>(amEvent);
 			wait->setEvent(event);
 			break;
+		}
+		if (auto&& counter = am->getCounter()) {
+			wait->setPeriod(counter->getPrescaler());
+			wait->setOffset(counter->getOffset());
 		}
 	}
 }
@@ -232,6 +244,10 @@ void Converter::work(const am::ClearEvent_ptr& am, am::ClearEvent*) {
 			auto event = _oc.make<sm3::ModelFactory, sm3::Event>(amEvent);
 			clear->setEvent(event);
 			break;
+		}
+		if (auto&& counter = am->getCounter()) {
+			clear->setPeriod(counter->getPrescaler());
+			clear->setOffset(counter->getOffset());
 		}
 	}
 }
