@@ -10,9 +10,22 @@
 #
 set -e
 
-acore=$1
-curl "https://git.eclipse.org/r/plugins/gitiles/app4mc/org.eclipse.app4mc/+/refs/heads/master/plugins/org.eclipse.app4mc.amalthea.model/model-gen/ecore/amalthea.ecore?format=TEXT" | base64 --decode > $acore
+REFERENCE_URL=https://git.eclipse.org/r/plugins/gitiles/app4mc/org.eclipse.app4mc/+/refs/heads/master/plugins/org.eclipse.app4mc.amalthea.model/model-gen/ecore/amalthea.ecore?format=TEXT
 
+
+if [ x"$1" = x"--update" ] ; then
+    shift
+    if [ ! -z "$1" ]; then
+	curl "$REFERENCE_URL" | base64 --decode > $1
+    fi
+fi
+
+acore=$1
+
+if [ -z "$acore" ] ; then
+    echo "Ecore file name not specified, exiting with error"
+    exit 1
+fi
 if [ ! -f "$acore" ] ; then
     echo "$acore not found, exiting with error"
     exit 2

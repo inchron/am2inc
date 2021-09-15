@@ -72,6 +72,22 @@ Options:
 ...
 ```
 
+# Version Counting
+
+Semantic versioning is a thing, but inappropriate here: Changing the output
+model version is always an incompatible change as you have to update the
+tools, which process the generated output.
+
+Instead, we count the version of the am2inc as follows:
+
+1. The major version denotes the code structure and the algorithm. Aside of
+   model changes, source-code extensions will probably continue to work.
+2. The minor version is incremented, when either the input model version, the
+   output model version, or both, are changed.
+3. The patch number is incremented with bug fixes or converting new model
+   elements from one model to the other.
+
+
 # Updating the Models #
 
 The AMALTHEA model is maintained by the APP4MC project and can be retrieved
@@ -83,6 +99,15 @@ representation, and literal names, which are reserved keywords in C++.
 
 When the new model version has been copied to EcoreModels/amalthea.ecore, the
 necessary changes will be applied automatically during the build process.
+
+Download and adaption can be triggered manually in a single step:
+``` sh
+$ ./Amalthea/adaptC++.sh --update EcoreModels/amalthea.ecore
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  428k    0  428k    0     0   344k      0 --:--:--  0:00:01 --:--:--  344k
+Adapted EcoreModels/amalthea.ecore
+```
 
 The INCHRON model is intended for the use with EMF4CPP and does not need any
 special treatment. A new version can be stored in EcoreModels/root.ecore.
