@@ -104,6 +104,7 @@ void Converter::work(const am::PeriodicStimulus_ptr& am, am::PeriodicStimulus*) 
 		gen->setMinimumInterArrivalTime(AttributeCreator<sm3::Time>()(am->getMinDistance()));
 
 		/* Jitter, minDistance */
+		/* TODO: Refactor */
 		if (am::ITimeDeviation_ptr jitter = am->getJitter() ) {
 			auto variation = sm3::create<sm3::PeriodVariation>();
 			gen->setVariation(variation);
@@ -122,6 +123,8 @@ void Converter::work(const am::PeriodicStimulus_ptr& am, am::PeriodicStimulus*) 
 				variation->setMax(AttributeCreator<sm3::Time>()(jitter->getUpperBound()));
 				variation->setType(sm3::PeriodVariationType::Uniform);
 
+			// Weibull currently not supported for stimuli
+//			} else if (jitter->eClass() == amPkg->getTimeWeibullEstimatorsDistribution()) {
 			} else {
 				std::cerr << "Unsupported ITimeDeviation " << jitter->eClass()->getName() << "\n";
 				throw "Unsupported ITimeDeviation";
@@ -232,6 +235,7 @@ void Converter::work(const am::RelativePeriodicStimulus_ptr& am, am::RelativePer
 		}
 
 		/* Jitter, minDistance */
+		/* TODO: Refactor */
 		if (am::ITimeDeviation_ptr jitter = am->getNextOccurrence() ) {
 			auto variation = sm3::create<sm3::PeriodVariation>();
 			gen->setVariation(variation);

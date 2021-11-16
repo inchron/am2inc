@@ -343,12 +343,17 @@ sm3::TimeDistribution_ptr createTimeDistribution(am::IDiscreteValueDeviation_ptr
 	} break;
 
 	case am::ModelPackage::DISCRETEVALUEWEIBULLESTIMATORSDISTRIBUTION: {
-		/* amalthea.ecore says: "The parameter of a Weibull distribution
-		 * (kappa, lambda...) are calculated from the estimators minimum,
-		 * maximum and average.".
-		 * The class provides an additional "pRemainPromille".
-		 */
-		static Diagnostic::NotImplemented<am::DiscreteValueWeibullEstimatorsDistribution> message;
+		td->setMin(AttributeCreator<sm3::Time>()(am->getLowerBound(), sm3::TimeUnit::T));
+		td->setMax(AttributeCreator<sm3::Time>()(am->getUpperBound(), sm3::TimeUnit::T));
+		auto stat = ecore::as<am::DiscreteValueWeibullEstimatorsDistribution>(am);
+		td->setMean(AttributeCreator<sm3::Time>()(stat->getAverage(), sm3::TimeUnit::T));
+		/* OutlierProbability has to be in the range ]0..1]. */
+		double outlier = stat->getPRemainPromille() / 1000.;
+		if (outlier <= 0.)
+			outlier = .001;
+		td->setOutlierProbability(outlier);
+		td->setType(sm3::TimeDistributionType::WeibullEstimator);
+
 	} break;
 
 	case am::ModelPackage::DISCRETEVALUEBETADISTRIBUTION: {
