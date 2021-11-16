@@ -5,7 +5,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
     name="root"
-    nsURI="http://inchron.com/realtime/root/3.0.3"
+    nsURI="http://inchron.com/realtime/root/3.0.5"
     nsPrefix="root">
   <eAnnotations
       source="http://www.eclipse.org/emf/2002/GenModel">
@@ -50,9 +50,13 @@
       xsi:type="ecore:EDataType"
       name="MultiLineText"
       instanceClassName="java.lang.String"/>
+  <eClassifiers
+      xsi:type="ecore:EDataType"
+      name="UInteger"
+      instanceClassName="java.lang.Integer"/>
   <eSubpackages
       name="model"
-      nsURI="http://inchron.com/realtime/root/3.0.3/model"
+      nsURI="http://inchron.com/realtime/root/3.0.5/model"
       nsPrefix="model">
     <eClassifiers
         xsi:type="ecore:EClass"
@@ -485,7 +489,7 @@
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="documentation"
-              value="An integer value that is used to specify a prescaler for the execution frequency of this CallSequenceItem depending on the execution frequency of the enclosing CallSequence. The value must be greater than or equal to zero, with a value of zero indicating that this CallSequenceItem will be executed only once."/>
+              value="An integer value that is used to specify a prescaler for the execution frequency of this CallSequenceItem depending on the execution frequency of the enclosing CallSequence. The value must be greater than or equal to zero, with a value of zero indicating that this CallSequenceItem is disabled, i.e. it will not be executed."/>
         </eAnnotations>
       </eStructuralFeatures>
     </eClassifiers>
@@ -892,6 +896,18 @@
           <details
               key="documentation"
               value="A reference to a Process. If this is defined, the evaluation will only consider the TraceEvent if it occurs in the context of this Process."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures
+          xsi:type="ecore:EAttribute"
+          name="consumePredecessor"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+          defaultValueLiteral="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="If this is set to true, the predecessor is only consumed once and the chain will not fork in case of multiple equal successors."/>
         </eAnnotations>
       </eStructuralFeatures>
       <eStructuralFeatures
@@ -1776,40 +1792,6 @@
           <details
               key="documentation"
               value="The upper bound of the time interval described by this DiscreteDistributionEntry."/>
-        </eAnnotations>
-      </eStructuralFeatures>
-    </eClassifiers>
-    <eClassifiers
-        xsi:type="ecore:EClass"
-        name="EnforcedMigration"
-        eSuperTypes="#//model/CallSequenceItem">
-      <eAnnotations
-          source="http://www.eclipse.org/emf/2002/GenModel">
-        <details
-            key="documentation"
-            value="A CallSequenceItem that can be used to dynamically change the current CpuCore affinity of a Schedulable."/>
-      </eAnnotations>
-      <eStructuralFeatures
-          xsi:type="ecore:EReference"
-          name="cpuCores"
-          upperBound="-1"
-          eType="#//model/CpuCore">
-        <eAnnotations
-            source="http://www.eclipse.org/emf/2002/GenModel">
-          <details
-              key="documentation"
-              value="The list of CpuCores that defines the new CpuCore affinity of the referenced Schedulable after the execution of this CallSequenceItem."/>
-        </eAnnotations>
-      </eStructuralFeatures>
-      <eStructuralFeatures
-          xsi:type="ecore:EReference"
-          name="schedulable"
-          eType="#//model/Schedulable">
-        <eAnnotations
-            source="http://www.eclipse.org/emf/2002/GenModel">
-          <details
-              key="documentation"
-              value="The Schedulable whose CpuCore affinity is changed. May be null, which then refers to the current Process executing this CallSequenceItem."/>
         </eAnnotations>
       </eStructuralFeatures>
     </eClassifiers>
@@ -4160,6 +4142,40 @@
     </eClassifiers>
     <eClassifiers
         xsi:type="ecore:EClass"
+        name="SetCoreAffinity"
+        eSuperTypes="#//model/CallSequenceItem">
+      <eAnnotations
+          source="http://www.eclipse.org/emf/2002/GenModel">
+        <details
+            key="documentation"
+            value="A CallSequenceItem that can be used to dynamically change the current CpuCore affinity of a Schedulable. This may enforce an immediate rescheduling of the Process, when the current CpuCore is not a member of the new CpuCore affinity."/>
+      </eAnnotations>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="cpuCores"
+          upperBound="-1"
+          eType="#//model/CpuCore">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The list of CpuCores that defines the new CpuCore affinity of the referenced Schedulable after the execution of this CallSequenceItem."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="schedulable"
+          eType="#//model/Schedulable">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The Schedulable whose CpuCore affinity is changed. May be null, which then refers to the current Process executing this CallSequenceItem."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers
+        xsi:type="ecore:EClass"
         name="SetEvent"
         eSuperTypes="#//model/ActivationAction">
       <eAnnotations
@@ -4681,6 +4697,18 @@
         </eAnnotations>
       </eStructuralFeatures>
       <eStructuralFeatures
+          xsi:type="ecore:EAttribute"
+          name="outlierProbability"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
+          defaultValueLiteral="0.001">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The outlierProbability (0 &lt; outlierProbability &lt; 1) is used for the WeibullEstimator distribution, where it represents the probability that a rolled value is greater than max. Note that a high outlierProbability can lead to excessive simulation times due to the repeated rolling of outliers."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="discreteDistribution"
           upperBound="-1"
@@ -4779,8 +4807,18 @@
         </eAnnotations>
       </eLiterals>
       <eLiterals
+          name="WeibullEstimator"
+          value="6">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The timing is based on a Weibull distribution parameterized by min (lower bound), max (upper bound), mean, and an outlierProbability (0 &lt; outlierProbability &lt; 1) which is the probability that a rolled value is greater than max. Note that a high outlierProbability can lead to excessive simulation times due to the repeated rolling of outliers."/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals
           name="Discrete"
-          value="6"
+          value="7"
           literal="Discrete">
         <eAnnotations
             source="http://www.eclipse.org/emf/2002/GenModel">
@@ -4791,7 +4829,7 @@
       </eLiterals>
       <eLiterals
           name="Beta"
-          value="7"
+          value="8"
           literal="Beta">
         <eAnnotations
             source="http://www.eclipse.org/emf/2002/GenModel">
@@ -4802,7 +4840,7 @@
       </eLiterals>
       <eLiterals
           name="BestCase"
-          value="8"
+          value="9"
           literal="BestCase">
         <eAnnotations
             source="http://www.eclipse.org/emf/2002/GenModel">
@@ -4813,7 +4851,7 @@
       </eLiterals>
       <eLiterals
           name="WorstCase"
-          value="9"
+          value="10"
           literal="WorstCase">
         <eAnnotations
             source="http://www.eclipse.org/emf/2002/GenModel">
@@ -4824,7 +4862,7 @@
       </eLiterals>
       <eLiterals
           name="AverageCase"
-          value="10"
+          value="11"
           literal="AverageCase">
         <eAnnotations
             source="http://www.eclipse.org/emf/2002/GenModel">
@@ -4835,7 +4873,7 @@
       </eLiterals>
       <eLiterals
           name="CornerCase"
-          value="11"
+          value="12"
           literal="CornerCase">
         <eAnnotations
             source="http://www.eclipse.org/emf/2002/GenModel">
@@ -5617,7 +5655,7 @@
     </eClassifiers>
     <eSubpackages
         name="autosar"
-        nsURI="http://inchron.com/realtime/root/3.0.3/model/autosar"
+        nsURI="http://inchron.com/realtime/root/3.0.5/model/autosar"
         nsPrefix="autosar">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -6180,7 +6218,7 @@
     </eSubpackages>
     <eSubpackages
         name="fmi"
-        nsURI="http://inchron.com/realtime/root/3.0.3/model/fmi"
+        nsURI="http://inchron.com/realtime/root/3.0.5/model/fmi"
         nsPrefix="fmi">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -6336,7 +6374,7 @@
       </eClassifiers>
       <eSubpackages
           name="type"
-          nsURI="http://inchron.com/realtime/root/3.0.3/model/fmi/type"
+          nsURI="http://inchron.com/realtime/root/3.0.5/model/fmi/type"
           nsPrefix="type">
         <eClassifiers
             xsi:type="ecore:EClass"
@@ -6432,7 +6470,7 @@
       </eSubpackages>
       <eSubpackages
           name="unit"
-          nsURI="http://inchron.com/realtime/root/3.0.3/model/fmi/unit"
+          nsURI="http://inchron.com/realtime/root/3.0.5/model/fmi/unit"
           nsPrefix="unit">
         <eClassifiers
             xsi:type="ecore:EClass"
@@ -6607,7 +6645,7 @@
       </eSubpackages>
       <eSubpackages
           name="variable"
-          nsURI="http://inchron.com/realtime/root/3.0.3/model/fmi/variable"
+          nsURI="http://inchron.com/realtime/root/3.0.5/model/fmi/variable"
           nsPrefix="variable">
         <eClassifiers
             xsi:type="ecore:EClass"
@@ -6886,7 +6924,7 @@
     </eSubpackages>
     <eSubpackages
         name="memory"
-        nsURI="http://inchron.com/realtime/root/3.0.3/model/memory"
+        nsURI="http://inchron.com/realtime/root/3.0.5/model/memory"
         nsPrefix="memory">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -7545,7 +7583,7 @@
     </eSubpackages>
     <eSubpackages
         name="metric"
-        nsURI="http://inchron.com/realtime/root/3.0.3/model/metric"
+        nsURI="http://inchron.com/realtime/root/3.0.5/model/metric"
         nsPrefix="metric">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -7555,7 +7593,7 @@
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="documentation"
-              value="The core utilization metric returns the active time ranges of a cpu core. The integer data value is set to 1 within the active range. If a process is given (optional) only the time ranges where this process is active on the core are returned."/>
+              value="The core utilization metric returns the active time ranges of a cpu core. The integer data value is set to 1 within the active range. If a process is given (optional) only the time ranges where this process is active on the core are returned. This can be further restricted to a function running in the context of the process by the optional function reference."/>
         </eAnnotations>
         <eStructuralFeatures
             xsi:type="ecore:EReference"
@@ -7566,6 +7604,34 @@
             xsi:type="ecore:EReference"
             name="process"
             eType="#//model/Process"/>
+        <eStructuralFeatures
+            xsi:type="ecore:EReference"
+            name="function"
+            eType="#//model/TraceFunction"/>
+      </eClassifiers>
+      <eClassifiers
+          xsi:type="ecore:EClass"
+          name="CpuUtilization"
+          eSuperTypes="#//model/metric/IRMetric">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The cpu utilization metric returns the active time ranges of a cpu. The integer data value is set equal to the number of active cores within the active time range. If a process is given (optional) only the time ranges where this process is active on the core are returned. This can be further restricted to a function running in the context of the process by the optional function reference."/>
+        </eAnnotations>
+        <eStructuralFeatures
+            xsi:type="ecore:EReference"
+            name="cpu"
+            lowerBound="1"
+            eType="#//model/Cpu"/>
+        <eStructuralFeatures
+            xsi:type="ecore:EReference"
+            name="process"
+            eType="#//model/Process"/>
+        <eStructuralFeatures
+            xsi:type="ecore:EReference"
+            name="function"
+            eType="#//model/TraceFunction"/>
       </eClassifiers>
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -7980,6 +8046,56 @@
       </eClassifiers>
       <eClassifiers
           xsi:type="ecore:EClass"
+          name="IRGate"
+          eSuperTypes="#//model/metric/IRMetric">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The IRGate has an internal state, which is switched between enabled and disabled by the corresponding predecessor metrics. Its default value is 'disabled' but can be changed to 'enabled' by setting 'enabledByDefault' to true. In the enabled state the ranges of the source IRMetric are passed, while state changes lead to proper new start or end of the output range. If no source data is available in an 'Enabled' region the 'enabledRangeValue' is returned if 'ignoreEnabledRangesWithoutSourceData' is set to false. For 'Disabled' ranges the 'disabledRangeValue' is returned if 'ignoreDisabledRanges' is set to false."/>
+        </eAnnotations>
+        <eStructuralFeatures
+            xsi:type="ecore:EReference"
+            name="source"
+            eType="#//model/metric/IRMetric"/>
+        <eStructuralFeatures
+            xsi:type="ecore:EReference"
+            name="enable"
+            lowerBound="1"
+            eType="#//model/metric/ITMetric"/>
+        <eStructuralFeatures
+            xsi:type="ecore:EReference"
+            name="disable"
+            lowerBound="1"
+            eType="#//model/metric/ITMetric"/>
+        <eStructuralFeatures
+            xsi:type="ecore:EAttribute"
+            name="enabledByDefault"
+            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+            defaultValueLiteral="false"/>
+        <eStructuralFeatures
+            xsi:type="ecore:EAttribute"
+            name="ignoreDisabledRanges"
+            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+            defaultValueLiteral="true"/>
+        <eStructuralFeatures
+            xsi:type="ecore:EAttribute"
+            name="disabledRangeValue"
+            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+            defaultValueLiteral="0"/>
+        <eStructuralFeatures
+            xsi:type="ecore:EAttribute"
+            name="ignoreEnabledRangesWithoutSourceData"
+            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+            defaultValueLiteral="true"/>
+        <eStructuralFeatures
+            xsi:type="ecore:EAttribute"
+            name="enabledRangeValue"
+            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+            defaultValueLiteral="1"/>
+      </eClassifiers>
+      <eClassifiers
+          xsi:type="ecore:EClass"
           name="IRMeanValueCalculator"
           eSuperTypes="#//model/metric/FTMetric #//model/metric/MeanValueCalculator">
         <eAnnotations
@@ -8036,6 +8152,27 @@
       </eClassifiers>
       <eClassifiers
           xsi:type="ecore:EClass"
+          name="ITConditionalDeltaTime"
+          eSuperTypes="#//model/metric/ITDeltaTime">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The IT conditional delta time metric returns a time range and its duration. The start metric is mandatory and will be used as stop time metric if this metric is missing. If no trigger metric is given the stop metric is used as trigger. The value of the start metric and of the stop metric must obey the relation: stopvalue == A * startvalue + B to be considered as a matching pair."/>
+        </eAnnotations>
+        <eStructuralFeatures
+            xsi:type="ecore:EAttribute"
+            name="A"
+            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+            defaultValueLiteral="1"/>
+        <eStructuralFeatures
+            xsi:type="ecore:EAttribute"
+            name="B"
+            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+            defaultValueLiteral="0"/>
+      </eClassifiers>
+      <eClassifiers
+          xsi:type="ecore:EClass"
           name="ITDeltaTime"
           eSuperTypes="#//model/metric/TRMetric">
         <eAnnotations
@@ -8052,7 +8189,6 @@
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="stop"
-            lowerBound="1"
             eType="#//model/metric/ITMetric"/>
         <eStructuralFeatures
             xsi:type="ecore:EReference"
@@ -8368,6 +8504,32 @@
             name="source"
             lowerBound="1"
             eType="#//model/metric/ProcessExecution"/>
+      </eClassifiers>
+      <eClassifiers
+          xsi:type="ecore:EClass"
+          name="RtosFailureFilter"
+          eSuperTypes="#//model/metric/ITMetric">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="A filter that checks the occurrence of certain RTOS failures for processes that are not included in the blacklist or are included if the blacklist is treated as white list. It returns the failure number together with the time of occurrence."/>
+        </eAnnotations>
+        <eStructuralFeatures
+            xsi:type="ecore:EAttribute"
+            name="filteredRtosFailures"
+            upperBound="-1"
+            eType="#//model/requirement/RTOSFailure"/>
+        <eStructuralFeatures
+            xsi:type="ecore:EReference"
+            name="blacklist"
+            upperBound="-1"
+            eType="#//model/Process"/>
+        <eStructuralFeatures
+            xsi:type="ecore:EAttribute"
+            name="treatBlacklistAsWhitelist"
+            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+            defaultValueLiteral="false"/>
       </eClassifiers>
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -8719,7 +8881,7 @@
     </eSubpackages>
     <eSubpackages
         name="peripheral"
-        nsURI="http://inchron.com/realtime/root/3.0.3/model/peripheral"
+        nsURI="http://inchron.com/realtime/root/3.0.5/model/peripheral"
         nsPrefix="peripheral">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -9381,7 +9543,7 @@
     </eSubpackages>
     <eSubpackages
         name="requirement"
-        nsURI="http://inchron.com/realtime/root/3.0.3/model/requirement"
+        nsURI="http://inchron.com/realtime/root/3.0.5/model/requirement"
         nsPrefix="requirement">
       <eAnnotations
           source="http://www.eclipse.org/emf/2002/GenModel">
@@ -9670,7 +9832,7 @@
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="documentation"
-              value="A timing requirement measuring the latency between two configurable events."/>
+              value="A timing requirement measuring the latency between a start event and a stop event. The parameter value of the start event and of the stop event must obey the relation: stopvalue == A * startvalue + B to be considered as a matching pair. If the event has no parameter, its value is assumed to be 0."/>
         </eAnnotations>
         <eStructuralFeatures
             xsi:type="ecore:EReference"
@@ -10390,7 +10552,7 @@
     </eSubpackages>
     <eSubpackages
         name="stimulation"
-        nsURI="http://inchron.com/realtime/root/3.0.3/model/stimulation"
+        nsURI="http://inchron.com/realtime/root/3.0.5/model/stimulation"
         nsPrefix="stimulation">
       <eClassifiers
           xsi:type="ecore:EClass"
