@@ -80,7 +80,7 @@ win32 {
       unset(MANGLED_INSTALLS)
       for(x, INSTALLS):MANGLED_INSTALLS += install_$${x}
       deploy.path = $${target_libs.path}
-      deploy.commands = windeployqt.exe --verbose 0 \
+      deploy.commands = windeployqt --verbose 0 \
               $(INSTALL_ROOT:@msyshack@%=%)$${deploy.path}/libemf4cpp-ecore.dll \
               $(INSTALL_ROOT:@msyshack@%=%)$${deploy.path}/libemf4cpp-ecorecpp.dll
       deploy.depends = $${MANGLED_INSTALLS}

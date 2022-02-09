@@ -95,13 +95,13 @@ void XMLResource::doLoad(
 	 */
 	xml_parser::grammar::the_xml::match(st);
 
-	/* This only resolves non-containment references, that are not
-	 * cross-document !
+	/* This only resolves non-containment references that are not
+	 * cross-document.
 	 */
-	::ecore::EObject_ptr root = handler->getRootElement();
-	root->_initialize();
-
-	getContents()->push_back(root);
+	for ( const auto& root : handler->getRootElements() ) {
+		root->_initialize();
+		getContents()->push_back( root );
+	}
 
 	/* Insert all (id, eobject) mappings into the translation maps of this
 	 * XMLResource. */

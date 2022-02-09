@@ -82,7 +82,7 @@ void Application::start() {
 		return;
 	}
 
-	error(Options::Ok, QString::null);
+	error(Options::Ok, QString());
 }
 
 void Application::error(Options::Status error, const QString& msg) {

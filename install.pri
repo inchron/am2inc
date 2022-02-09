@@ -39,7 +39,7 @@ win32 {
         for(x, INSTALLS):MANGLED_INSTALLS += install_$${x}
 
         deployqt.path = $${target.path}
-        deployqt.commands = windeployqt.exe --verbose 0 $(INSTALL_ROOT:@msyshack@%=%)$${deployqt.path}/$(TARGET)
+        deployqt.commands = windeployqt --verbose 0 $(INSTALL_ROOT:@msyshack@%=%)$${deployqt.path}/$(TARGET)
         deployqt.depends = $${MANGLED_INSTALLS}
         INSTALLS += deployqt
 
