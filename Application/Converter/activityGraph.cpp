@@ -147,7 +147,26 @@ void Converter::work(const am::Group_ptr& am, am::Group*) {
 					  << "' uses random execution order\n";
 		}
 
+		/* A non-interruptible Group is emulated by added a
+		 * SuspendAllInterrupts at the beginning and a ResumeAllInterrupts at
+		 * the end [AM2INC-74]. Suspend- and ResumeAllInterrupts already
+		 * handle nested interrupt locking. */
+		if (!am->isInterruptible()) {
+			auto suspend = sm3::create<sm3::SuspendAllInterrupts>();
+			suspend->setName("ImplicitSuspend_" + am->getName());
+			_callSequence->getCalls().push_back_unsafe(suspend);
+		}
+
 	} else { // PostOrder
+		/* A non-interruptible Group executes a ResumeAllInterrupts at the end
+		 * [AM2INC-74]. Depending on the nesting of the interrupt locks, this
+		 * might lead to immediate preemption. */
+		if (!am->isInterruptible()) {
+			auto resume = sm3::create<sm3::ResumeAllInterrupts>();
+			resume->setName("ImplicitResume_" + am->getName());
+			_callSequence->getCalls().push_back_unsafe(resume);
+		}
+
 		auto cs = sm3::create<sm3::CallSequence>();
 		setName(*cs);
 		details::addAsSibling(_callSequence, cs);
