@@ -2,7 +2,7 @@
 # Use the default image and prepare some specifics which can only be done as
 #  root
 #
-FROM registry.inchron.de/cross/ubuntu-18.04-lts-x64/toolsuite3
+FROM registry.inchron.de/cross/ubuntu-18.04-lts-x64/chronsuite3
 
 # [AM2INC-29] Prepare an installation directory for am2inc
 ARG PREFIX_AM2INC=/opt/am2inc
