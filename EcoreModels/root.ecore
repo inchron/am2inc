@@ -5,7 +5,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
     name="root"
-    nsURI="http://inchron.com/realtime/root/3.0.5"
+    nsURI="http://inchron.com/realtime/root/3.1.0"
     nsPrefix="root">
   <eAnnotations
       source="http://www.eclipse.org/emf/2002/GenModel">
@@ -52,11 +52,15 @@
       instanceClassName="java.lang.String"/>
   <eClassifiers
       xsi:type="ecore:EDataType"
+      name="RichText"
+      instanceClassName="java.lang.String"/>
+  <eClassifiers
+      xsi:type="ecore:EDataType"
       name="UInteger"
       instanceClassName="java.lang.Integer"/>
   <eSubpackages
       name="model"
-      nsURI="http://inchron.com/realtime/root/3.0.5/model"
+      nsURI="http://inchron.com/realtime/root/3.1.0/model"
       nsPrefix="model">
     <eClassifiers
         xsi:type="ecore:EClass"
@@ -879,6 +883,7 @@
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="traceEvent"
+          lowerBound="1"
           eType="#//model/TraceEvent">
         <eAnnotations
             source="http://www.eclipse.org/emf/2002/GenModel">
@@ -913,7 +918,14 @@
       <eStructuralFeatures
           xsi:type="ecore:EAttribute"
           name="valueConstraint"
-          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="This attribute can be any mathematical condition, where the value of the event is replaced with the letter 'v'. Examples: v==3, 0&lt;=v&lt;=7."/>
+        </eAnnotations>
+      </eStructuralFeatures>
     </eClassifiers>
     <eClassifiers
         xsi:type="ecore:EClass"
@@ -2834,6 +2846,17 @@
               value="The name that is shown in the UI for this ModelObject."/>
         </eAnnotations>
       </eStructuralFeatures>
+      <eStructuralFeatures
+          xsi:type="ecore:EAttribute"
+          name="comment"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="A comment regarding this ModelObject. It has no semantic meaning for the model."/>
+        </eAnnotations>
+      </eStructuralFeatures>
     </eClassifiers>
     <eClassifiers
         xsi:type="ecore:EClass"
@@ -3356,6 +3379,19 @@
               value="The reference to an InterruptPort, if this Process is triggered by an Interrupt."/>
         </eAnnotations>
       </eStructuralFeatures>
+      <eStructuralFeatures
+          xsi:type="ecore:EAttribute"
+          name="extendedTask"
+          lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+          defaultValueLiteral="false">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="If this is set to true, process execution metrics are calculated according to the state machine of non-terminating AUTOSAR OS ECC tasks."/>
+        </eAnnotations>
+      </eStructuralFeatures>
     </eClassifiers>
     <eClassifiers
         xsi:type="ecore:EClass"
@@ -3535,13 +3571,13 @@
           name="schedulables"
           ordered="false"
           upperBound="-1"
-          eType="#//model/Schedulable"
+          eType="#//model/Scheduler"
           containment="true">
         <eAnnotations
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="documentation"
-              value="The list of Schedulables (this also includes Schedulers) managed by the RTOS."/>
+              value="The list of Schedulers managed by the RTOS."/>
         </eAnnotations>
       </eStructuralFeatures>
       <eStructuralFeatures
@@ -5655,7 +5691,7 @@
     </eClassifiers>
     <eSubpackages
         name="autosar"
-        nsURI="http://inchron.com/realtime/root/3.0.5/model/autosar"
+        nsURI="http://inchron.com/realtime/root/3.1.0/model/autosar"
         nsPrefix="autosar">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -6123,18 +6159,6 @@
             ordered="false"
             upperBound="-1"
             eType="#//model/autosar/OsResource"/>
-        <eStructuralFeatures
-            xsi:type="ecore:EAttribute"
-            name="extendedTask"
-            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
-            defaultValueLiteral="false">
-          <eAnnotations
-              source="http://www.eclipse.org/emf/2002/GenModel">
-            <details
-                key="documentation"
-                value="If this is set to true, this Process will behave like an AUTOSAR extended task."/>
-          </eAnnotations>
-        </eStructuralFeatures>
       </eClassifiers>
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -6218,7 +6242,7 @@
     </eSubpackages>
     <eSubpackages
         name="fmi"
-        nsURI="http://inchron.com/realtime/root/3.0.5/model/fmi"
+        nsURI="http://inchron.com/realtime/root/3.1.0/model/fmi"
         nsPrefix="fmi">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -6374,7 +6398,7 @@
       </eClassifiers>
       <eSubpackages
           name="type"
-          nsURI="http://inchron.com/realtime/root/3.0.5/model/fmi/type"
+          nsURI="http://inchron.com/realtime/root/3.1.0/model/fmi/type"
           nsPrefix="type">
         <eClassifiers
             xsi:type="ecore:EClass"
@@ -6470,7 +6494,7 @@
       </eSubpackages>
       <eSubpackages
           name="unit"
-          nsURI="http://inchron.com/realtime/root/3.0.5/model/fmi/unit"
+          nsURI="http://inchron.com/realtime/root/3.1.0/model/fmi/unit"
           nsPrefix="unit">
         <eClassifiers
             xsi:type="ecore:EClass"
@@ -6645,7 +6669,7 @@
       </eSubpackages>
       <eSubpackages
           name="variable"
-          nsURI="http://inchron.com/realtime/root/3.0.5/model/fmi/variable"
+          nsURI="http://inchron.com/realtime/root/3.1.0/model/fmi/variable"
           nsPrefix="variable">
         <eClassifiers
             xsi:type="ecore:EClass"
@@ -6924,7 +6948,7 @@
     </eSubpackages>
     <eSubpackages
         name="memory"
-        nsURI="http://inchron.com/realtime/root/3.0.5/model/memory"
+        nsURI="http://inchron.com/realtime/root/3.1.0/model/memory"
         nsPrefix="memory">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -7583,7 +7607,7 @@
     </eSubpackages>
     <eSubpackages
         name="metric"
-        nsURI="http://inchron.com/realtime/root/3.0.5/model/metric"
+        nsURI="http://inchron.com/realtime/root/3.1.0/model/metric"
         nsPrefix="metric">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -7593,7 +7617,7 @@
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="documentation"
-              value="The core utilization metric returns the active time ranges of a cpu core. The integer data value is set to 1 within the active range. If a process is given (optional) only the time ranges where this process is active on the core are returned. This can be further restricted to a function running in the context of the process by the optional function reference."/>
+              value="The core utilization metric returns the active time ranges of a cpu core. The integer data value is set to 1 within the active range. If a process is specified, only the time ranges where this process is active on the core are returned. This can be further restricted to a function running in the context of the process by the optional function reference."/>
         </eAnnotations>
         <eStructuralFeatures
             xsi:type="ecore:EReference"
@@ -7617,7 +7641,7 @@
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="documentation"
-              value="The cpu utilization metric returns the active time ranges of a cpu. The integer data value is set equal to the number of active cores within the active time range. If a process is given (optional) only the time ranges where this process is active on the core are returned. This can be further restricted to a function running in the context of the process by the optional function reference."/>
+              value="The cpu utilization metric returns the active time ranges of a cpu. The integer data value is set equal to the number of active cores within the active time range. If a process is specified, only the time ranges where this process is active on the core are returned. This can be further restricted to a function running in the context of the process by the optional function reference."/>
         </eAnnotations>
         <eStructuralFeatures
             xsi:type="ecore:EReference"
@@ -8881,7 +8905,7 @@
     </eSubpackages>
     <eSubpackages
         name="peripheral"
-        nsURI="http://inchron.com/realtime/root/3.0.5/model/peripheral"
+        nsURI="http://inchron.com/realtime/root/3.1.0/model/peripheral"
         nsPrefix="peripheral">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -9543,7 +9567,7 @@
     </eSubpackages>
     <eSubpackages
         name="requirement"
-        nsURI="http://inchron.com/realtime/root/3.0.5/model/requirement"
+        nsURI="http://inchron.com/realtime/root/3.1.0/model/requirement"
         nsPrefix="requirement">
       <eAnnotations
           source="http://www.eclipse.org/emf/2002/GenModel">
@@ -9832,7 +9856,7 @@
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="documentation"
-              value="A timing requirement measuring the latency between a start event and a stop event. The parameter value of the start event and of the stop event must obey the relation: stopvalue == A * startvalue + B to be considered as a matching pair. If the event has no parameter, its value is assumed to be 0."/>
+              value="A timing requirement measuring the latency between a start event and a stop event. The parameter value of the start event and of the stop event must obey the relation: stopvalue == parameterA * startvalue + parameterB to be considered as a matching pair. If the event has no parameter, its value is assumed to be 0."/>
         </eAnnotations>
         <eStructuralFeatures
             xsi:type="ecore:EReference"
@@ -9855,7 +9879,7 @@
               source="http://www.eclipse.org/emf/2002/GenModel">
             <details
                 key="documentation"
-                value="This parameter defines a prescaler for the start event so that only every nth event is taken into account."/>
+                value="The parameter value of the start event and of the stop event must obey the relation: stopvalue == parameterA * startvalue + parameterB to be considered as a matching pair."/>
           </eAnnotations>
         </eStructuralFeatures>
         <eStructuralFeatures
@@ -9867,7 +9891,7 @@
               source="http://www.eclipse.org/emf/2002/GenModel">
             <details
                 key="documentation"
-                value="This parameter defines a prescaler for the end event so that only every nth event is taken into account."/>
+                value="The parameter value of the start event and of the stop event must obey the relation: stopvalue == parameterA * startvalue + parameterB to be considered as a matching pair."/>
           </eAnnotations>
         </eStructuralFeatures>
         <eStructuralFeatures
@@ -10552,7 +10576,7 @@
     </eSubpackages>
     <eSubpackages
         name="stimulation"
-        nsURI="http://inchron.com/realtime/root/3.0.5/model/stimulation"
+        nsURI="http://inchron.com/realtime/root/3.1.0/model/stimulation"
         nsPrefix="stimulation">
       <eClassifiers
           xsi:type="ecore:EClass"
