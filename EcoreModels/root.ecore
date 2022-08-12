@@ -5,7 +5,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
     name="root"
-    nsURI="http://inchron.com/realtime/root/3.1.0"
+    nsURI="http://inchron.com/realtime/root/3.2.0"
     nsPrefix="root">
   <eAnnotations
       source="http://www.eclipse.org/emf/2002/GenModel">
@@ -60,7 +60,7 @@
       instanceClassName="java.lang.Integer"/>
   <eSubpackages
       name="model"
-      nsURI="http://inchron.com/realtime/root/3.1.0/model"
+      nsURI="http://inchron.com/realtime/root/3.2.0/model"
       nsPrefix="model">
     <eClassifiers
         xsi:type="ecore:EClass"
@@ -272,7 +272,7 @@
       </eStructuralFeatures>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
-          name="events"
+          name="traceEvents"
           upperBound="-1"
           eType="#//model/TraceEvent"
           containment="true">
@@ -889,7 +889,7 @@
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="documentation"
-              value="The TraceEvent that is oberserved by this EventChainStep."/>
+              value="The TraceEvent that is observed by this EventChainStep."/>
         </eAnnotations>
       </eStructuralFeatures>
       <eStructuralFeatures
@@ -3491,7 +3491,7 @@
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="documentation"
-              value="A reference to a SourceFunction, which can be used to replace the simulation behavior of this RessourceConsumption by the C/C++ implementation of the referenced SourceFunction."/>
+              value="A reference to a SourceFunction, which can be used to replace the simulation behavior of this ResourceConsumption by the C/C++ implementation of the referenced SourceFunction."/>
         </eAnnotations>
       </eStructuralFeatures>
       <eStructuralFeatures
@@ -5637,7 +5637,7 @@
           source="http://www.eclipse.org/emf/2002/GenModel">
         <details
             key="documentation"
-            value="A structural element that can be used to define while loops inside a CallGraph of a Process or a Function. It can not be used in the context of Connections or StimuliGenerators."/>
+            value="A structural element that can be used to define while loops inside a CallGraph of a Process or a Function. It cannot be used in the context of Connections or StimuliGenerators."/>
       </eAnnotations>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
@@ -5691,7 +5691,7 @@
     </eClassifiers>
     <eSubpackages
         name="autosar"
-        nsURI="http://inchron.com/realtime/root/3.1.0/model/autosar"
+        nsURI="http://inchron.com/realtime/root/3.2.0/model/autosar"
         nsPrefix="autosar">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -6242,7 +6242,7 @@
     </eSubpackages>
     <eSubpackages
         name="fmi"
-        nsURI="http://inchron.com/realtime/root/3.1.0/model/fmi"
+        nsURI="http://inchron.com/realtime/root/3.2.0/model/fmi"
         nsPrefix="fmi">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -6333,7 +6333,7 @@
               source="http://www.eclipse.org/emf/2002/GenModel">
             <details
                 key="documentation"
-                value="Default display unit. The conversion to the &quot;unit&quot; is defined with the element &quot;&lt; fmiModelDescription>&lt;UnitDefinitions>&quot;. &#xA;If the corresponding &quot;displayUnit&quot; is not defined under &lt;UnitDefinitions>&lt;Unit>&lt;DisplayUnit>, then displayUnit is ignored.&#xA;It is an error if displayUnit is defined in element Real, but unit is not, or unit is not defined under &lt;UnitDefinitions>&lt;Unit>."/>
+                value="Default unit to display the variable in.&#xA;If set, then it must refer to a DisplayUnit that the Unit contains which the feature &quot;unit&quot; refers to."/>
           </eAnnotations>
         </eStructuralFeatures>
         <eStructuralFeatures
@@ -6345,7 +6345,7 @@
               source="http://www.eclipse.org/emf/2002/GenModel">
             <details
                 key="documentation"
-                value="Maximum value of variable (variableValue ≤ max ). If not defined, the maximum is the largest positive number that can be represented on the machine. The max definition is an information from the FMU to the environment defining the region in which the FMU is designed to operate."/>
+                value="Maximum value of variable (value ≤ max). If not defined, the maximum is the largest positive number that can be represented on the machine. The max definition is an information from the FMU to the environment defining the region in which the FMU is designed to operate."/>
           </eAnnotations>
         </eStructuralFeatures>
         <eStructuralFeatures
@@ -6357,7 +6357,7 @@
               source="http://www.eclipse.org/emf/2002/GenModel">
             <details
                 key="documentation"
-                value="Minimum value of variable (variable Value ≥ min ). If not defined, the minimum is the largest negative number that can be represented on the machine. The min definition is an information from the FMU to the environment defining the region in which the FMU is designed to operate."/>
+                value="Minimum value of variable (value ≥ min). If not defined, the minimum is the largest negative number that can be represented on the machine. The min definition is an information from the FMU to the environment defining the region in which the FMU is designed to operate."/>
           </eAnnotations>
         </eStructuralFeatures>
         <eStructuralFeatures
@@ -6398,7 +6398,7 @@
       </eClassifiers>
       <eSubpackages
           name="type"
-          nsURI="http://inchron.com/realtime/root/3.1.0/model/fmi/type"
+          nsURI="http://inchron.com/realtime/root/3.2.0/model/fmi/type"
           nsPrefix="type">
         <eClassifiers
             xsi:type="ecore:EClass"
@@ -6494,7 +6494,7 @@
       </eSubpackages>
       <eSubpackages
           name="unit"
-          nsURI="http://inchron.com/realtime/root/3.1.0/model/fmi/unit"
+          nsURI="http://inchron.com/realtime/root/3.2.0/model/fmi/unit"
           nsPrefix="unit">
         <eClassifiers
             xsi:type="ecore:EClass"
@@ -6669,7 +6669,7 @@
       </eSubpackages>
       <eSubpackages
           name="variable"
-          nsURI="http://inchron.com/realtime/root/3.1.0/model/fmi/variable"
+          nsURI="http://inchron.com/realtime/root/3.2.0/model/fmi/variable"
           nsPrefix="variable">
         <eClassifiers
             xsi:type="ecore:EClass"
@@ -6695,7 +6695,7 @@
                 source="http://www.eclipse.org/emf/2002/GenModel">
               <details
                   key="documentation"
-                  value="&quot;calculatedParameter&quot; : A data value that is constant during the simulation and is computed during initialization or when tunable parameters change. variability must be &quot;fixed&quot; or &quot;tunable&quot; . initial must be &quot;approx&quot;, &quot;calculated&quot; or not present (meaning calculated )."/>
+                  value="&quot;calculatedParameter&quot; : A data value that is constant during the simulation and is computed during initialization or when tunable parameters change. variability must be &quot;fixed&quot; or &quot;tunable&quot;. initial must be &quot;approx&quot;, &quot;calculated&quot; or not present (meaning calculated)."/>
             </eAnnotations>
           </eLiterals>
           <eLiterals
@@ -6705,7 +6705,7 @@
                 source="http://www.eclipse.org/emf/2002/GenModel">
               <details
                   key="documentation"
-                  value="&quot;independent&quot; : The independent variable (usually “time”). All variables are a function of this independent variable. variability must be &quot;continuous&quot;. At most one ScalarVariable of an FMU can be defined as &quot;independent&quot;. If no variable is defined as &quot;independent&quot;, it is implicitely present with name = &quot;time&quot; and unit = &quot;s&quot;. If one variable is defined as &quot;independent&quot;, it must be defined as &quot;Real&quot; without a &quot;start&quot; attribute. It is not allowed to call function fmi2SetReal on an &quot;independent&quot; variable. Instead, its value is initialized with fmi2SetupExperiment and after initialization set by fmi2SetTime for ModelExchange and by arguments currentCommunicationPoint and communicationStepSize of fmi2DoStep for CoSimulation. [The actual value can be inquired with fmi2GetReal .]"/>
+                  value="&quot;independent&quot; : The independent variable (usually “time”). All variables are a function of this independent variable. variability must be &quot;continuous&quot;. At most one ScalarVariable of an FMU can be defined as &quot;independent&quot;. If no variable is defined as &quot;independent&quot;, it is implicitely present with name = &quot;time&quot; and unit = &quot;s&quot;. If one variable is defined as &quot;independent&quot;, it must be defined as &quot;Real&quot; without a &quot;start&quot; attribute. It is not allowed to call function fmi2SetReal on an &quot;independent&quot; variable. Instead, its value is initialized with fmi2SetupExperiment and after initialization set by fmi2SetTime for ModelExchange and by arguments currentCommunicationPoint and communicationStepSize of fmi2DoStep for CoSimulation. [The actual value can be inquired with fmi2GetReal]."/>
             </eAnnotations>
           </eLiterals>
           <eLiterals
@@ -6715,7 +6715,7 @@
                 source="http://www.eclipse.org/emf/2002/GenModel">
               <details
                   key="documentation"
-                  value="&quot;input&quot; : The variable value can be provided from another model or slave. It is not allowed to define initial ."/>
+                  value="&quot;input&quot; : The variable value can be provided from another model or slave. It is not allowed to define initial."/>
             </eAnnotations>
           </eLiterals>
           <eLiterals
@@ -6735,7 +6735,7 @@
                 source="http://www.eclipse.org/emf/2002/GenModel">
               <details
                   key="documentation"
-                  value="&quot;output&quot; : The variable value can be used by another model or slave. The algebraic relationship to the inputs is defined via the dependencies attribute of &lt; fmiModelDescription>&lt;ModelStructure>&lt;Outputs>&lt;Unknown> ."/>
+                  value="&quot;output&quot; : The variable value can be used by another model or slave. The algebraic relationship to the inputs is defined via the dependencies attribute of &lt; fmiModelDescription>&lt;ModelStructure>&lt;Outputs>&lt;Unknown>."/>
             </eAnnotations>
           </eLiterals>
           <eLiterals
@@ -6910,7 +6910,7 @@
                 source="http://www.eclipse.org/emf/2002/GenModel">
               <details
                   key="documentation"
-                  value="&quot;continuous&quot; : Only a variable of type = “ Real ” can be “ continuous ”.&#xA;ModelExchange: No restrictions on value changes.&#xA;CoSimulation: By convention, the variable is from a differential"/>
+                  value="&quot;continuous&quot; : Only a variable of type = “ Real ” can be “ continuous ”.&#xA;ModelExchange: No restrictions on value changes.&#xA;CoSimulation: By convention, the variable is from a differential."/>
             </eAnnotations>
           </eLiterals>
           <eLiterals
@@ -6948,7 +6948,7 @@
     </eSubpackages>
     <eSubpackages
         name="memory"
-        nsURI="http://inchron.com/realtime/root/3.1.0/model/memory"
+        nsURI="http://inchron.com/realtime/root/3.2.0/model/memory"
         nsPrefix="memory">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -7461,7 +7461,7 @@
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="documentation"
-              value="This enumaration defines the different types of Memory."/>
+              value="This enumeration defines the different types of Memory."/>
         </eAnnotations>
         <eLiterals
             name="SRAM"/>
@@ -7607,7 +7607,7 @@
     </eSubpackages>
     <eSubpackages
         name="metric"
-        nsURI="http://inchron.com/realtime/root/3.1.0/model/metric"
+        nsURI="http://inchron.com/realtime/root/3.2.0/model/metric"
         nsPrefix="metric">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -8905,7 +8905,7 @@
     </eSubpackages>
     <eSubpackages
         name="peripheral"
-        nsURI="http://inchron.com/realtime/root/3.1.0/model/peripheral"
+        nsURI="http://inchron.com/realtime/root/3.2.0/model/peripheral"
         nsPrefix="peripheral">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -8989,7 +8989,7 @@
             defaultValueLiteral="10"/>
         <eStructuralFeatures
             xsi:type="ecore:EReference"
-            name="events"
+            name="traceEvents"
             ordered="false"
             upperBound="-1"
             eType="#//model/TraceEvent"
@@ -9567,7 +9567,7 @@
     </eSubpackages>
     <eSubpackages
         name="requirement"
-        nsURI="http://inchron.com/realtime/root/3.1.0/model/requirement"
+        nsURI="http://inchron.com/realtime/root/3.2.0/model/requirement"
         nsPrefix="requirement">
       <eAnnotations
           source="http://www.eclipse.org/emf/2002/GenModel">
@@ -10088,7 +10088,7 @@
               source="http://www.eclipse.org/emf/2002/GenModel">
             <details
                 key="documentation"
-                value="In order to obtain evaluations with the verdict 'Critical', a margin relative to the given 'limit' has to be specified."/>
+                value="A margin to the given 'limit', used to obtain a 'critical' verdict in order to further differentiate successful evaluations. The range [limit, limit +/- prewarn margin] is considered as 'critical'. Note, that the 'limit' of a load requirement is a normalized value between 0 and 1."/>
           </eAnnotations>
         </eStructuralFeatures>
         <eStructuralFeatures
@@ -10327,7 +10327,7 @@
               source="http://www.eclipse.org/emf/2002/GenModel">
             <details
                 key="documentation"
-                value="The flag is used to enable or diable the evaluation of the requirement."/>
+                value="The flag is used to enable or disable the evaluation of the requirement."/>
           </eAnnotations>
         </eStructuralFeatures>
         <eStructuralFeatures
@@ -10556,7 +10556,7 @@
               source="http://www.eclipse.org/emf/2002/GenModel">
             <details
                 key="documentation"
-                value="Relative prewarn margin at the lower limit as percentage of the interval length."/>
+                value="Relative prewarn margin at the lower limit as percentage of the interval length given as a value between 0 and 1."/>
           </eAnnotations>
         </eStructuralFeatures>
         <eStructuralFeatures
@@ -10569,14 +10569,14 @@
               source="http://www.eclipse.org/emf/2002/GenModel">
             <details
                 key="documentation"
-                value="Relative prewarn margin at the upper limit in percentage of the interval length."/>
+                value="Relative prewarn margin at the upper limit in percentage of the interval length given as a value between 0 and 1."/>
           </eAnnotations>
         </eStructuralFeatures>
       </eClassifiers>
     </eSubpackages>
     <eSubpackages
         name="stimulation"
-        nsURI="http://inchron.com/realtime/root/3.1.0/model/stimulation"
+        nsURI="http://inchron.com/realtime/root/3.2.0/model/stimulation"
         nsPrefix="stimulation">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -10836,7 +10836,7 @@
               source="http://www.eclipse.org/emf/2002/GenModel">
             <details
                 key="documentation"
-                value="Lower bound for the distance between two consecutive stimuli. This limits the effect of certain random generators: When the generator is unrolled, no stimulus can be occur before its predecessor."/>
+                value="Lower bound for the distance between two consecutive stimuli. This limits the effect of certain random generators: When the generator is unrolled, no stimulus can occur before its predecessor."/>
           </eAnnotations>
         </eStructuralFeatures>
         <eStructuralFeatures
@@ -10996,7 +10996,7 @@
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="documentation"
-              value="This is the abstract base class of all generators. Whenever a generator decides to emit a stimulus, the CallGraph of the StimuliGenerator is processed. It can use one or many ActivationActions to activate a process or an ISR, send a bus message, set an event, or set a guard. Using ResourceConsumptions to model a delay between activations is not supported. Use a ListBasedGenerator or a InducedListBasedGenerator for this purpose."/>
+              value="This is the abstract base class of all generators. Whenever a generator decides to emit a stimulus, the CallGraph of the StimuliGenerator is processed. It can use one or many ActivationActions to activate a process or an ISR, send a bus message, set an event, or set a guard. Using ResourceConsumptions to model a delay between activations is not supported. Use a ListBasedGenerator or an InducedListBasedGenerator for this purpose."/>
         </eAnnotations>
         <eStructuralFeatures
             xsi:type="ecore:EReference"
