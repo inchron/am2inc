@@ -103,31 +103,37 @@ void Converter::work(const am::PeriodicStimulus_ptr& am, am::PeriodicStimulus*) 
 
 		gen->setMinimumInterArrivalTime(AttributeCreator<sm3::Time>()(am->getMinDistance()));
 
-		/* Jitter, minDistance */
-		/* TODO: Refactor */
 		if (am::ITimeDeviation_ptr jitter = am->getJitter() ) {
+			auto min = [&jitter] { return AttributeCreator<sm3::Time>()( jitter->getLowerBound() ); };
+			auto max = [&jitter] { return AttributeCreator<sm3::Time>()( jitter->getUpperBound() ); };
+
 			auto variation = sm3::create<sm3::PeriodVariation>();
 			gen->setVariation(variation);
 
 			auto amPkg = am::ModelPackage::_instance();
-			if (jitter->eClass() == amPkg->getTimeGaussDistribution()) {
-				variation->setMin(AttributeCreator<sm3::Time>()(jitter->getLowerBound()));
-				variation->setMax(AttributeCreator<sm3::Time>()(jitter->getUpperBound()));
+			if (jitter->eClass() == amPkg->getTimeConstant()) {
+				auto value = AttributeCreator<sm3::Time>()(
+					ecore::as<am::TimeConstant>( jitter )->getValue() );
+				variation->setMin( value );
+				variation->setMax( value );
+				variation->setType( sm3::PeriodVariationType::Uniform );
+
+			} else if (jitter->eClass() == amPkg->getTimeUniformDistribution()) {
+				variation->setMin( min() );
+				variation->setMax( max() );
+				variation->setType(sm3::PeriodVariationType::Uniform);
+
+			} else if (jitter->eClass() == amPkg->getTimeGaussDistribution()) {
+				variation->setMin( min() );
+				variation->setMax( max() );
 				variation->setType(sm3::PeriodVariationType::Normal);
 				variation->setSigma(
 					AttributeCreator<sm3::Time>()(
 						ecore::as<am::TimeGaussDistribution>(jitter)->getSd()));
 
-			} else if (jitter->eClass() == amPkg->getTimeUniformDistribution()) {
-				variation->setMin(AttributeCreator<sm3::Time>()(jitter->getLowerBound()));
-				variation->setMax(AttributeCreator<sm3::Time>()(jitter->getUpperBound()));
-				variation->setType(sm3::PeriodVariationType::Uniform);
-
-			// Weibull currently not supported for stimuli
-//			} else if (jitter->eClass() == amPkg->getTimeWeibullEstimatorsDistribution()) {
 			} else {
-				std::cerr << "Unsupported ITimeDeviation " << jitter->eClass()->getName() << "\n";
-				throw "Unsupported ITimeDeviation";
+				std::cerr << "PeriodicStimulus \"" << gen->getName()
+						  << "\": Jitter with unsupported ITimeDeviation " << jitter->eClass()->getName() << "\n";
 			}
 		}
 

@@ -107,6 +107,9 @@ void Converter::work(const am::ActivityGraph_ptr& am, am::ActivityGraph*) {
 		else if (auto runnable = ecore::as<sm3::Function>(parent))
 			runnable->setCallGraph(cg);
 
+		_csiCounter = 0u;
+		_geCounter = 0u;
+
 		auto cs = sm3::create<sm3::CallSequence>();
 		setName(*cs);
 		cg->getGraphEntries().push_back_unsafe(cs);
@@ -115,9 +118,6 @@ void Converter::work(const am::ActivityGraph_ptr& am, am::ActivityGraph*) {
 		_callSequence = cs;
 		assert(_graphEntries.empty());
 		_graphEntries.push_back(_callSequence);
-
-		_csiCounter = 0u;
-		_geCounter = 0u;
 
 	} else {
 		details::removeIfUnused(_callSequence, _oc);
@@ -286,8 +286,7 @@ namespace details {
 sm3::TimeDistribution_ptr createTimeDistribution(am::IDiscreteValueDeviation_ptr am) {
 	auto td = sm3::create<sm3::TimeDistribution>();
 
-	auto classifier = am->eClass()->getClassifierID();
-	switch (classifier) {
+	switch ( am->eClass()->getClassifierID() ) {
 	case am::ModelPackage::DISCRETEVALUECONSTANT:
 		td->setMin(AttributeCreator<sm3::Time>()(am->getLowerBound(), sm3::TimeUnit::T));
 		td->setMax(AttributeCreator<sm3::Time>()(am->getUpperBound(), sm3::TimeUnit::T));
@@ -309,18 +308,42 @@ sm3::TimeDistribution_ptr createTimeDistribution(am::IDiscreteValueDeviation_ptr
 	} break;
 
 	case am::ModelPackage::DISCRETEVALUEBOUNDARIES: {
+		/** This corresponds to the Amalthea Boundaries distribution (see 3.2.6.1 of the
+		 * Amalthea documentation) which defines five sampling (sub-)types (scenarios).
+		 * All these five scenarios are modeled by a Beta Distribution with scenario specific
+		 * distribution parameters (fixed) Alpha and Beta.
+		 * The free parameters of a scenario are a lower and an upper bound (see the
+		 * am::BoundedTimeDistribution inherits from am::TimeInterval and the
+		 * definition of the corresponding discrete value classes is analogous).
+		 */
 		auto bound = ecore::as<am::DiscreteValueBoundaries>(am);
 		td->setMin(AttributeCreator<sm3::Time>()(bound->getLowerBound(), sm3::TimeUnit::T));
 		td->setMax(AttributeCreator<sm3::Time>()(bound->getUpperBound(), sm3::TimeUnit::T));
 		switch (bound->getSamplingType()) {
+		case am::SamplingType::_default_: {
+			/** _default_ implies (Amalthea class) Constant, which does not exist in the
+			 * INCHRON model. We set it to type Mean (i.e. not a beta distribution) in order
+			 * to clearly differentiate it from the five distinct "scenarios" of am::Boundaries. */
+			td->setType(sm3::TimeDistributionType::Mean);
+			/** Providing the mean value is mandatory.
+			 * \note Rounding error due to integer truncation applies. */
+			const auto mean =  (*td->getMax() - *td->getMin()) / 2;
+			td->setMean( AttributeCreator<sm3::Time>()( mean.getValue() , sm3::TimeUnit::T) );
+		} break;
 		case am::SamplingType::BestCase:
-			td->setType(sm3::TimeDistributionType::Min);
+			td->setType( sm3::TimeDistributionType::BestCase );
 			break;
 		case am::SamplingType::WorstCase:
-			td->setType(sm3::TimeDistributionType::Max);
+			td->setType( sm3::TimeDistributionType::WorstCase );
+			break;
+		case am::SamplingType::AverageCase:
+			td->setType( sm3::TimeDistributionType::AverageCase );
+			break;
+		case am::SamplingType::CornerCase:
+			td->setType( sm3::TimeDistributionType::CornerCase );
 			break;
 		case am::SamplingType::Uniform:
-			td->setType(sm3::TimeDistributionType::Uniform);
+			td->setType( sm3::TimeDistributionType::Uniform );
 			break;
 		default:
 			std::cerr << "Unsupported DiscreteValueBoundaries::samplingType "
@@ -362,6 +385,15 @@ sm3::TimeDistribution_ptr createTimeDistribution(am::IDiscreteValueDeviation_ptr
 		td->setType(sm3::TimeDistributionType::Uniform);
 	} break;
 
+	case am::ModelPackage::DISCRETEVALUEGAUSSDISTRIBUTION: {
+		td->setMin(AttributeCreator<sm3::Time>()(am->getLowerBound(), sm3::TimeUnit::T));
+		td->setMax(AttributeCreator<sm3::Time>()(am->getUpperBound(), sm3::TimeUnit::T));
+		auto gauss = ecore::as<am::DiscreteValueGaussDistribution>(am);
+		td->setMean(AttributeCreator<sm3::Time>()(gauss->getMean(), sm3::TimeUnit::T));
+		td->setSigma(AttributeCreator<sm3::Time>()(gauss->getSd(), sm3::TimeUnit::T));
+		td->setType(sm3::TimeDistributionType::Normal);
+	} break;
+
 	case am::ModelPackage::DISCRETEVALUEWEIBULLESTIMATORSDISTRIBUTION: {
 		td->setMin(AttributeCreator<sm3::Time>()(am->getLowerBound(), sm3::TimeUnit::T));
 		td->setMax(AttributeCreator<sm3::Time>()(am->getUpperBound(), sm3::TimeUnit::T));
@@ -379,15 +411,6 @@ sm3::TimeDistribution_ptr createTimeDistribution(am::IDiscreteValueDeviation_ptr
 	case am::ModelPackage::DISCRETEVALUEBETADISTRIBUTION: {
 		/* Beta distribution is not supported. */
 		static Diagnostic::NotImplemented<am::DiscreteValueBetaDistribution> message;
-	} break;
-
-	case am::ModelPackage::DISCRETEVALUEGAUSSDISTRIBUTION: {
-		td->setMin(AttributeCreator<sm3::Time>()(am->getLowerBound(), sm3::TimeUnit::T));
-		td->setMax(AttributeCreator<sm3::Time>()(am->getUpperBound(), sm3::TimeUnit::T));
-		auto gauss = ecore::as<am::DiscreteValueGaussDistribution>(am);
-		td->setMean(AttributeCreator<sm3::Time>()(gauss->getMean(), sm3::TimeUnit::T));
-		td->setSigma(AttributeCreator<sm3::Time>()(gauss->getSd(), sm3::TimeUnit::T));
-		td->setType(sm3::TimeDistributionType::Normal);
 	} break;
 
 	}
