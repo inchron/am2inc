@@ -5,13 +5,14 @@
  * Copyright 2020 INCHRON AG <info@inchron.com>
  */
 /** @file activityGraph.cpp
- * Groups all code related to Amalthea's ActivitGraph and ActivityGraphItems.
+ * Groups all code related to Amalthea's ActivityGraph and ActivityGraphItems.
  *
  * The conversion concept is as follows:
  *
- * We know the current CallGraph and the current CallSequenceItem.
+ * We know the current CallGraph, the current CallSequence and its end is the current
+ * CallSequenceItem.
  *
- * All CallSequenceItems are added to the current CallSequenceItem, except as
+ * All CallSequenceItems are appended to the current CallSequence, except as
  * given below.
  *
  * An am::Group creates a new CallSequenceItem as sibling of the current
@@ -611,8 +612,31 @@ void Converter::work(const am::ProbabilitySwitchEntry_ptr& am, am::ProbabilitySw
 	}
 }
 
-void Converter::work(const am::WhileLoop_ptr&, am::WhileLoop*) {
-	static Diagnostic::NotImplemented<am::WhileLoop> message;
+void Converter::work( const am::WhileLoop_ptr& am, am::WhileLoop* ) {
+	if ( _mode == PreOrder ) {
+		auto wloop = _oc.make<sm3::ModelFactory, sm3::WhileLoop>( am );
+		details::addAsSibling( _callSequence, wloop );
+		details::removeIfUnused( _callSequence, _oc );
+
+		auto condition = _oc.make<sm3::ModelFactory, sm3::ModeCondition>( am->getCondition() );
+		wloop->setCondition( condition );
+
+		auto cs = sm3::create<sm3::CallSequence>();
+		wloop->getGraphEntries().push_back_unsafe( cs );
+		_callSequence = cs;
+
+	} else { // PostOrder
+		details::removeIfUnused( _callSequence, _oc );
+
+		/* A new CallSequence starts after the WhileLoop. It replaces
+		 * the previous one. */
+		_callSequence = sm3::create<sm3::CallSequence>();
+		setName(*_callSequence);
+		auto thisWhileLoop = _oc.make<sm3::ModelFactory, sm3::WhileLoop>(am);
+		details::addAsSibling( thisWhileLoop, _callSequence);
+		_graphEntries.pop_back();
+		_graphEntries.push_back(_callSequence);
+	}
 }
 
 void Converter::work(const am::SchedulePoint_ptr& am, am::SchedulePoint*) {
