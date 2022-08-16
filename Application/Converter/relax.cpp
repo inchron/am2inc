@@ -335,19 +335,10 @@ void Converter::relaxFreeObjects() {
 		 || globalComponent->getVariables().size()) {
 		globalSystem->getComponents().push_back(globalComponent);
 		keepSystem = true;
-
-	} else if ( globalRtos->getEvents().size() ) {
-		keepSystem = true;
 	}
 
-	if ( keepSystem ) {
-		/* Remove empty schedulers [AM2INC-44]. */
-		if (globalProcessScheduler->getSchedulables().size() == 0)
-			globalIsrScheduler->getSchedulables().remove(globalProcessScheduler);
-
-		if (globalIsrScheduler->getSchedulables().size() == 0)
-			globalRtos->getSchedulables().remove(globalIsrScheduler);
-
+	if ( keepSystem
+		 || globalRtos->getEvents().size() ) {
 		_model->getSystems().push_back(globalSystem);
 	}
 }
