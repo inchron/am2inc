@@ -112,10 +112,10 @@ void Converter::work(const am::PeriodicStimulus_ptr& am, am::PeriodicStimulus*) 
 
 			auto amPkg = am::ModelPackage::_instance();
 			if (jitter->eClass() == amPkg->getTimeConstant()) {
-				auto value = AttributeCreator<sm3::Time>()(
-					ecore::as<am::TimeConstant>( jitter )->getValue() );
-				variation->setMin( value );
-				variation->setMax( value );
+				auto value = [&jitter] { return AttributeCreator<sm3::Time>()(
+						ecore::as<am::TimeConstant>( jitter )->getValue() ); };
+				variation->setMin( value() );
+				variation->setMax( value() );
 				variation->setType( sm3::PeriodVariationType::Uniform );
 
 			} else if (jitter->eClass() == amPkg->getTimeUniformDistribution()) {
