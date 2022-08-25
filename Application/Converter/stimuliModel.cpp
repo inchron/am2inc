@@ -108,6 +108,9 @@ void Converter::work(const am::PeriodicStimulus_ptr& am, am::PeriodicStimulus*) 
 			auto max = [&jitter] { return AttributeCreator<sm3::Time>()( jitter->getUpperBound() ); };
 
 			auto variation = sm3::create<sm3::PeriodVariation>();
+			variation->setMin( sm3::create<sm3::Time>() );
+			variation->setMax( sm3::create<sm3::Time>() );
+			variation->setSigma( sm3::create<sm3::Time>() );
 			gen->setVariation(variation);
 
 			auto amPkg = am::ModelPackage::_instance();
@@ -244,6 +247,9 @@ void Converter::work(const am::RelativePeriodicStimulus_ptr& am, am::RelativePer
 		/* TODO: Refactor */
 		if (am::ITimeDeviation_ptr jitter = am->getNextOccurrence() ) {
 			auto variation = sm3::create<sm3::PeriodVariation>();
+			variation->setMin( sm3::create<sm3::Time>() );
+			variation->setMax( sm3::create<sm3::Time>() );
+			variation->setSigma( sm3::create<sm3::Time>() );
 			gen->setVariation(variation);
 
 			auto amPkg = am::ModelPackage::_instance();
