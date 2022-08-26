@@ -10,6 +10,7 @@
  */
 #pragma once
 
+#include <list>
 #include <stack>
 
 #include <ecorecpp/util/TreeWalker.hpp>
@@ -137,6 +138,31 @@ public:
 	void work(const amalthea::model::SchedulerAllocation_ptr&, amalthea::model::SchedulerAllocation*);
 	void work(const amalthea::model::ISRAllocation_ptr&, amalthea::model::ISRAllocation*);
 	void work(const amalthea::model::TaskAllocation_ptr&, amalthea::model::TaskAllocation*);
+
+	/* Amalthea eventModel */
+	void work(const amalthea::model::EventSet_ptr&, amalthea::model::EventSet*);
+	void work(const amalthea::model::ComponentEvent_ptr&, amalthea::model::ComponentEvent*);
+	void work(const amalthea::model::ProcessEvent_ptr&, amalthea::model::ProcessEvent*);
+	void work(const amalthea::model::ProcessChainEvent_ptr&, amalthea::model::ProcessChainEvent*);
+	void work(const amalthea::model::SemaphoreEvent_ptr&, amalthea::model::SemaphoreEvent*);
+	void work(const amalthea::model::StimulusEvent_ptr&, amalthea::model::StimulusEvent*);
+	void work(const amalthea::model::ChannelEvent_ptr&, amalthea::model::ChannelEvent*);
+	void work(const amalthea::model::CustomEvent_ptr&, amalthea::model::CustomEvent*);
+	void work(const amalthea::model::LabelEvent_ptr&, amalthea::model::LabelEvent*);
+	void work(const amalthea::model::RunnableEvent_ptr&, amalthea::model::RunnableEvent*);
+
+	/* Amalthea constraintsModel */
+	std::list<amalthea::model::Event_ptr> getAmaltheaEventSequence(
+		const amalthea::model::AbstractEventChain_ptr& am );
+	void work(const amalthea::model::EventChain_ptr&, amalthea::model::EventChain*);
+	void work(const amalthea::model::TimingConstraint_ptr&, amalthea::model::TimingConstraint*);
+	void work(const amalthea::model::AffinityConstraint_ptr&, amalthea::model::AffinityConstraint*);
+	void work(const amalthea::model::RunnableSequencingConstraint_ptr&, amalthea::model::RunnableSequencingConstraint*);
+	void work(const amalthea::model::DataAgeConstraint_ptr&, amalthea::model::DataAgeConstraint*);
+	void work(const amalthea::model::Requirement_ptr&, amalthea::model::Requirement*);
+	void work(const amalthea::model::DataCoherencyGroup_ptr&, amalthea::model::DataCoherencyGroup*);
+	void work(const amalthea::model::DataStabilityGroup_ptr&, amalthea::model::DataStabilityGroup*);
+	void work(const amalthea::model::PhysicalSectionConstraint_ptr&, amalthea::model::PhysicalSectionConstraint*);
 
 
 	/* All relaxations, split according to structure. */

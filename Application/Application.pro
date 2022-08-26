@@ -82,6 +82,8 @@ SOURCES += \
     AttributeCreator.cpp \
     Converter.cpp \
     Converter/activityGraph.cpp \
+    Converter/constraintsModel.cpp \
+    Converter/eventModel.cpp \
     Converter/hwModel.cpp \
     Converter/mappingModel.cpp \
     Converter/osModel.cpp \
