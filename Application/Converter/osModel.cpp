@@ -51,6 +51,13 @@ void Converter::work(const amalthea::model::InterruptController_ptr& am,
 
 void Converter::work(const amalthea::model::TaskScheduler_ptr& am,
 					 amalthea::model::TaskScheduler*) {
+	if ( am->getSchedulingAlgorithm()
+		 && am->getSchedulingAlgorithm()->eClass()
+				== am::ModelPackage::_instance()->getGrouping() ) {
+		skipChildren();
+		return;
+	}
+
 	if (_mode == PreOrder) {
 		auto scheduler = _oc.make<sm3::ModelFactory, sm3::Scheduler>(am);
 		scheduler->setName(am->getName());

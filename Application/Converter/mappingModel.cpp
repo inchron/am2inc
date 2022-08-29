@@ -130,10 +130,25 @@ void Converter::work(const amalthea::model::ISRAllocation_ptr& am,
 	}
 }
 
+namespace details {
+	am::TaskScheduler_ptr getAmaltheaScheduler( const am::TaskScheduler_ptr& ts ) {
+		if ( ts && ts->getSchedulingAlgorithm()
+			 && ts->getSchedulingAlgorithm()->eClass()
+					== am::ModelPackage::_instance()->getGrouping()
+			 && ts->getParentAssociation() ) {
+			if ( auto parent = ts->getParentAssociation()->getParent() )
+				return getAmaltheaScheduler( parent );
+		}
+
+		return ts;
+	}
+} // end namespace details
+
 void Converter::work(const am::TaskAllocation_ptr& am, am::TaskAllocation*) {
 	if (_mode == PreOrder) {
 		auto task = _oc.find<sm3::Process>(am->getTask(), ObjectCache::Default);
-		auto scheduler = _oc.make<sm3::ModelFactory, sm3::Scheduler>(am->getScheduler());
+		auto scheduler = _oc.make<sm3::ModelFactory, sm3::Scheduler>(
+			details::getAmaltheaScheduler( am->getScheduler() ) );
 		/* We assume there is only 1 TaskAllocation per Task. */
 		scheduler->getSchedulables().push_back_unsafe(task);
 
