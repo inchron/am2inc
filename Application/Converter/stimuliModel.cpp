@@ -49,11 +49,10 @@ void Converter::work(const am::PeriodicBurstStimulus_ptr& am, am::PeriodicBurstS
 
 		{ /* Inherited from am::FixedPeriodic */
 			gen->setPeriod(AttributeCreator<sm3::Time>()(am->getRecurrence()));
-			auto startOffset = sm3s::create<sm3s::StartOffsetVariation>();
+			auto startOffset = gen->getStartOffsetVariation();
 			startOffset->setType(sm3s::StartOffsetVariationType::Min);
 			startOffset->setMin(AttributeCreator<sm3::Time>()(am->getOffset()));
 			startOffset->setMax(AttributeCreator<sm3::Time>()(am->getOffset()));
-			gen->setStartOffsetVariation(startOffset);
 		}
 
 		auto burst = sm3s::create<sm3s::BurstPattern>();
@@ -94,11 +93,10 @@ void Converter::work(const am::PeriodicStimulus_ptr& am, am::PeriodicStimulus*) 
 
 		{ /* Inherited from am::FixedPeriodic */
 			gen->setPeriod(AttributeCreator<sm3::Time>()(am->getRecurrence()));
-			auto startOffset = sm3s::create<sm3s::StartOffsetVariation>();
+			auto startOffset = gen->getStartOffsetVariation();
 			startOffset->setType(sm3s::StartOffsetVariationType::Min);
 			startOffset->setMin(AttributeCreator<sm3::Time>()(am->getOffset()));
 			startOffset->setMax(AttributeCreator<sm3::Time>()(am->getOffset()));
-			gen->setStartOffsetVariation(startOffset);
 		}
 
 		gen->setMinimumInterArrivalTime(AttributeCreator<sm3::Time>()(am->getMinDistance()));
@@ -107,11 +105,7 @@ void Converter::work(const am::PeriodicStimulus_ptr& am, am::PeriodicStimulus*) 
 			auto min = [&jitter] { return AttributeCreator<sm3::Time>()( jitter->getLowerBound() ); };
 			auto max = [&jitter] { return AttributeCreator<sm3::Time>()( jitter->getUpperBound() ); };
 
-			auto variation = sm3::create<sm3::PeriodVariation>();
-			variation->setMin( sm3::create<sm3::Time>() );
-			variation->setMax( sm3::create<sm3::Time>() );
-			variation->setSigma( sm3::create<sm3::Time>() );
-			gen->setVariation(variation);
+			auto variation = gen->getVariation();
 
 			auto amPkg = am::ModelPackage::_instance();
 			if (jitter->eClass() == amPkg->getTimeConstant()) {
@@ -153,11 +147,10 @@ void Converter::work(const am::PeriodicSyntheticStimulus_ptr& am, am::PeriodicSy
 		periodic->setClock(_idealClock);
 		{ /* Inherited from am::FixedPeriodic */
 			periodic->setPeriod(AttributeCreator<sm3::Time>()(am->getRecurrence()));
-			auto startOffset = sm3s::create<sm3s::StartOffsetVariation>();
+			auto startOffset = periodic->getStartOffsetVariation();
 			startOffset->setType(sm3s::StartOffsetVariationType::Min);
 			startOffset->setMin(AttributeCreator<sm3::Time>()(am->getOffset()));
 			startOffset->setMax(AttributeCreator<sm3::Time>()(am->getOffset()));
-			periodic->setStartOffsetVariation(startOffset);
 		}
 		ecore::as<sm3s::StimulationScenario>(_model->getDefaultScenario())
 			->getGenerators().push_back_unsafe(periodic);
@@ -236,22 +229,16 @@ void Converter::work(const am::RelativePeriodicStimulus_ptr& am, am::RelativePer
 		gen->setRelative(true);
 
 		{
-			auto startOffset = sm3s::create<sm3s::StartOffsetVariation>();
+			auto startOffset = gen->getStartOffsetVariation();
 			startOffset->setType(sm3s::StartOffsetVariationType::Min);
 			startOffset->setMin(AttributeCreator<sm3::Time>()(am->getOffset()));
 			startOffset->setMax(AttributeCreator<sm3::Time>()(am->getOffset()));
-			gen->setStartOffsetVariation(startOffset);
 		}
 
 		/* Jitter, minDistance */
 		/* TODO: Refactor */
 		if (am::ITimeDeviation_ptr jitter = am->getNextOccurrence() ) {
-			auto variation = sm3::create<sm3::PeriodVariation>();
-			variation->setMin( sm3::create<sm3::Time>() );
-			variation->setMax( sm3::create<sm3::Time>() );
-			variation->setSigma( sm3::create<sm3::Time>() );
-			gen->setVariation(variation);
-
+			auto variation = gen->getVariation();
 			auto amPkg = am::ModelPackage::_instance();
 			if (jitter->eClass() == amPkg->getTimeGaussDistribution()) {
 				auto tgd = ecore::as<am::TimeGaussDistribution>(jitter);
