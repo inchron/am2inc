@@ -409,8 +409,11 @@ sm3::TimeDistribution_ptr createTimeDistribution(am::IDiscreteValueDeviation_ptr
 	} break;
 
 	case am::ModelPackage::DISCRETEVALUEBETADISTRIBUTION: {
-		/* Beta distribution is not supported. */
-		static Diagnostic::NotImplemented<am::DiscreteValueBetaDistribution> message;
+		td->setMin(AttributeCreator<sm3::Time>()(am->getLowerBound(), sm3::TimeUnit::T));
+		td->setMax(AttributeCreator<sm3::Time>()(am->getUpperBound(), sm3::TimeUnit::T));
+		const auto stat = ecore::as<am::DiscreteValueBetaDistribution>( am );
+		td->setAlpha( stat->getAlpha() );
+		td->setBeta( stat->getBeta() );
 	} break;
 
 	}

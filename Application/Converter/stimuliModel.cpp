@@ -44,7 +44,8 @@ void Converter::work(const am::InterProcessStimulus_ptr& am, am::InterProcessSti
 void Converter::work(const am::PeriodicBurstStimulus_ptr& am, am::PeriodicBurstStimulus*) {
 	if (_mode == PreOrder) {
 		auto gen = _oc.make<sm3s::StimulationFactory, StimulusTrait<am::PeriodicBurstStimulus>::type >(am);
-		gen->setName(am->getName());
+		const auto& name = am->getName();
+		gen->setName( name.empty()? "Burst Periodic Stimulus" :  name );
 		gen->setClock(_idealClock);
 
 		{ /* Inherited from am::FixedPeriodic */
@@ -88,7 +89,8 @@ void Converter::work(const am::PeriodicBurstStimulus_ptr& am, am::PeriodicBurstS
 void Converter::work(const am::PeriodicStimulus_ptr& am, am::PeriodicStimulus*) {
 	if (_mode == PreOrder) {
 		auto gen = _oc.make<sm3s::StimulationFactory, StimulusTrait<am::PeriodicStimulus>::type >(am);
-		gen->setName(am->getName());
+		const auto& name = am->getName();
+		gen->setName( name.empty()? "Periodic Stimulus" :  name );
 		gen->setClock(_idealClock);
 
 		{ /* Inherited from am::FixedPeriodic */
@@ -145,6 +147,7 @@ void Converter::work(const am::PeriodicSyntheticStimulus_ptr& am, am::PeriodicSy
 			am, ObjectCache::Sub1);
 		periodic->setName(am->getName() + "PeriodicDriver");
 		periodic->setClock(_idealClock);
+
 		{ /* Inherited from am::FixedPeriodic */
 			periodic->setPeriod(AttributeCreator<sm3::Time>()(am->getRecurrence()));
 			auto startOffset = periodic->getStartOffsetVariation();
@@ -224,7 +227,8 @@ sm3::Time& operator-=(sm3::Time& lhs, const sm3::Time& rhs) {
 void Converter::work(const am::RelativePeriodicStimulus_ptr& am, am::RelativePeriodicStimulus*) {
 	if (_mode == PreOrder) {
 		auto gen = _oc.make<sm3s::StimulationFactory, StimulusTrait<am::RelativePeriodicStimulus>::type >(am);
-		gen->setName(am->getName());
+		const auto& name = am->getName();
+		gen->setName( name.empty()? "Relative Periodic Stimulus" :  name );
 		gen->setClock(_idealClock);
 		gen->setRelative(true);
 
@@ -236,7 +240,6 @@ void Converter::work(const am::RelativePeriodicStimulus_ptr& am, am::RelativePer
 		}
 
 		/* Jitter, minDistance */
-		/* TODO: Refactor */
 		if (am::ITimeDeviation_ptr jitter = am->getNextOccurrence() ) {
 			auto variation = gen->getVariation();
 			auto amPkg = am::ModelPackage::_instance();

@@ -448,10 +448,10 @@ sm3::RelationalExpression_ptr Converter::createRelationalExpression(
 	return expression;
 }
 
-/** An am::ModeConditionDisjunction is aggregated by an
- * am::ModeSwitchEntry::condition, an am::Stimulus::executionCondition, or an
- * am::Runnable::executionCondition. In general, it is translated into a
- * sm3::ModeCondition, which is aggregated by the Model.
+/** An am::ModeConditionDisjunction is aggregated by an am::ModeSwitchEntry::condition,
+ * an am::Stimulus::executionCondition, am::Runnable::executionCondition or an
+ * am::WhileLoop::condition. In general, it is translated into a sm3::ModeCondition,
+ * which is aggregated by the Model.
  */
 void Converter::work(const am::ModeConditionDisjunction_ptr& am, am::ModeConditionDisjunction*) {
 	if (_mode == PreOrder) {
