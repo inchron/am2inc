@@ -101,7 +101,7 @@ Options::Options(QCoreApplication& app) : Options() {
 		installImporter();
 
 	auto allGivenOptions = _parser.optionNames();
-	for ( const auto optionName : allGivenOptions ) {
+	for ( const auto& optionName : allGivenOptions ) {
 		if ( optionName == "v" )
 			_verbosity++;
 		else if ( optionName == "pedantic" )

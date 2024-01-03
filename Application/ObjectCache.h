@@ -10,6 +10,7 @@
  */
 #pragma once
 
+#include <array>
 #include <map>
 
 #include <ecore/EObject.hpp>
