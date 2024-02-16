@@ -5,7 +5,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
     name="root"
-    nsURI="http://inchron.com/realtime/root/3.3.0"
+    nsURI="http://inchron.com/realtime/root/3.4.0"
     nsPrefix="root">
   <eAnnotations
       source="http://www.eclipse.org/emf/2002/GenModel">
@@ -68,7 +68,7 @@
       instanceClassName="java.lang.String"/>
   <eSubpackages
       name="model"
-      nsURI="http://inchron.com/realtime/root/3.3.0/model"
+      nsURI="http://inchron.com/realtime/root/3.4.0/model"
       nsPrefix="model">
     <eClassifiers
         xsi:type="ecore:EClass"
@@ -575,7 +575,7 @@
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="documentation"
-              value="IDs must be unique on a single CAN bus.&#xD;&#xA;"/>
+              value="IDs must be unique on a single CAN bus."/>
         </eAnnotations>
       </eStructuralFeatures>
       <eStructuralFeatures
@@ -599,7 +599,7 @@
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="documentation"
-              value="size in Bytes must conform with possible CANBusMessageFormats.&#xD;&#xA;"/>
+              value="size in Bytes must conform with possible CANBusMessageFormats."/>
         </eAnnotations>
       </eStructuralFeatures>
       <eStructuralFeatures
@@ -968,7 +968,7 @@
           source="http://www.eclipse.org/emf/2002/GenModel">
         <details
             key="documentation"
-            value="A ConditionalTraceEvent is a certain type of EventChainStep that is used to define EventSequences, where EventSequences are ordered lists of ConditionalTraceEvents."/>
+            value="A ConditionalTraceEvent is a specific type of EventChainStep used to define complex EventGraphs."/>
       </eAnnotations>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
@@ -2285,14 +2285,63 @@
     </eClassifiers>
     <eClassifiers
         xsi:type="ecore:EClass"
-        name="EventSequence"
+        name="EventGraph"
         eSuperTypes="#//model/EventChain">
       <eAnnotations
           source="http://www.eclipse.org/emf/2002/GenModel">
         <details
             key="documentation"
-            value="A specific type of EventChain that is defined as a sequence of ConditionalTraceEvents."/>
+            value="A specific type of EventChain for defining constraints on the order and temporal relationship of a series of events. An EventGraph consists of a set of nodes that refer to either a single event or a pair of events, such as the start and terminate events of a process. There are also specific node types used to model timeouts, decisions (conditional branches), and synchronization barriers. Each node keeps a list of its predecessors and a list of its successors, from which a strict partial order relationship is derived for all events referenced by the EventGraph. Finally, this information is processed and used by chronVIEW to identify and visualize event chain paths in a measured or simulated trace that conform to the given order relation."/>
       </eAnnotations>
+      <eStructuralFeatures
+          xsi:type="ecore:EAttribute"
+          name="continueMostRecentInstance"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+          defaultValueLiteral="false">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="If this flag is set to true, only the most recent instance of the EventGraph is continued if two instances reach the same EventGraphNode."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures
+          xsi:type="ecore:EAttribute"
+          name="evaluate"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+          defaultValueLiteral="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="If this flag is set to true, the EventGraph is evaluated. For EventGraphs used as subgraphs of other EventGraphs, it should be set to false."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="initialNode"
+          lowerBound="1"
+          eType="#//model/EventGraphInitialNode">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The EventGraphNode which identifies the ConditionalTraceEvent respectively the EventChainStep that starts the EventChain."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="nodes"
+          upperBound="-1"
+          eType="#//model/EventGraphNode"
+          containment="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The list of nodes that form the EventGraph."/>
+        </eAnnotations>
+      </eStructuralFeatures>
       <eStructuralFeatures
           xsi:type="ecore:EAttribute"
           name="outOfOrderReset"
@@ -2302,20 +2351,390 @@
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="documentation"
-              value="If this is set to true, the evaluation of an EventSequence will be reset if TraceEvents occur in an order other than the specified order."/>
+              value="If this is set to true, the evaluation of an EventGraph will be reset if TraceEvents occur in an order other than the specified order."/>
         </eAnnotations>
       </eStructuralFeatures>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
-          name="events"
+          name="terminalNodes"
+          lowerBound="1"
           upperBound="-1"
+          eType="#//model/EventGraphTerminalNode">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="A list of nodes identifying EventChainSteps where the EventChain can end. When one of these EventChainSteps is reached, the EventChain is considered complete. In the case of a node of type EventGraphTraceFunction or EventGraphProcess representing two consecutive steps, the second step must be reached to complete the EventChain."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers
+        xsi:type="ecore:EClass"
+        name="EventGraphDecision"
+        eSuperTypes="#//model/EventGraphNode">
+      <eAnnotations
+          source="http://www.eclipse.org/emf/2002/GenModel">
+        <details
+            key="documentation"
+            value="A node of type EventGraphDecision is used to decide the progress of an EventChain depending on the evaluation of a Condition. Succeeding nodes are split into two separate branches. The trueBranch node represents the EventChainStep that can only be reached if the condition is fulfilled, while the falseBranch node represents the EventChainStep that can be reached otherwise."/>
+      </eAnnotations>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="condition"
+          lowerBound="1"
+          eType="#//model/Condition">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="A reference to the Condition to evaluate. It is evaluated immediately after the preceding EventChainStep is completed. The evaluation result depends on the values of the variables referenced by the condition at the time of evaluation."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="trueBranch"
+          eType="#//model/EventGraphNode">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="If condition evaluates to true, a corresponding EventChain instance may only continue with an EventChainStep referenced by this node."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="falseBranch"
+          eType="#//model/EventGraphNode">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="If condition evaluates to false, a corresponding EventChain instance may only continue with an EventChainStep referenced by this node."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers
+        xsi:type="ecore:EClass"
+        name="EventGraphInitialNode"
+        abstract="true">
+      <eAnnotations
+          source="http://www.eclipse.org/emf/2002/GenModel">
+        <details
+            key="documentation"
+            value="An abstract base class that represents a node type that can serve as the initial node of an EventGraph."/>
+      </eAnnotations>
+    </eClassifiers>
+    <eClassifiers
+        xsi:type="ecore:EClass"
+        name="EventGraphNode"
+        abstract="true"
+        eSuperTypes="#//model/ModelObject">
+      <eAnnotations
+          source="http://www.eclipse.org/emf/2002/GenModel">
+        <details
+            key="documentation"
+            value="The abstract base class for the different types of nodes that form an EventGraph. Each node keeps a list of its direct predecessors and successors which together define a strict partial order relation over the EventGraph's nodes."/>
+      </eAnnotations>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="predecessors"
+          upperBound="-1"
+          eType="#//model/EventGraphNode"
+          eOpposite="#//model/EventGraphNode/successors">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The list of nodes that precede this node in the order relation. When analyzing a trace, the state machine of an EventChain instance can advance to the next EventChainStep only when immediately preceding steps have been reached. Depending on the particular node type, additional rules may apply."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="successors"
+          upperBound="-1"
+          eType="#//model/EventGraphNode"
+          eOpposite="#//model/EventGraphNode/predecessors">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The list of nodes that succeed this node in the order relation."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers
+        xsi:type="ecore:EClass"
+        name="EventGraphProcess"
+        eSuperTypes="#//model/EventGraphNode #//model/EventGraphInitialNode #//model/EventGraphTerminalNode">
+      <eAnnotations
+          source="http://www.eclipse.org/emf/2002/GenModel">
+        <details
+            key="documentation"
+            value="A specific type of EventGraphNode related to the execution of a Process. For a node of type EventGraphProcess, an EventChain instance is not allowed to proceed to the next step until both the first and second step have been reached."/>
+      </eAnnotations>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="first"
+          lowerBound="1"
           eType="#//model/ConditionalTraceEvent"
           containment="true">
         <eAnnotations
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="documentation"
-              value="The sequence of ConditionalTraceEvents."/>
+              value="A ConditionalTraceEvent (EventChainStep) that refers to the beginning of execution of the referenced Process."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="second"
+          lowerBound="1"
+          eType="#//model/ConditionalTraceEvent"
+          containment="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="A ConditionalTraceEvent (EventChainStep) that refers to the end of execution of the referenced Process."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="process"
+          lowerBound="1"
+          eType="#//model/Process"
+          derived="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="A reference to a Process. Technically, this is a derived reference that points to the process that contains the TraceEvents specified by first.traceEvent and second.traceEvent."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers
+        xsi:type="ecore:EClass"
+        name="EventGraphSubGraph"
+        eSuperTypes="#//model/EventGraphNode #//model/EventGraphInitialNode #//model/EventGraphTerminalNode">
+      <eAnnotations
+          source="http://www.eclipse.org/emf/2002/GenModel">
+        <details
+            key="documentation"
+            value="A node of type EventGraphSubGraph is used for hierarchical nesting and the reuse of EventGraph definitions. In the partial order relation, the predecessors of this node are implicit predecessors of the referenced subgraph's initial node, while the successors of this node are implicit successors of the referenced subgraph's terminal nodes."/>
+      </eAnnotations>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="subGraph"
+          eType="#//model/EventGraph">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="A reference to the EventGraph to be used as subgraph in this node's EventGraph. If you want the referenced subgraph to be analyzed only in the context of the EventGraph that uses it, it's recommended to set the subgraph's evaluation flag to false."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers
+        xsi:type="ecore:EClass"
+        name="EventGraphSynchronizationBarrier"
+        eSuperTypes="#//model/EventGraphNode">
+      <eAnnotations
+          source="http://www.eclipse.org/emf/2002/GenModel">
+        <details
+            key="documentation"
+            value="A node of type EventGraphSynchronizationBarrier is used to constrain the progress of an EventChain instance depending on the completion of preceding EventChainSteps. In AND mode (or == false) the EventChain instance is only allowed to proceed to the next step after all preceding steps have been reached, while in OR mode it is sufficient if any of these steps is reached."/>
+      </eAnnotations>
+      <eStructuralFeatures
+          xsi:type="ecore:EAttribute"
+          name="orSemantics"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+          defaultValueLiteral="false">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="If this flag is set to true, OR mode is enabled, otherwise AND mode (default)."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers
+        xsi:type="ecore:EClass"
+        name="EventGraphTerminalNode"
+        abstract="true">
+      <eAnnotations
+          source="http://www.eclipse.org/emf/2002/GenModel">
+        <details
+            key="documentation"
+            value="An abstract base class that represents a node type that can serve as the terminal node of an EventGraph."/>
+      </eAnnotations>
+    </eClassifiers>
+    <eClassifiers
+        xsi:type="ecore:EClass"
+        name="EventGraphTimeout"
+        eSuperTypes="#//model/EventGraphNode">
+      <eAnnotations
+          source="http://www.eclipse.org/emf/2002/GenModel">
+        <details
+            key="documentation"
+            value="A node of type EventGraphTimeout is used to limit the progress of an EventChain depending on the expiry of a timeout. Succeeding nodes are split into two separate branches. The timeout starts immediately after the preceding EventChainStep completes. The nodes in the defaultBranch represent the EventChainSteps that can be reached before the timeout expires, while the node in the timeoutBranch represents a dedicated EventChainStep that can only be reached thereafter."/>
+      </eAnnotations>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="timeout"
+          lowerBound="1"
+          eType="#//model/Time"
+          containment="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The value of the timeout."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="defaultBranch"
+          upperBound="-1"
+          eType="#//model/EventGraphNode">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="A list of nodes representing the EventChainSteps that can only be reached before the timeout expires. When either of these steps is reached, the timeout is disabled."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="timeoutBranch"
+          eType="#//model/EventGraphNode">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="A node representing a dedicated EventChainStep that can only be reached after the timeout expires. Reaching this step means that no step from the defaultBranch was reached in time."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers
+        xsi:type="ecore:EClass"
+        name="EventGraphTraceEvent"
+        eSuperTypes="#//model/EventGraphNode #//model/EventGraphInitialNode #//model/EventGraphTerminalNode">
+      <eAnnotations
+          source="http://www.eclipse.org/emf/2002/GenModel">
+        <details
+            key="documentation"
+            value="A specific type of EventGraphNode related to the occurence of a ConditionalTraceEvent."/>
+      </eAnnotations>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="first"
+          lowerBound="1"
+          eType="#//model/ConditionalTraceEvent"
+          containment="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The ConditionalTraceEvent (EventChainStep) represented by this EventGraphNode."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="process"
+          eType="#//model/Process"
+          derived="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="A reference to a Process. If defined, it is used to filter the TraceEvent instances that occur in the execution context of this Process. Technically, it is a derived reference that points to the Process specified by first.process."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="traceEvent"
+          lowerBound="1"
+          eType="#//model/TraceEvent"
+          derived="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="A derived reference to the TraceEvent first.traceEvent."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures
+          xsi:type="ecore:EAttribute"
+          name="valueConstraint"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+          transient="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="A constraint to filter events that satisfy the specified relational expression. The letter v in the relational expression, for example v==3 or 0&lt;=v&lt;=7, represents the value of the event. Technically, it is a transient value that reflects the value constraint specified by first.valueConstraint."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers
+        xsi:type="ecore:EClass"
+        name="EventGraphTraceFunction"
+        eSuperTypes="#//model/EventGraphNode #//model/EventGraphInitialNode #//model/EventGraphTerminalNode">
+      <eAnnotations
+          source="http://www.eclipse.org/emf/2002/GenModel">
+        <details
+            key="documentation"
+            value="A specific type of EventGraphNode related to the execution of a TraceFunction. For a node of type EventGraphTraceFunction, an EventChain instance is not allowed to proceed to the next step until both the first and second step have been reached."/>
+      </eAnnotations>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="first"
+          lowerBound="1"
+          eType="#//model/ConditionalTraceEvent"
+          containment="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="A ConditionalTraceEvent (EventChainStep) that refers to the beginning of the referenced TraceFunction's execution."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="second"
+          lowerBound="1"
+          eType="#//model/ConditionalTraceEvent"
+          containment="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="A ConditionalTraceEvent (EventChainStep) that refers to the end of the referenced TraceFunction's execution."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="traceFunction"
+          lowerBound="1"
+          eType="#//model/TraceFunction"
+          derived="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="A derived reference to the TraceFunction containing the TraceEvents first.traceEvent and second.traceEvent."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="process"
+          eType="#//model/Process"
+          derived="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="A reference to a Process. If defined, it is used to filter the TraceEvent instances that occur in the execution context of this Process. Technically, it is a derived reference that points to the Process specified by first.process and second.process."/>
         </eAnnotations>
       </eStructuralFeatures>
     </eClassifiers>
@@ -2659,7 +3078,7 @@
           source="http://www.eclipse.org/emf/2002/GenModel">
         <details
             key="documentation"
-            value="A HyperVisorSchedulable breaks the containment relation between the Scheduler and a System, which is owned by the Model.&#xA;"/>
+            value="A HyperVisorSchedulable breaks the containment relation between the Scheduler and a System, which is owned by the Model."/>
       </eAnnotations>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
@@ -2978,42 +3397,84 @@
           ordered="false"
           upperBound="-1"
           eType="#//model/peripheral/Bus"
-          containment="true"/>
+          containment="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The list of Buses used for communication."/>
+        </eAnnotations>
+      </eStructuralFeatures>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="clocks"
           ordered="false"
           upperBound="-1"
           eType="#//model/Clock"
-          containment="true"/>
+          containment="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The list of Clocks."/>
+        </eAnnotations>
+      </eStructuralFeatures>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="cpus"
           ordered="false"
           upperBound="-1"
           eType="#//model/Cpu"
-          containment="true"/>
+          containment="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The list of Cpus."/>
+        </eAnnotations>
+      </eStructuralFeatures>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="connections"
           ordered="false"
           upperBound="-1"
           eType="#//model/Connection"
-          containment="true"/>
+          containment="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The list of connections consisting of DataFlowConnections and ActivationConnections."/>
+        </eAnnotations>
+      </eStructuralFeatures>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="eventChains"
           ordered="false"
           upperBound="-1"
           eType="#//model/EventChain"
-          containment="true"/>
+          containment="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The list of event chains consisting of EventGraphs, DataFlows and UserCodeEventChains."/>
+        </eAnnotations>
+      </eStructuralFeatures>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="events"
           ordered="false"
           upperBound="-1"
           eType="#//model/Event"
-          containment="true"/>
+          containment="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The list of Events used for inter-process communication."/>
+        </eAnnotations>
+      </eStructuralFeatures>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="fmi"
@@ -3044,7 +3505,14 @@
           ordered="false"
           upperBound="-1"
           eType="#//model/Counter"
-          containment="true"/>
+          containment="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The list of Counters that have global scope."/>
+        </eAnnotations>
+      </eStructuralFeatures>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="globalConditions"
@@ -3056,7 +3524,7 @@
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="documentation"
-              value="Only global Counters and ModeGroups shall be referenced by the RelationalExpressions contained in this list."/>
+              value="The list of Conditions that have global scope. Such conditions may only contain RelationalExpressions that refer to Counters and ModeGroups that also have global scope."/>
         </eAnnotations>
       </eStructuralFeatures>
       <eStructuralFeatures
@@ -3065,63 +3533,126 @@
           ordered="false"
           upperBound="-1"
           eType="#//model/ModeGroup"
-          containment="true"/>
+          containment="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The list of ModeGroups that have global scope."/>
+        </eAnnotations>
+      </eStructuralFeatures>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="interconnects"
           ordered="false"
           upperBound="-1"
           eType="#//model/memory/Interconnect"
-          containment="true"/>
+          containment="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The list of Interconnects."/>
+        </eAnnotations>
+      </eStructuralFeatures>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="memories"
           ordered="false"
           upperBound="-1"
           eType="#//model/memory/Memory"
-          containment="true"/>
+          containment="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The list of Memories not directly associated with a Cpu."/>
+        </eAnnotations>
+      </eStructuralFeatures>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="metrics"
           ordered="false"
           upperBound="-1"
           eType="#//model/metric/Template"
-          containment="true"/>
+          containment="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The list of Templates used to calculate different types of metrics."/>
+        </eAnnotations>
+      </eStructuralFeatures>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="peripheralPortConnections"
           ordered="false"
           upperBound="-1"
           eType="#//model/peripheral/PortConnection"
-          containment="true"/>
+          containment="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The list of PortConnections."/>
+        </eAnnotations>
+      </eStructuralFeatures>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="requirements"
           ordered="false"
           upperBound="-1"
           eType="#//model/requirement/Requirement"
-          containment="true"/>
+          containment="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The list of Requirements to be checked."/>
+        </eAnnotations>
+      </eStructuralFeatures>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="semaphores"
           ordered="false"
           upperBound="-1"
           eType="#//model/Semaphore"
-          containment="true"/>
+          containment="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The list of Semaphores that have global scope."/>
+        </eAnnotations>
+      </eStructuralFeatures>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="spinlocks"
           ordered="false"
           upperBound="-1"
           eType="#//model/Spinlock"
-          containment="true"/>
+          containment="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The list of Spinlocks that have global scope."/>
+        </eAnnotations>
+      </eStructuralFeatures>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="scenarios"
           ordered="false"
           upperBound="-1"
           eType="#//model/stimulation/Scenario"
-          containment="true"/>
+          containment="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The list of Scenarios."/>
+        </eAnnotations>
+      </eStructuralFeatures>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="defaultScenario"
@@ -3139,13 +3670,27 @@
           ordered="false"
           upperBound="-1"
           eType="#//model/System"
-          containment="true"/>
+          containment="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The list of Systems."/>
+        </eAnnotations>
+      </eStructuralFeatures>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="traceEvents"
           upperBound="-1"
           eType="#//model/TraceEvent"
-          containment="true"/>
+          containment="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The list of TraceEvents that have global scope."/>
+        </eAnnotations>
+      </eStructuralFeatures>
     </eClassifiers>
     <eClassifiers
         xsi:type="ecore:EClass"
@@ -3166,7 +3711,7 @@
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="documentation"
-              value="The name that is shown in the UI for this ModelObject."/>
+              value="The name of this ModelObject."/>
         </eAnnotations>
       </eStructuralFeatures>
       <eStructuralFeatures
@@ -3177,7 +3722,7 @@
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="documentation"
-              value="A comment regarding this ModelObject. It has no semantic meaning for the model."/>
+              value="A comment on this ModelObject. It has no semantic significance for the model."/>
         </eAnnotations>
       </eStructuralFeatures>
     </eClassifiers>
@@ -3413,7 +3958,7 @@
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="documentation"
-              value="The priority of the Process acquiring the Semaphore is raised immediatly to the statically defined ceiling priority."/>
+              value="The priority of the Process acquiring the Semaphore is raised immediately to the statically defined ceiling priority."/>
         </eAnnotations>
       </eLiterals>
     </eClassifiers>
@@ -4418,41 +4963,6 @@
               value="Reserved. Cooperative scheduling, in which calling the STATE macro from C code is a schedule point."/>
         </eAnnotations>
       </eLiterals>
-    </eClassifiers>
-    <eClassifiers
-        xsi:type="ecore:EClass"
-        name="TimePartition">
-      <eAnnotations
-          source="http://www.eclipse.org/emf/2002/GenModel">
-        <details
-            key="documentation"
-            value="The representation of a time partition in the schedule of a time partition scheduler."/>
-      </eAnnotations>
-      <eStructuralFeatures
-          xsi:type="ecore:EReference"
-          name="item"
-          lowerBound="1"
-          eType="#//model/Schedulable">
-        <eAnnotations
-            source="http://www.eclipse.org/emf/2002/GenModel">
-          <details
-              key="documentation"
-              value="The Schedulable that is scheduled in this time slot."/>
-        </eAnnotations>
-      </eStructuralFeatures>
-      <eStructuralFeatures
-          xsi:type="ecore:EReference"
-          name="duration"
-          lowerBound="1"
-          eType="#//model/Time"
-          containment="true">
-        <eAnnotations
-            source="http://www.eclipse.org/emf/2002/GenModel">
-          <details
-              key="documentation"
-              value="The duration of the time partition."/>
-        </eAnnotations>
-      </eStructuralFeatures>
     </eClassifiers>
     <eClassifiers
         xsi:type="ecore:EClass"
@@ -5566,6 +6076,41 @@
       </eStructuralFeatures>
     </eClassifiers>
     <eClassifiers
+        xsi:type="ecore:EClass"
+        name="TimePartition">
+      <eAnnotations
+          source="http://www.eclipse.org/emf/2002/GenModel">
+        <details
+            key="documentation"
+            value="The representation of a time partition in the schedule of a time partition scheduler."/>
+      </eAnnotations>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="item"
+          lowerBound="1"
+          eType="#//model/Schedulable">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The Schedulable that is scheduled in this time slot."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="duration"
+          lowerBound="1"
+          eType="#//model/Time"
+          containment="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The duration of the time partition."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers
         xsi:type="ecore:EEnum"
         name="TimeUnit">
       <eAnnotations
@@ -6359,6 +6904,24 @@
           value="3"/>
     </eClassifiers>
     <eClassifiers
+        xsi:type="ecore:EEnum"
+        name="Verdict">
+      <eLiterals
+          name="Pass"
+          literal="Pass"/>
+      <eLiterals
+          name="MarginalPass"
+          value="1"
+          literal="MarginalPass"/>
+      <eLiterals
+          name="Fail"
+          value="2"/>
+      <eLiterals
+          name="Unknown"
+          value="-1"
+          literal="Unknown"/>
+    </eClassifiers>
+    <eClassifiers
         xsi:type="ecore:EClass"
         name="WaitCondition"
         eSuperTypes="#//model/CallSequenceItem">
@@ -6454,24 +7017,6 @@
       </eStructuralFeatures>
     </eClassifiers>
     <eClassifiers
-        xsi:type="ecore:EEnum"
-        name="Verdict">
-      <eLiterals
-          name="Success"
-          literal="Success"/>
-      <eLiterals
-          name="Critical"
-          value="1"
-          literal="Critical"/>
-      <eLiterals
-          name="Fail"
-          value="2"/>
-      <eLiterals
-          name="Unknown"
-          value="-1"
-          literal="Unknown"/>
-    </eClassifiers>
-    <eClassifiers
         xsi:type="ecore:EClass"
         name="WhileLoop"
         eSuperTypes="#//model/GraphEntryBase">
@@ -6533,7 +7078,7 @@
     </eClassifiers>
     <eSubpackages
         name="autosar"
-        nsURI="http://inchron.com/realtime/root/3.3.0/model/autosar"
+        nsURI="http://inchron.com/realtime/root/3.4.0/model/autosar"
         nsPrefix="autosar">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -7084,7 +7629,7 @@
     </eSubpackages>
     <eSubpackages
         name="fmi"
-        nsURI="http://inchron.com/realtime/root/3.3.0/model/fmi"
+        nsURI="http://inchron.com/realtime/root/3.4.0/model/fmi"
         nsPrefix="fmi">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -7268,7 +7813,7 @@
       </eClassifiers>
       <eSubpackages
           name="type"
-          nsURI="http://inchron.com/realtime/root/3.3.0/model/fmi/type"
+          nsURI="http://inchron.com/realtime/root/3.4.0/model/fmi/type"
           nsPrefix="type">
         <eClassifiers
             xsi:type="ecore:EClass"
@@ -7365,7 +7910,7 @@
       </eSubpackages>
       <eSubpackages
           name="unit"
-          nsURI="http://inchron.com/realtime/root/3.3.0/model/fmi/unit"
+          nsURI="http://inchron.com/realtime/root/3.4.0/model/fmi/unit"
           nsPrefix="unit">
         <eClassifiers
             xsi:type="ecore:EClass"
@@ -7560,7 +8105,7 @@
       </eSubpackages>
       <eSubpackages
           name="variable"
-          nsURI="http://inchron.com/realtime/root/3.3.0/model/fmi/variable"
+          nsURI="http://inchron.com/realtime/root/3.4.0/model/fmi/variable"
           nsPrefix="variable">
         <eClassifiers
             xsi:type="ecore:EClass"
@@ -7962,7 +8507,7 @@
     </eSubpackages>
     <eSubpackages
         name="memory"
-        nsURI="http://inchron.com/realtime/root/3.3.0/model/memory"
+        nsURI="http://inchron.com/realtime/root/3.4.0/model/memory"
         nsPrefix="memory">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -8656,7 +9201,7 @@
     </eSubpackages>
     <eSubpackages
         name="metric"
-        nsURI="http://inchron.com/realtime/root/3.3.0/model/metric"
+        nsURI="http://inchron.com/realtime/root/3.4.0/model/metric"
         nsPrefix="metric">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -9766,6 +10311,74 @@
       </eClassifiers>
       <eClassifiers
           xsi:type="ecore:EClass"
+          name="RequestCount"
+          eSuperTypes="#//model/metric/TTMetric">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The RequestCount calculates a list, which contains for all Processes of the configured System the activation time and the observed core execution time for that activation."/>
+        </eAnnotations>
+        <eStructuralFeatures
+            xsi:type="ecore:EReference"
+            name="system"
+            eType="#//model/System">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="The RequestCount metric analyzes all Processes of this System."/>
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers
+          xsi:type="ecore:EClass"
+          name="RequestCountCurve"
+          eSuperTypes="#//model/metric/TTMetric">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The RequestCountCurve metric has to be configured with a preceding RequestCount metric. Beginning with the startInstance, all measures received from the preceding metric are accumulated until the configured windowSize is reached. The output is a step curve, which starts at time 0s and contains tupels of time and accumulated core execution time.&#xA;"/>
+        </eAnnotations>
+        <eStructuralFeatures
+            xsi:type="ecore:EReference"
+            name="requestCount"
+            eType="#//model/metric/RequestCount">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="A reference to the preceding RequestCount metric, which has to be configured for the System of interest."/>
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures
+            xsi:type="ecore:EAttribute"
+            name="startInstance"
+            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="A non-negative integer, which defines the Process execution where the accumulated step curve starts. Note that the instances of all (i.e. any) Processes are counted."/>
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures
+            xsi:type="ecore:EReference"
+            name="windowSize"
+            lowerBound="1"
+            eType="#//model/Time"
+            containment="true">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="The window size for which the step curve will be calculated."/>
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers
+          xsi:type="ecore:EClass"
           name="RtosFailureFilter"
           eSuperTypes="#//model/metric/ITMetric">
         <eAnnotations
@@ -10142,7 +10755,7 @@
     </eSubpackages>
     <eSubpackages
         name="peripheral"
-        nsURI="http://inchron.com/realtime/root/3.3.0/model/peripheral"
+        nsURI="http://inchron.com/realtime/root/3.4.0/model/peripheral"
         nsPrefix="peripheral">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -10804,7 +11417,7 @@
     </eSubpackages>
     <eSubpackages
         name="requirement"
-        nsURI="http://inchron.com/realtime/root/3.3.0/model/requirement"
+        nsURI="http://inchron.com/realtime/root/3.4.0/model/requirement"
         nsPrefix="requirement">
       <eAnnotations
           source="http://www.eclipse.org/emf/2002/GenModel">
@@ -11325,7 +11938,7 @@
               source="http://www.eclipse.org/emf/2002/GenModel">
             <details
                 key="documentation"
-                value="A margin to the given 'limit', used to obtain a 'critical' verdict in order to further differentiate successful evaluations. The range [limit, limit +/- prewarn margin] is considered as 'critical'. Note, that the 'limit' of a load requirement is a normalized value between 0 and 1."/>
+                value="A margin to the given 'limit', used to obtain a 'marginal pass' verdict in order to further differentiate successful evaluations. The range [limit, limit +/- prewarn margin] is considered as 'marginal pass'. Note, that the 'limit' of a load requirement is a normalized value between 0 and 1."/>
           </eAnnotations>
         </eStructuralFeatures>
         <eStructuralFeatures
@@ -11804,7 +12417,7 @@
     </eSubpackages>
     <eSubpackages
         name="stimulation"
-        nsURI="http://inchron.com/realtime/root/3.3.0/model/stimulation"
+        nsURI="http://inchron.com/realtime/root/3.4.0/model/stimulation"
         nsPrefix="stimulation">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -12263,7 +12876,7 @@
               source="http://www.eclipse.org/emf/2002/GenModel">
             <details
                 key="documentation"
-                value="The CallGraph is executed whenever the StimuliGenerator fires. Only a reduced subset of CallSequenceItems is allowed, e.g. ActivationActions."/>
+                value="The CallGraph is executed whenever the StimuliGenerator fires. Only a reduced subset of GraphEntries and CallSequenceItems is allowed. Allowed GraphEntries: CallSequence, Switch, and ProbabilitySwitch. Allowed CallSequenceItems: ActivationItem, ActivateProcess, ConditionEvaluation, CounterModification, ModeSwitchPoint, SetEvent, SetGuard, and SemaphoreAccess."/>
           </eAnnotations>
         </eStructuralFeatures>
       </eClassifiers>

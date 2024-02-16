@@ -7,11 +7,10 @@
 /** @file constraintsModel.cpp
  * Groups all code related to Amalthea's ConstraintsModel.
  */
-#include "../Converter.h"
-
 #include <exception>
 
 #include "../AttributeCreator.h"
+#include "../Converter.h"
 #include "../Diagnostic.h"
 
 namespace sm3 = root::model;
@@ -82,7 +81,7 @@ void Converter::work( const am::EventChain_ptr& am, am::EventChain* ) {
 	if ( _mode == PreOrder ) {
 		try {
 			auto amaltheaEvents = getAmaltheaEventSequence( am );
-			std::list<sm3::ConditionalTraceEvent_ptr> cteList;
+			std::list<sm3::EventGraphTraceEvent_ptr> egteList;
 			for ( const auto& amEvent : amaltheaEvents ) {
 				auto traceEvent =
 					_oc.find<sm3::TraceEvent>( amEvent, ObjectCache::Default );
@@ -102,14 +101,20 @@ void Converter::work( const am::EventChain_ptr& am, am::EventChain* ) {
 																ObjectCache::Default ) )
 						cte->setProcess( process );
 				}
-				cteList.push_back( cte );
+				auto egte = sm3::create<sm3::EventGraphTraceEvent>();
+				egte->setFirst( cte );
+				egteList.push_back( egte );
 			}
 
-			auto eventSequence = _oc.make<sm3::ModelFactory, sm3::EventSequence>( am );
-			eventSequence->setName( am->getName() );
-			for ( const auto& cte : cteList )
-				eventSequence->getEvents().push_back_unsafe( cte );
-			_model->getEventChains().push_back_unsafe( eventSequence );
+			auto eventGraph = _oc.make<sm3::ModelFactory, sm3::EventGraph>( am );
+			eventGraph->setName( am->getName() );
+			for ( const auto& cte : egteList )
+				eventGraph->getNodes().push_back_unsafe( cte );
+			if ( not egteList.empty() ) {
+				eventGraph->setInitialNode( egteList.front() );
+				eventGraph->getTerminalNodes().push_back_unsafe( egteList.back() );
+			}
+			_model->getEventChains().push_back_unsafe( eventGraph );
 
 		} catch ( const std::invalid_argument& err ) {
 			std::cerr << "Ignoring EventChain '" << am->getName() << "': " << err.what()
