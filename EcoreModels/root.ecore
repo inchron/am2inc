@@ -5,13 +5,13 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
     name="root"
-    nsURI="http://inchron.com/realtime/root/3.2.0"
+    nsURI="http://inchron.com/realtime/root/3.3.0"
     nsPrefix="root">
   <eAnnotations
       source="http://www.eclipse.org/emf/2002/GenModel">
     <details
         key="copyrightText"
-        value="Copyright (c) 2017-2021 INCHRON AG&#xA;&#xA;This program and the accompanying materials are made&#xA;available under the terms of the Eclipse Public License 2.0&#xA;which is available at https://www.eclipse.org/legal/epl-2.0/&#xA;&#xA;SPDX-License-Identifier: EPL-2.0&#xA;&#xA;Contributors:&#xA;  INCHRON AG - Metamodel design and implementation"/>
+        value="Copyright (c) 2017-2023 INCHRON AG&#xA;&#xA;This program and the accompanying materials are made&#xA;available under the terms of the Eclipse Public License 2.0&#xA;which is available at https://www.eclipse.org/legal/epl-2.0/&#xA;&#xA;SPDX-License-Identifier: EPL-2.0&#xA;&#xA;Contributors:&#xA;  INCHRON AG - Metamodel design and implementation"/>
   </eAnnotations>
   <eClassifiers
       xsi:type="ecore:EClass"
@@ -58,9 +58,17 @@
       xsi:type="ecore:EDataType"
       name="UInteger"
       instanceClassName="java.lang.Integer"/>
+  <eClassifiers
+      xsi:type="ecore:EDataType"
+      name="UnsignedLong"
+      instanceClassName="java.lang.UnsignedInteger"/>
+  <eClassifiers
+      xsi:type="ecore:EDataType"
+      name="Url"
+      instanceClassName="java.lang.String"/>
   <eSubpackages
       name="model"
-      nsURI="http://inchron.com/realtime/root/3.2.0/model"
+      nsURI="http://inchron.com/realtime/root/3.3.0/model"
       nsPrefix="model">
     <eClassifiers
         xsi:type="ecore:EClass"
@@ -365,28 +373,84 @@
             value="This enumeration is used to specify the various types of CallbackFunctions supported by the simulation kernel for Schedulers with the UserDefined strategy."/>
       </eAnnotations>
       <eLiterals
-          name="Init"/>
+          name="Init">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="This CallbackFunction is called once during startup."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="ProcessActivated"
-          value="1"/>
+          value="1">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="This CallbackFunction is called whenever a child Process is activated."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="ProcessBlocked"
-          value="2"/>
+          value="2">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="This CallbackFunction is called whenever a child Process is blocked."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="ProcessTerminated"
-          value="3"/>
+          value="3">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="This CallbackFunction is called whenever a child Process is terminated."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="ProcessUnblocked"
-          value="4"/>
+          value="4">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="This CallbackFunction is called whenever a child Process is unblocked."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="CooperativeSchedule"
-          value="5"/>
+          value="5">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="This CallbackFunction is called whenever a child Process calls the schedule() function to schedule cooperatively."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="SubschedulerChanged"
-          value="6"/>
+          value="6">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="This CallbackFunction is called whenever a child Scheduler's run queue changes."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="TimerExpired"
-          value="7"/>
+          value="7">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="This CallbackFunction is called whenever the programmed timer has expired."/>
+        </eAnnotations>
+      </eLiterals>
     </eClassifiers>
     <eClassifiers
         xsi:type="ecore:EClass"
@@ -407,7 +471,7 @@
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="documentation"
-              value="The list of entries to be executed in this CallGraph. These can be of type CallSequence, ModeSwitch, ProbabilitySwitch, or WhileLoop."/>
+              value="The list of entries to be executed in this CallGraph. These can be of type CallSequence, Switch, ProbabilitySwitch, or WhileLoop."/>
         </eAnnotations>
       </eStructuralFeatures>
       <eStructuralFeatures
@@ -872,6 +936,32 @@
     </eClassifiers>
     <eClassifiers
         xsi:type="ecore:EClass"
+        name="Condition"
+        eSuperTypes="#//model/ModelObject">
+      <eAnnotations
+          source="http://www.eclipse.org/emf/2002/GenModel">
+        <details
+            key="documentation"
+            value="A Condition is used to define a logical expression, which can be checked by Switches, WhileLoops and WaitConditions inside a CallGraph. As a disjunction it evaluates to true, if at least one of the Conjunctions is true."/>
+      </eAnnotations>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="conjunctions"
+          ordered="false"
+          lowerBound="1"
+          upperBound="-1"
+          eType="#//model/Conjunction"
+          containment="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The list of logical conjunctions evaluated by this Condition."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers
+        xsi:type="ecore:EClass"
         name="ConditionalTraceEvent"
         eSuperTypes="#//model/EventChainStep">
       <eAnnotations
@@ -929,6 +1019,54 @@
     </eClassifiers>
     <eClassifiers
         xsi:type="ecore:EClass"
+        name="ConditionEvaluation"
+        eSuperTypes="#//model/CallSequenceItem">
+      <eAnnotations
+          source="http://www.eclipse.org/emf/2002/GenModel">
+        <details
+            key="documentation"
+            value="A specific CallSequenceItem with which an explicit evaluation of a Condition can be triggered. Conditions know their last evaluation state. When executed, the ConditionEvaluation reevaluates the referenced Condition and updates its evaluation state. WhileLoops and WaitEvents automatically update their Condition's state, Switches may be configured to do so as well via their evaluateConditionsOnEntry flag."/>
+      </eAnnotations>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="condition"
+          lowerBound="1"
+          eType="#//model/Condition">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The Condition to be evaluated."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers
+        xsi:type="ecore:EClass"
+        name="Conjunction">
+      <eAnnotations
+          source="http://www.eclipse.org/emf/2002/GenModel">
+        <details
+            key="documentation"
+            value="A logical conjunction of RelationalExpressions, with which Conditions can be formulated. It evaluates to true, if all referenced RelationalExpressions are true."/>
+      </eAnnotations>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="expressions"
+          ordered="false"
+          lowerBound="1"
+          upperBound="-1"
+          eType="#//model/RelationalExpression"
+          containment="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The list of RelationalExpressions. Expressions in this list must not refer to the same Counter or Modes of the same ModeGroup."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers
+        xsi:type="ecore:EClass"
         name="Connection"
         abstract="true"
         eSuperTypes="#//model/ModelObject">
@@ -954,7 +1092,7 @@
     <eClassifiers
         xsi:type="ecore:EClass"
         name="Counter"
-        eSuperTypes="#//model/ModelObject #//model/TraceObject">
+        eSuperTypes="#//model/ModelObject #//model/TraceObject #//model/ValueProvider">
       <eAnnotations
           source="http://www.eclipse.org/emf/2002/GenModel">
         <details
@@ -995,76 +1133,6 @@
           <details
               key="documentation"
               value="The inital value of this Counter at the beginning of the simulation."/>
-        </eAnnotations>
-      </eStructuralFeatures>
-    </eClassifiers>
-    <eClassifiers
-        xsi:type="ecore:EClass"
-        name="CounterExpression"
-        eSuperTypes="#//model/RelationalExpression">
-      <eAnnotations
-          source="http://www.eclipse.org/emf/2002/GenModel">
-        <details
-            key="documentation"
-            value="A certain type of RelationalExpression that refers to a Counter. The evaluation of a CounterExpression returns the result of the RelationalOperator applied to the current Counter value and this value provided here."/>
-      </eAnnotations>
-      <eStructuralFeatures
-          xsi:type="ecore:EReference"
-          name="counter"
-          lowerBound="1"
-          eType="#//model/Counter">
-        <eAnnotations
-            source="http://www.eclipse.org/emf/2002/GenModel">
-          <details
-              key="documentation"
-              value="The Counter that is evaluated by this CounterExpression."/>
-        </eAnnotations>
-      </eStructuralFeatures>
-      <eStructuralFeatures
-          xsi:type="ecore:EAttribute"
-          name="value"
-          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
-          defaultValueLiteral="0">
-        <eAnnotations
-            source="http://www.eclipse.org/emf/2002/GenModel">
-          <details
-              key="documentation"
-              value="An integer value that the RelationalOperator of this CounterExpression uses to compare with the current value of the Counter."/>
-        </eAnnotations>
-      </eStructuralFeatures>
-    </eClassifiers>
-    <eClassifiers
-        xsi:type="ecore:EClass"
-        name="CounterComparison"
-        eSuperTypes="#//model/RelationalExpression">
-      <eAnnotations
-          source="http://www.eclipse.org/emf/2002/GenModel">
-        <details
-            key="documentation"
-            value="A CounterComparison compares the value of the two referenced Counters according to the selected RelationalOperator."/>
-      </eAnnotations>
-      <eStructuralFeatures
-          xsi:type="ecore:EReference"
-          name="counter1"
-          lowerBound="1"
-          eType="#//model/Counter">
-        <eAnnotations
-            source="http://www.eclipse.org/emf/2002/GenModel">
-          <details
-              key="documentation"
-              value="The Counter that is evaluated by this CounterExpression."/>
-        </eAnnotations>
-      </eStructuralFeatures>
-      <eStructuralFeatures
-          xsi:type="ecore:EReference"
-          name="counter2"
-          lowerBound="1"
-          eType="#//model/Counter">
-        <eAnnotations
-            source="http://www.eclipse.org/emf/2002/GenModel">
-          <details
-              key="documentation"
-              value="The Counter that is evaluated by this CounterExpression."/>
         </eAnnotations>
       </eStructuralFeatures>
     </eClassifiers>
@@ -1126,13 +1194,34 @@
             value="This enumeration is used to define the various types of CounterModification operations."/>
       </eAnnotations>
       <eLiterals
-          name="Set"/>
+          name="Set">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="This operation sets the referenced counter to the given value."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="Increment"
-          value="1"/>
+          value="1">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="This operation increments the referenced counter by the given value."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="Decrement"
-          value="2"/>
+          value="2">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="This operation decrements the referenced counter by the given value."/>
+        </eAnnotations>
+      </eLiterals>
     </eClassifiers>
     <eClassifiers
         xsi:type="ecore:EClass"
@@ -1397,7 +1486,7 @@
     <eClassifiers
         xsi:type="ecore:EClass"
         name="DataFlowConnection"
-        eSuperTypes="#//model/Connection">
+        eSuperTypes="#//model/Connection #//model/ValueProvider">
       <eAnnotations
           source="http://www.eclipse.org/emf/2002/GenModel">
         <details
@@ -1609,58 +1698,184 @@
             value="This enumeration is used to define the possible units of a DataRate quantity."/>
       </eAnnotations>
       <eLiterals
-          name="bitPerSecond"/>
+          name="bitPerSecond">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Bits per second."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="kbitPerSecond"
-          value="1"/>
+          value="1">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Kilobits = 10^3 bits = 1000 bits per second."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="MbitPerSecond"
-          value="2"/>
+          value="2">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Megabits = 10^6 bits = 1000^2 bits per second."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="GbitPerSecond"
-          value="3"/>
+          value="3">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Gigabits = 10^9 bits = 1000^3 bits per second."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="TbitPerSecond"
-          value="4"/>
+          value="4">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Terabits = 10^12 bits = 1000^4 bits per second."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="kibitPerSecond"
-          value="5"/>
+          value="5">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Kibibits = 2^10 bits = 1024 bits per second."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="MibitPerSecond"
-          value="6"/>
+          value="6">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Mebibits = 2^20 bits = 1024^2 bits per second."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="GibitPerSecond"
-          value="7"/>
+          value="7">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Gibibits = 2^30 bits = 1024^3 bits per second."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="TibitPerSecond"
-          value="8"/>
+          value="8">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Tebibits = 2^40 bits = 1024^4 bits per second."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="BPerSecond"
-          value="9"/>
+          value="9">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Bytes per second."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="kBPerSecond"
-          value="10"/>
+          value="10">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Kilobytes = 10^3 bytes = 1000 bytes per second."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="MBPerSecond"
-          value="11"/>
+          value="11">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Megabytes = 10^6 bytes = 1000^2 bytes per second."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="GBPerSecond"
-          value="12"/>
+          value="12">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Gigabytes = 10^9 bytes = 1000^3 bytes per second."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="TBPerSecond"
-          value="13"/>
+          value="13">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Terabytes = 10^12 bytes = 1000^4 bytes per second."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="kiBPerSecond"
-          value="14"/>
+          value="14">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Kibibytes = 2^10 bytes = 1024 bytes per second."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="MiBPerSecond"
-          value="15"/>
+          value="15">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Mebibytes = 2^20 bytes = 1024^2 bytes per second."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="GiBPerSecond"
-          value="16"/>
+          value="16">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Gibibytes = 2^30 bytes = 1024^3 bytes per second."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="TiBPerSecond"
-          value="17"/>
+          value="17">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Tebibytes = 2^40 bytes = 1024^4 bytes per second."/>
+        </eAnnotations>
+      </eLiterals>
     </eClassifiers>
     <eClassifiers
         xsi:type="ecore:EClass"
@@ -1706,58 +1921,184 @@
             value="This enumeration is used to define the possible units of a DataSize quantity."/>
       </eAnnotations>
       <eLiterals
-          name="bit"/>
+          name="bit">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Bits."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="kbit"
-          value="1"/>
+          value="1">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Kilobits = 10^3 bits = 1000 bits."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="Mbit"
-          value="2"/>
+          value="2">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Megabits = 10^6 bits = 1000^2 bits."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="Gbit"
-          value="3"/>
+          value="3">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Gigabits = 10^9 bits = 1000^3 bits."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="Tbit"
-          value="4"/>
+          value="4">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Terabits = 10^12 bits = 1000^4 bits."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="kibit"
-          value="5"/>
+          value="5">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Kibibits = 2^10 bits = 1024 bits."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="Mibit"
-          value="6"/>
+          value="6">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Mebibits = 2^20 bits = 1024^2 bits."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="Gibit"
-          value="7"/>
+          value="7">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Gibibits = 2^30 bits = 1024^3 bits."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="Tibit"
-          value="8"/>
+          value="8">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Tebibits = 2^40 bits = 1024^4 bits."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="B"
-          value="9"/>
+          value="9">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Bytes."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="kB"
-          value="10"/>
+          value="10">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Kilobytes = 10^3 bytes = 1000 bytes."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="MB"
-          value="11"/>
+          value="11">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Megabytes = 10^6 bytes = 1000^2 bytes."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="GB"
-          value="12"/>
+          value="12">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Gigabytes = 10^9 bytes = 1000^3 bytes."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="TB"
-          value="13"/>
+          value="13">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Terabytes = 10^12 bytes = 1000^4 bytes."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="kiB"
-          value="14"/>
+          value="14">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Kibibytes = 2^10 bytes = 1024 bytes."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="MiB"
-          value="15"/>
+          value="15">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Mebibytes = 2^20 bytes = 1024^2 bytes."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="GiB"
-          value="16"/>
+          value="16">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Gibibytes = 2^30 bytes = 1024^3 bytes."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="TiB"
-          value="17"/>
+          value="17">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Tebibytes = 2^40 bytes = 1024^4 bytes."/>
+        </eAnnotations>
+      </eLiterals>
     </eClassifiers>
     <eClassifiers
         xsi:type="ecore:EClass"
@@ -1880,16 +2221,44 @@
             value="This enumeration is used to define different types of strategies that determine how the TraceEvent instances for the start and end step of an EventChain are matched."/>
       </eAnnotations>
       <eLiterals
-          name="FirstFirst"/>
+          name="FirstFirst">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The first TraceEvent instance of the start step matches the first instance of the end step."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="FirstLast"
-          value="1"/>
+          value="1">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The first TraceEvent instance of the start step matches the last instance of the end step."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="LastFirst"
-          value="2"/>
+          value="2">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The last TraceEvent instance of the start step matches the first instance of the end step."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="LastLast"
-          value="3"/>
+          value="3">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The last TraceEvent instance of the start step matches the last instance of the end step."/>
+        </eAnnotations>
+      </eLiterals>
     </eClassifiers>
     <eClassifiers
         xsi:type="ecore:EClass"
@@ -1963,7 +2332,7 @@
           xsi:type="ecore:EAttribute"
           name="value"
           lowerBound="1"
-          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
           defaultValueLiteral="1000">
         <eAnnotations
             source="http://www.eclipse.org/emf/2002/GenModel">
@@ -1996,16 +2365,44 @@
             value="This enumeration is used to define the possible units of a Frequency quantity."/>
       </eAnnotations>
       <eLiterals
-          name="Hz"/>
+          name="Hz">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Hertz."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="kHz"
-          value="1"/>
+          value="1">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Kilohertz = 1000 Hertz."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="MHz"
-          value="2"/>
+          value="2">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Megahertz = 1000^2 Hertz."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="GHz"
-          value="3"/>
+          value="3">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Gigahertz = 1000^3 Hertz."/>
+        </eAnnotations>
+      </eLiterals>
     </eClassifiers>
     <eClassifiers
         xsi:type="ecore:EClass"
@@ -2475,80 +2872,6 @@
     </eClassifiers>
     <eClassifiers
         xsi:type="ecore:EClass"
-        name="ModeCondition"
-        eSuperTypes="#//model/ModelObject">
-      <eAnnotations
-          source="http://www.eclipse.org/emf/2002/GenModel">
-        <details
-            key="documentation"
-            value="A ModeCondition is used to define a logical expression, which can be checked by ModeSwitches or WhileLoops inside a CallGraph. It evaluates to true, if at least one of the ModeConjunctions in the list of conjunctions is true."/>
-      </eAnnotations>
-      <eStructuralFeatures
-          xsi:type="ecore:EReference"
-          name="conjunctions"
-          ordered="false"
-          lowerBound="1"
-          upperBound="-1"
-          eType="#//model/ModeConjunction"
-          containment="true">
-        <eAnnotations
-            source="http://www.eclipse.org/emf/2002/GenModel">
-          <details
-              key="documentation"
-              value="The list of logical conjunctions evaluated by this ModeCondition."/>
-        </eAnnotations>
-      </eStructuralFeatures>
-    </eClassifiers>
-    <eClassifiers
-        xsi:type="ecore:EClass"
-        name="ModeConditionEvaluation"
-        eSuperTypes="#//model/CallSequenceItem">
-      <eAnnotations
-          source="http://www.eclipse.org/emf/2002/GenModel">
-        <details
-            key="documentation"
-            value="A specific CallSequenceItem with which the evaluation of a ModeCondition can be triggered. ModeConditions know their last evaluation state. When executed, the ModeConditionEvaluation reevaluates the referenced ModeCondition and updates its evaluation state."/>
-      </eAnnotations>
-      <eStructuralFeatures
-          xsi:type="ecore:EReference"
-          name="condition"
-          lowerBound="1"
-          eType="#//model/ModeCondition">
-        <eAnnotations
-            source="http://www.eclipse.org/emf/2002/GenModel">
-          <details
-              key="documentation"
-              value="The ModeCondition to be evaluated."/>
-        </eAnnotations>
-      </eStructuralFeatures>
-    </eClassifiers>
-    <eClassifiers
-        xsi:type="ecore:EClass"
-        name="ModeConjunction">
-      <eAnnotations
-          source="http://www.eclipse.org/emf/2002/GenModel">
-        <details
-            key="documentation"
-            value="A logical conjunction of RelationalExpressions, with which ModeConditions can be formulated. It evaluates to true, if all referenced RelationalExpressions are true."/>
-      </eAnnotations>
-      <eStructuralFeatures
-          xsi:type="ecore:EReference"
-          name="expressions"
-          ordered="false"
-          lowerBound="1"
-          upperBound="-1"
-          eType="#//model/RelationalExpression"
-          containment="true">
-        <eAnnotations
-            source="http://www.eclipse.org/emf/2002/GenModel">
-          <details
-              key="documentation"
-              value="The list of RelationalExpressions. Expressions in this list must not refer to the same Counter or Modes of the same ModeGroup."/>
-        </eAnnotations>
-      </eStructuralFeatures>
-    </eClassifiers>
-    <eClassifiers
-        xsi:type="ecore:EClass"
         name="ModeGroup"
         eSuperTypes="#//model/ModelObject #//model/TraceObject">
       <eAnnotations
@@ -2585,6 +2908,27 @@
     </eClassifiers>
     <eClassifiers
         xsi:type="ecore:EClass"
+        name="ModeGroupComparison"
+        eSuperTypes="#//model/RelationalExpression">
+      <eAnnotations
+          source="http://www.eclipse.org/emf/2002/GenModel">
+        <details
+            key="documentation"
+            value="A ModeGroupComparison is used to compare the state of the two referenced ModeGroups."/>
+      </eAnnotations>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="modeGroup1"
+          lowerBound="1"
+          eType="#//model/ModeGroup"/>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="modeGroup2"
+          lowerBound="1"
+          eType="#//model/ModeGroup"/>
+    </eClassifiers>
+    <eClassifiers
+        xsi:type="ecore:EClass"
         name="ModeGroupExpression"
         eSuperTypes="#//model/RelationalExpression">
       <eAnnotations
@@ -2617,27 +2961,6 @@
               value="The value that is compared with the current state."/>
         </eAnnotations>
       </eStructuralFeatures>
-    </eClassifiers>
-    <eClassifiers
-        xsi:type="ecore:EClass"
-        name="ModeGroupComparison"
-        eSuperTypes="#//model/RelationalExpression">
-      <eAnnotations
-          source="http://www.eclipse.org/emf/2002/GenModel">
-        <details
-            key="documentation"
-            value="A ModeGroupComparison is used to compare the state of the two referenced ModeGroups."/>
-      </eAnnotations>
-      <eStructuralFeatures
-          xsi:type="ecore:EReference"
-          name="modeGroup1"
-          lowerBound="1"
-          eType="#//model/ModeGroup"/>
-      <eStructuralFeatures
-          xsi:type="ecore:EReference"
-          name="modeGroup2"
-          lowerBound="1"
-          eType="#//model/ModeGroup"/>
     </eClassifiers>
     <eClassifiers
         xsi:type="ecore:EClass"
@@ -2724,16 +3047,16 @@
           containment="true"/>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
-          name="globalModeConditions"
+          name="globalConditions"
           ordered="false"
           upperBound="-1"
-          eType="#//model/ModeCondition"
+          eType="#//model/Condition"
           containment="true">
         <eAnnotations
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="documentation"
-              value="Only global ModeCounters and ModeGroups contained by the model shall be referenced by ModeConjunctions of ModeConditions in this list."/>
+              value="Only global Counters and ModeGroups shall be referenced by the RelationalExpressions contained in this list."/>
         </eAnnotations>
       </eStructuralFeatures>
       <eStructuralFeatures
@@ -2855,127 +3178,6 @@
           <details
               key="documentation"
               value="A comment regarding this ModelObject. It has no semantic meaning for the model."/>
-        </eAnnotations>
-      </eStructuralFeatures>
-    </eClassifiers>
-    <eClassifiers
-        xsi:type="ecore:EClass"
-        name="ModeSwitch"
-        eSuperTypes="#//model/GraphEntryBase">
-      <eAnnotations
-          source="http://www.eclipse.org/emf/2002/GenModel">
-        <details
-            key="documentation"
-            value="A structural element that can be used to define conditional execution branches inside a CallGraph."/>
-      </eAnnotations>
-      <eStructuralFeatures
-          xsi:type="ecore:EReference"
-          name="defaultEntry"
-          eType="#//model/ModeSwitchDefault"
-          containment="true">
-        <eAnnotations
-            source="http://www.eclipse.org/emf/2002/GenModel">
-          <details
-              key="documentation"
-              value="The default branch that will be executed if none of the alternatives listed in entries is executed."/>
-        </eAnnotations>
-      </eStructuralFeatures>
-      <eStructuralFeatures
-          xsi:type="ecore:EReference"
-          name="entries"
-          upperBound="-1"
-          eType="#//model/ModeSwitchEntry"
-          containment="true">
-        <eAnnotations
-            source="http://www.eclipse.org/emf/2002/GenModel">
-          <details
-              key="documentation"
-              value="The alternative execution branches defined by this ModeSwitch. The first ModeSwitchEntry whose condition evaluates to true will be executed."/>
-        </eAnnotations>
-      </eStructuralFeatures>
-      <eStructuralFeatures
-          xsi:type="ecore:EAttribute"
-          name="evaluateConditionsOnEntry"
-          lowerBound="1"
-          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
-          defaultValueLiteral="false">
-        <eAnnotations
-            source="http://www.eclipse.org/emf/2002/GenModel">
-          <details
-              key="documentation"
-              value="If this is set to true, the ModeCondition of a ModeSwitchEntry will be reevaluated before the condition is checked."/>
-        </eAnnotations>
-      </eStructuralFeatures>
-    </eClassifiers>
-    <eClassifiers
-        xsi:type="ecore:EClass"
-        name="ModeSwitchDefault">
-      <eAnnotations
-          source="http://www.eclipse.org/emf/2002/GenModel">
-        <details
-            key="documentation"
-            value="This class is used to define an unconditional execution branch in a ModeSwitch."/>
-      </eAnnotations>
-      <eStructuralFeatures
-          xsi:type="ecore:EReference"
-          name="graphEntries"
-          upperBound="-1"
-          eType="#//model/GraphEntryBase"
-          containment="true">
-        <eAnnotations
-            source="http://www.eclipse.org/emf/2002/GenModel">
-          <details
-              key="documentation"
-              value="The list of graph entries to be executed."/>
-        </eAnnotations>
-      </eStructuralFeatures>
-    </eClassifiers>
-    <eClassifiers
-        xsi:type="ecore:EClass"
-        name="ModeSwitchEntry"
-        eSuperTypes="#//model/ModelObject">
-      <eAnnotations
-          source="http://www.eclipse.org/emf/2002/GenModel">
-        <details
-            key="documentation"
-            value="This class is used to define a conditional execution branch in a ModeSwitch."/>
-      </eAnnotations>
-      <eStructuralFeatures
-          xsi:type="ecore:EReference"
-          name="condition"
-          lowerBound="1"
-          eType="#//model/ModeCondition">
-        <eAnnotations
-            source="http://www.eclipse.org/emf/2002/GenModel">
-          <details
-              key="documentation"
-              value="The ModeCondition that is checked by this ModeSwitchEntry."/>
-        </eAnnotations>
-      </eStructuralFeatures>
-      <eStructuralFeatures
-          xsi:type="ecore:EReference"
-          name="graphEntries"
-          upperBound="-1"
-          eType="#//model/GraphEntryBase"
-          containment="true">
-        <eAnnotations
-            source="http://www.eclipse.org/emf/2002/GenModel">
-          <details
-              key="documentation"
-              value="The list of graph entries to be executed."/>
-        </eAnnotations>
-      </eStructuralFeatures>
-      <eStructuralFeatures
-          xsi:type="ecore:EAttribute"
-          name="negated"
-          lowerBound="1"
-          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
-          defaultValueLiteral="false">
-        <eAnnotations
-            source="http://www.eclipse.org/emf/2002/GenModel">
-          <details
-              key="documentation"
-              value="If this is set to true, a negative condition check will trigger the execution."/>
         </eAnnotations>
       </eStructuralFeatures>
     </eClassifiers>
@@ -3146,14 +3348,74 @@
       </eAnnotations>
       <eLiterals
           name="None"
-          literal="None"/>
+          literal="None">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="No PeriodVariation."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="Uniform"
           value="1"
-          literal="Uniform"/>
+          literal="Uniform">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The PeriodVariation uses a uniform distribution between min and max."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="Normal"
-          value="2"/>
+          value="2">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The PeriodVariation uses a normal distribution with mean zero and sigma."/>
+        </eAnnotations>
+      </eLiterals>
+    </eClassifiers>
+    <eClassifiers
+        xsi:type="ecore:EEnum"
+        name="PriorityCeilingProtocolType">
+      <eAnnotations
+          source="http://www.eclipse.org/emf/2002/GenModel">
+        <details
+            key="documentation"
+            value="This enumeration is used to define if and how a Semaphore is using the priority ceiling protocol."/>
+      </eAnnotations>
+      <eLiterals
+          name="None">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The Semaphore will not use the priority ceiling protocol."/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals
+          name="Dynamic"
+          value="1">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The priority of the Process currently holding the Semaphore is increased to the priority of any other Processs belonging to the same scheduler, when it tries to acquire it as well."/>
+        </eAnnotations>
+      </eLiterals>
+      <eLiterals
+          name="Static"
+          value="2">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The priority of the Process acquiring the Semaphore is raised immediatly to the statically defined ceiling priority."/>
+        </eAnnotations>
+      </eLiterals>
     </eClassifiers>
     <eClassifiers
         xsi:type="ecore:EClass"
@@ -3344,7 +3606,7 @@
           xsi:type="ecore:EAttribute"
           name="maxThreads"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
-          defaultValueLiteral="16">
+          defaultValueLiteral="0">
         <eAnnotations
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
@@ -3401,7 +3663,7 @@
           source="http://www.eclipse.org/emf/2002/GenModel">
         <details
             key="documentation"
-            value="The abstract base class of specific relational expressions that can be used to compare the current state of a ModeGroup or a Counter with a provided value."/>
+            value="The abstract base class of specific relational expressions that can be used to compare the current state of ModeGroups or ValueProviders."/>
       </eAnnotations>
       <eStructuralFeatures
           xsi:type="ecore:EAttribute"
@@ -3426,23 +3688,65 @@
             value="This enumeration defines various relational operators that are used to formulate a RelationalExpression."/>
       </eAnnotations>
       <eLiterals
-          name="lt"/>
+          name="lt">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Less than."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="le"
-          value="1"/>
+          value="1">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Less than or equal to."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="gt"
-          value="2"/>
+          value="2">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Greater than."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="ge"
-          value="3"/>
+          value="3">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Greater than or equal to."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="eq"
-          value="4"/>
+          value="4">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Equal to."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="ne"
           value="5"
-          literal="ne"/>
+          literal="ne">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Not equal to."/>
+        </eAnnotations>
+      </eLiterals>
     </eClassifiers>
     <eClassifiers
         xsi:type="ecore:EEnum"
@@ -3454,10 +3758,24 @@
             value="This enumeration defines a subset of relational operators that are used to formulate the limit constraint of a LoadRequirement."/>
       </eAnnotations>
       <eLiterals
-          name="le"/>
+          name="le">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Less than or equal to."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="ge"
-          value="1"/>
+          value="1">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Greater than or equal to."/>
+        </eAnnotations>
+      </eLiterals>
     </eClassifiers>
     <eClassifiers
         xsi:type="ecore:EClass"
@@ -3855,15 +4173,15 @@
       </eStructuralFeatures>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
-          name="tdmaSchedule"
+          name="timePartitions"
           upperBound="-1"
-          eType="#//model/SchedulingEntry"
+          eType="#//model/TimePartition"
           containment="true">
         <eAnnotations
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="documentation"
-              value="The list of time partitions (slots) that are managed by a Scheduler with strategy of type TDMA."/>
+              value="The list of time partitions that are managed by a Scheduler with strategy of type TimePartitioning."/>
         </eAnnotations>
       </eStructuralFeatures>
       <eStructuralFeatures
@@ -3876,7 +4194,7 @@
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="documentation"
-              value="The time period after which the TDMA schedule (frame) is repeated."/>
+              value="The time period after which the time partition schedule is repeated."/>
         </eAnnotations>
       </eStructuralFeatures>
       <eStructuralFeatures
@@ -3909,7 +4227,7 @@
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="documentation"
-              value="This Process is activated at the beginning of the TDMA cycle."/>
+              value="This Process is activated at the beginning of the time partition scheduler."/>
         </eAnnotations>
       </eStructuralFeatures>
       <eStructuralFeatures
@@ -3970,31 +4288,87 @@
           source="http://www.eclipse.org/emf/2002/GenModel">
         <details
             key="documentation"
-            value="This enumeration is used to define the list of supported scheduling strategies."/>
+            value="This enumeration is used to define the list of supported scheduling strategies. The strategy determines, which process or sub-scheduler is selected next."/>
       </eAnnotations>
       <eLiterals
-          name="FCFS"/>
+          name="FCFS">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Processes are scheduled according to the FIFO (First In, First Out) or FCFS (First Come, First Served) principle."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="FixedPriority"
-          value="1"/>
+          value="1">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Processes are scheduled based on their priority."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="RoundRobin"
-          value="2"/>
+          value="2">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Processes and sub-schedulers are scheduled in fixed time partitions, which end as soon as they become inactive."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="OSEK"
-          value="3"/>
+          value="3">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Reserved."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
-          name="TDMA"
-          value="4"/>
+          name="TimePartitioning"
+          value="4">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Processes and sub-schedulers are scheduled according to a cyclic scheme with fixed time partitions."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="EDF"
-          value="5"/>
+          value="5">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Processes are scheduled according to the EDF (Earliest Deadline First) principle."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="FixedIsrPriority"
-          value="6"/>
+          value="6">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Reserved."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="UserDefined"
-          value="7"/>
+          value="7">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="This option is used to implement a custom scheduling strategy using the 'userscheduler.h' API."/>
+        </eAnnotations>
+      </eLiterals>
     </eClassifiers>
     <eClassifiers
         xsi:type="ecore:EEnum"
@@ -4003,28 +4377,56 @@
           source="http://www.eclipse.org/emf/2002/GenModel">
         <details
             key="documentation"
-            value="This enumeration defines the different types of scheduling."/>
+            value="This enumeration is used to define the list of supported scheduler types. The type determines, when scheduling happens."/>
       </eAnnotations>
       <eLiterals
-          name="Preemptive"/>
+          name="Preemptive">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="In preemptive scheduling, the operating system can preempt a currently running process at any time in order to reallocate the processor to another process based on priorities or time constraints. The preempted process is temporarily halted and its state saved so that it can resume execution later."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="Cooperative"
-          value="1"/>
+          value="1">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Cooperative scheduling, in which process can preempt other processes only at implicit or explicit schedule points."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="TimeSlice"
-          value="2"/>
+          value="2">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Preemptive scheduling, in which schedule points are synthesized every timeSlice."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="RunToCompletion"
-          value="3"/>
+          value="3">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Reserved. Cooperative scheduling, in which calling the STATE macro from C code is a schedule point."/>
+        </eAnnotations>
+      </eLiterals>
     </eClassifiers>
     <eClassifiers
         xsi:type="ecore:EClass"
-        name="SchedulingEntry">
+        name="TimePartition">
       <eAnnotations
           source="http://www.eclipse.org/emf/2002/GenModel">
         <details
             key="documentation"
-            value="The representation of a time slot in the schedule of a TDMA scheduler."/>
+            value="The representation of a time partition in the schedule of a time partition scheduler."/>
       </eAnnotations>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
@@ -4040,7 +4442,7 @@
       </eStructuralFeatures>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
-          name="slotLength"
+          name="duration"
           lowerBound="1"
           eType="#//model/Time"
           containment="true">
@@ -4048,7 +4450,7 @@
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="documentation"
-              value="The length of the time slot."/>
+              value="The duration of the time partition."/>
         </eAnnotations>
       </eStructuralFeatures>
     </eClassifiers>
@@ -4075,6 +4477,19 @@
       </eAnnotations>
       <eStructuralFeatures
           xsi:type="ecore:EAttribute"
+          name="ceilingPriority"
+          lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+          defaultValueLiteral="0">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The ceiling priority used for Static priority ceiling protocol. An accessing Process' priority is raised immediately to this statically defined value. It should be the maximum priority of any possible accessor."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures
+          xsi:type="ecore:EAttribute"
           name="initialValue"
           lowerBound="1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
@@ -4097,6 +4512,19 @@
           <details
               key="documentation"
               value="The maximum number of concurrent requests that can be processed before further requests are blocked."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures
+          xsi:type="ecore:EAttribute"
+          name="priorityCeilingProtocol"
+          lowerBound="1"
+          eType="#//model/PriorityCeilingProtocolType"
+          defaultValueLiteral="Dynamic">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The priority ceiling protocol used by this Semaphore. The default is Dynamic."/>
         </eAnnotations>
       </eStructuralFeatures>
     </eClassifiers>
@@ -4145,13 +4573,34 @@
             value="This enumeration defines the different types of access to a Semaphore."/>
       </eAnnotations>
       <eLiterals
-          name="Request"/>
+          name="Request">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="A requesting Process waits until the Semaphore's value is at least one, and then decreases it by one."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="Exclusive"
-          value="1"/>
+          value="1">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="A requesting Process waits until the Semaphore's value reaches maxValue and then decreases it to zero. The next Release will then increase the value to maxValue again."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="Release"
-          value="2"/>
+          value="2">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The Semaphore's value is increased by one, potentially releasing waiting Processes. It is a point of rescheduling, if and only if there is a waiting process released from the Blocked state."/>
+        </eAnnotations>
+      </eLiterals>
     </eClassifiers>
     <eClassifiers
         xsi:type="ecore:EClass"
@@ -4404,10 +4853,24 @@
             value="This enumeration defines the different types of Spinlock operations."/>
       </eAnnotations>
       <eLiterals
-          name="Acquire"/>
+          name="Acquire">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="This operation can be initiated to acquire a Spinlock. If the Spinlock is available, the acquiring Process can immediately proceed to execute the critical section without waiting. However, if the Spinlock is currently held by another Process, the acquiring Process enters a busy waiting (also known as spinning) state until it is available."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="Release"
-          value="1"/>
+          value="1">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="This operation releases a currently held Spinlock."/>
+        </eAnnotations>
+      </eLiterals>
     </eClassifiers>
     <eClassifiers
         xsi:type="ecore:EClass"
@@ -4437,6 +4900,127 @@
             key="documentation"
             value="A CallSequenceItem, with which the handling of interrupts is suspended until ResumeAllInterrupts is called."/>
       </eAnnotations>
+    </eClassifiers>
+    <eClassifiers
+        xsi:type="ecore:EClass"
+        name="Switch"
+        eSuperTypes="#//model/GraphEntryBase">
+      <eAnnotations
+          source="http://www.eclipse.org/emf/2002/GenModel">
+        <details
+            key="documentation"
+            value="A structural element that can be used to define conditional execution branches inside a CallGraph."/>
+      </eAnnotations>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="defaultEntry"
+          eType="#//model/SwitchDefault"
+          containment="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The default branch that will be executed if none of the alternatives listed in entries is executed."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="entries"
+          upperBound="-1"
+          eType="#//model/SwitchEntry"
+          containment="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The alternative execution branches defined by this Switch. The first SwitchEntry whose condition evaluates to true will be executed."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures
+          xsi:type="ecore:EAttribute"
+          name="evaluateConditionsOnEntry"
+          lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+          defaultValueLiteral="false">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="If this is set to true, the Condition of a SwitchEntry will be reevaluated before the condition is checked."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers
+        xsi:type="ecore:EClass"
+        name="SwitchDefault">
+      <eAnnotations
+          source="http://www.eclipse.org/emf/2002/GenModel">
+        <details
+            key="documentation"
+            value="This class is used to define an unconditional execution branch in a Switch."/>
+      </eAnnotations>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="graphEntries"
+          upperBound="-1"
+          eType="#//model/GraphEntryBase"
+          containment="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The list of graph entries to be executed."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers
+        xsi:type="ecore:EClass"
+        name="SwitchEntry"
+        eSuperTypes="#//model/ModelObject">
+      <eAnnotations
+          source="http://www.eclipse.org/emf/2002/GenModel">
+        <details
+            key="documentation"
+            value="This class is used to define a conditional execution branch in a Switch."/>
+      </eAnnotations>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="condition"
+          lowerBound="1"
+          eType="#//model/Condition">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The Condition that is checked by this SwitchEntry."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="graphEntries"
+          upperBound="-1"
+          eType="#//model/GraphEntryBase"
+          containment="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The list of graph entries to be executed."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures
+          xsi:type="ecore:EAttribute"
+          name="negated"
+          lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+          defaultValueLiteral="false">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="If this is set to true, a negative condition check will trigger the execution."/>
+        </eAnnotations>
+      </eStructuralFeatures>
     </eClassifiers>
     <eClassifiers
         xsi:type="ecore:EClass"
@@ -4491,16 +5075,16 @@
       </eStructuralFeatures>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
-          name="modeConditions"
+          name="conditions"
           ordered="false"
           upperBound="-1"
-          eType="#//model/ModeCondition"
+          eType="#//model/Condition"
           containment="true">
         <eAnnotations
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="documentation"
-              value="Only ModeCounters and ModeGroups contained by this system or the model (globally) shall be referenced by ModeConjunctions of ModeConditions in this list."/>
+              value="Only Counters and ModeGroups contained by this system or the model (globally) shall be referenced by the RelationalExpressions in this list."/>
         </eAnnotations>
       </eStructuralFeatures>
       <eStructuralFeatures
@@ -4991,25 +5575,74 @@
             value="This enumeration is used to define the possible units of a Time quantity."/>
       </eAnnotations>
       <eLiterals
-          name="s"/>
+          name="s">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Seconds."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="ms"
-          value="1"/>
+          value="1">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Milliseconds."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="us"
-          value="2"/>
+          value="2">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Microseconds."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="ns"
-          value="3"/>
+          value="3">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Nanoseconds."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="ps"
-          value="4"/>
+          value="4">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Picoseconds."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="fs"
-          value="5"/>
+          value="5">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Femtoseconds."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="T"
-          value="6"/>
+          value="6">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Ticks, depending on a Clock."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="NaN"
           value="7"/>
@@ -5071,74 +5704,80 @@
           name="Exit"
           value="7"/>
       <eLiterals
-          name="UserCode"
+          name="SourceFunctionEntry"
           value="8"/>
       <eLiterals
-          name="UserCodeParam"
+          name="SourceFunctionExit"
           value="9"/>
       <eLiterals
-          name="EventChain"
+          name="UserCode"
           value="10"/>
       <eLiterals
-          name="DataFlowChain"
+          name="UserCodeParam"
           value="11"/>
       <eLiterals
-          name="ActivationFlowChain"
+          name="EventChain"
           value="12"/>
       <eLiterals
-          name="FrameBegin"
+          name="DataFlowChain"
           value="13"/>
       <eLiterals
-          name="FrameEnd"
+          name="ActivationFlowChain"
           value="14"/>
       <eLiterals
-          name="FrameAbort"
+          name="FrameBegin"
           value="15"/>
       <eLiterals
-          name="CycleStart"
+          name="FrameEnd"
           value="16"/>
       <eLiterals
-          name="DynamicSegment"
+          name="FrameAbort"
           value="17"/>
       <eLiterals
-          name="NetworkIdleTime"
+          name="CycleStart"
           value="18"/>
       <eLiterals
-          name="TransferCounter"
+          name="DynamicSegment"
           value="19"/>
       <eLiterals
-          name="FrameDrop"
+          name="NetworkIdleTime"
           value="20"/>
       <eLiterals
-          name="TimerCreate"
+          name="TransferCounter"
           value="21"/>
       <eLiterals
-          name="TimerDelete"
+          name="FrameDrop"
           value="22"/>
       <eLiterals
-          name="TimerStart"
+          name="TimerCreate"
           value="23"/>
       <eLiterals
-          name="TimerStop"
+          name="TimerDelete"
           value="24"/>
       <eLiterals
-          name="TimerExpire"
+          name="TimerStart"
           value="25"/>
       <eLiterals
-          name="TimerExpRest"
+          name="TimerStop"
           value="26"/>
       <eLiterals
-          name="TimerEndMark"
+          name="TimerExpire"
           value="27"/>
       <eLiterals
-          name="QueueOverflow"
+          name="TimerExpRest"
           value="28"/>
       <eLiterals
-          name="QueueUnderrun"
+          name="TimerEndMark"
           value="29"/>
       <eLiterals
-          name="QueueLevelChange"
+          name="QueueOverflow"
           value="30"/>
+      <eLiterals
+          name="QueueUnderrun"
+          value="31"/>
+      <eLiterals
+          name="QueueLevelChange"
+          value="32"/>
     </eClassifiers>
     <eClassifiers
         xsi:type="ecore:EClass"
@@ -5266,6 +5905,95 @@
               value="This number is used to calculate the connections between EventChainSteps in the graph of a UserCodeEventChain."/>
         </eAnnotations>
       </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers
+        xsi:type="ecore:EClass"
+        name="ValueComparison"
+        eSuperTypes="#//model/RelationalExpression">
+      <eAnnotations
+          source="http://www.eclipse.org/emf/2002/GenModel">
+        <details
+            key="documentation"
+            value="A ValueComparison compares the value of the two referenced ValueProviders according to the selected RelationalOperator."/>
+      </eAnnotations>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="value1"
+          lowerBound="1"
+          eType="#//model/ValueProvider">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The left-hand side ValueProvider that is evaluated via the selected RelationalOperator."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="value2"
+          lowerBound="1"
+          eType="#//model/ValueProvider">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The right-hand side ValueProvider that is evaluated via the selected RelationalOperator."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers
+        xsi:type="ecore:EClass"
+        name="ValueExpression"
+        eSuperTypes="#//model/RelationalExpression">
+      <eAnnotations
+          source="http://www.eclipse.org/emf/2002/GenModel">
+        <details
+            key="documentation"
+            value="A ValueExpression compares the value of a referenced ValueProvider with a given constant value according to the selected RelationalOperator."/>
+      </eAnnotations>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="value"
+          lowerBound="1"
+          eType="#//model/ValueProvider">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The left-hand side ValueProvider that is evaluated via the selected RelationalOperator."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures
+          xsi:type="ecore:EAttribute"
+          name="constant"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+          defaultValueLiteral="0">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The right-hand side constant integer value that is evaluated via the selected RelationalOperator."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers
+        xsi:type="ecore:EClass"
+        name="ValueProvider"
+        abstract="true">
+      <eAnnotations
+          source="http://www.eclipse.org/emf/2002/GenModel">
+        <details
+            key="documentation"
+            value="A ValueProvider provides a current value, which can be used in ValueComparisons and ValueExpressions. Counters provide their value directly. DataFlowConnections provide their current fill level as a value."/>
+      </eAnnotations>
+      <eStructuralFeatures
+          xsi:type="ecore:EAttribute"
+          name="currentValue"
+          lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+          transient="true"
+          defaultValueLiteral=""
+          derived="true"/>
     </eClassifiers>
     <eClassifiers
         xsi:type="ecore:EClass"
@@ -5400,7 +6128,14 @@
           name="type"
           lowerBound="1"
           eType="#//model/VariableReadAccessType"
-          defaultValueLiteral="Generic"/>
+          defaultValueLiteral="Generic">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Reserved."/>
+        </eAnnotations>
+      </eStructuralFeatures>
     </eClassifiers>
     <eClassifiers
         xsi:type="ecore:EEnum"
@@ -5458,6 +6193,12 @@
     <eClassifiers
         xsi:type="ecore:EEnum"
         name="VariableReadAccessType">
+      <eAnnotations
+          source="http://www.eclipse.org/emf/2002/GenModel">
+        <details
+            key="documentation"
+            value="Reserved."/>
+      </eAnnotations>
       <eLiterals
           name="Generic"/>
       <eLiterals
@@ -5536,28 +6277,75 @@
           name="type"
           lowerBound="1"
           eType="#//model/VariableWriteAccessType"
-          defaultValueLiteral="Generic"/>
+          defaultValueLiteral="Generic">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Reserved."/>
+        </eAnnotations>
+      </eStructuralFeatures>
     </eClassifiers>
     <eClassifiers
         xsi:type="ecore:EEnum"
         name="VariableWriteAccessPolicy">
+      <eAnnotations
+          source="http://www.eclipse.org/emf/2002/GenModel">
+        <details
+            key="documentation"
+            value="This enumeration is used to define different possiblities of how data can be written if the DataFlowConnection is already full."/>
+      </eAnnotations>
       <eLiterals
-          name="ErrorDrop"/>
+          name="ErrorDrop">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="If the DataFlowConnection is full, the new data is dropped with a QueueOverflow event."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="SilentDrop"
-          value="1"/>
+          value="1">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="If the DataFlowConnection is full, the new data is silently dropped."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="ErrorOverwrite"
           value="2"
-          literal="ErrorOverwrite"/>
+          literal="ErrorOverwrite">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="If the DataFlowConnection is full, the new data is written after the oldest data is dropped with a QueueOverflow event."/>
+        </eAnnotations>
+      </eLiterals>
       <eLiterals
           name="SilentOverwrite"
           value="3"
-          literal="SilentOverwrite"/>
+          literal="SilentOverwrite">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="If the DataFlowConnection is full, the new data is written after the oldest data is silently dropped."/>
+        </eAnnotations>
+      </eLiterals>
     </eClassifiers>
     <eClassifiers
         xsi:type="ecore:EEnum"
         name="VariableWriteAccessType">
+      <eAnnotations
+          source="http://www.eclipse.org/emf/2002/GenModel">
+        <details
+            key="documentation"
+            value="Reserved."/>
+      </eAnnotations>
       <eLiterals
           name="Generic"/>
       <eLiterals
@@ -5572,13 +6360,60 @@
     </eClassifiers>
     <eClassifiers
         xsi:type="ecore:EClass"
+        name="WaitCondition"
+        eSuperTypes="#//model/CallSequenceItem">
+      <eAnnotations
+          source="http://www.eclipse.org/emf/2002/GenModel">
+        <details
+            key="documentation"
+            value="A CallSequenceItem that is used to wait for a Condition."/>
+      </eAnnotations>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="condition"
+          lowerBound="1"
+          eType="#//model/Condition">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The calling Process will wait until the given condition evaluates to true. If condition is already true during the initial evaluation, WaitCondition returns immediately."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures
+          xsi:type="ecore:EAttribute"
+          name="negated"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+          defaultValueLiteral="false">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="If negated is set to true, the calling Process waits until the Condition evaluates to false."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="timeout"
+          eType="#//model/Time"
+          containment="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="If a timeout is given, the calling Process will wait at most for the specified amount of time before returning anyway."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers
+        xsi:type="ecore:EClass"
         name="WaitEvent"
         eSuperTypes="#//model/CallSequenceItem">
       <eAnnotations
           source="http://www.eclipse.org/emf/2002/GenModel">
         <details
             key="documentation"
-            value="A CallSequenceItem that is used to wait for an Event."/>
+            value="A CallSequenceItem that is used to wait for an Event to change state."/>
       </eAnnotations>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
@@ -5589,14 +6424,9 @@
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="documentation"
-              value="The event that is being waited for."/>
+              value="The Event that is being waited for the change state from unset to set."/>
         </eAnnotations>
       </eStructuralFeatures>
-      <eStructuralFeatures
-          xsi:type="ecore:EReference"
-          name="timeout"
-          eType="#//model/Time"
-          containment="true"/>
       <eStructuralFeatures
           xsi:type="ecore:EAttribute"
           name="forReset"
@@ -5608,6 +6438,18 @@
           <details
               key="documentation"
               value="If this is set to true, the calling Process waits for the Event to be reset instead of set."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="timeout"
+          eType="#//model/Time"
+          containment="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="If a timeout is given, the calling Process will wait at most for the specified amount of time before returning anyway."/>
         </eAnnotations>
       </eStructuralFeatures>
     </eClassifiers>
@@ -5642,7 +6484,7 @@
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="condition"
-          eType="#//model/ModeCondition">
+          eType="#//model/Condition">
         <eAnnotations
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
@@ -5691,7 +6533,7 @@
     </eClassifiers>
     <eSubpackages
         name="autosar"
-        nsURI="http://inchron.com/realtime/root/3.2.0/model/autosar"
+        nsURI="http://inchron.com/realtime/root/3.3.0/model/autosar"
         nsPrefix="autosar">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -6242,7 +7084,7 @@
     </eSubpackages>
     <eSubpackages
         name="fmi"
-        nsURI="http://inchron.com/realtime/root/3.2.0/model/fmi"
+        nsURI="http://inchron.com/realtime/root/3.3.0/model/fmi"
         nsPrefix="fmi">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -6261,7 +7103,7 @@
               source="http://www.eclipse.org/emf/2002/GenModel">
             <details
                 key="documentation"
-                value="Maximum value of variable (variableValue ≤ max ). If not defined, the maximum is the largest positive number that can be represented on the machine. The max definition is an information from the FMU to the environment defining the region in which the FMU is designed to operate."/>
+                value="The maximum value that the environment can expect the FMU to set the variable to. By default this is the maximum value that a 32-bit unsigned integer can represent."/>
           </eAnnotations>
         </eStructuralFeatures>
         <eStructuralFeatures
@@ -6273,7 +7115,7 @@
               source="http://www.eclipse.org/emf/2002/GenModel">
             <details
                 key="documentation"
-                value="Minimum value of variable (variable Value ≥ min ). If not defined, the minimum is the largest negative number that can be represented on the machine. The min definition is an information from the FMU to the environment defining the region in which the FMU is designed to operate."/>
+                value="The minimum value that the environment can expect the FMU to set the variable to. By default this is the minimum value that a 32-bit unsigned integer can represent."/>
           </eAnnotations>
         </eStructuralFeatures>
         <eStructuralFeatures
@@ -6285,7 +7127,7 @@
               source="http://www.eclipse.org/emf/2002/GenModel">
             <details
                 key="documentation"
-                value="Physical quantity of the variable, for example “Angle”, or “Energy”. The quantity names are not standardized."/>
+                value="The name of the physical quantity the variable represents, for example “Force” or “Velocity”."/>
           </eAnnotations>
         </eStructuralFeatures>
       </eClassifiers>
@@ -6297,13 +7139,27 @@
             name="seed"
             lowerBound="1"
             eType="#//model/fmi/variable/Integer"
-            containment="true"/>
+            containment="true">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="A unitless variable whose value is used as seed for the random number generator in the simulator. Currently the variable is not used."/>
+          </eAnnotations>
+        </eStructuralFeatures>
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="time"
             lowerBound="1"
             eType="#//model/fmi/variable/Real"
-            containment="true"/>
+            containment="true">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="The independent variable of the FMU."/>
+          </eAnnotations>
+        </eStructuralFeatures>
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="typeDefinitions"
@@ -6311,7 +7167,14 @@
             upperBound="-1"
             eType="#//model/fmi/type/SimpleType"
             unsettable="true"
-            containment="true"/>
+            containment="true">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="The list of type definitions."/>
+          </eAnnotations>
+        </eStructuralFeatures>
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="unitDefinitions"
@@ -6319,7 +7182,14 @@
             upperBound="-1"
             eType="#//model/fmi/unit/Unit"
             unsettable="true"
-            containment="true"/>
+            containment="true">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="The list of unit definitions."/>
+          </eAnnotations>
+        </eStructuralFeatures>
       </eClassifiers>
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -6333,7 +7203,7 @@
               source="http://www.eclipse.org/emf/2002/GenModel">
             <details
                 key="documentation"
-                value="Default unit to display the variable in.&#xA;If set, then it must refer to a DisplayUnit that the Unit contains which the feature &quot;unit&quot; refers to."/>
+                value="The unit to use by default when displaying the variable."/>
           </eAnnotations>
         </eStructuralFeatures>
         <eStructuralFeatures
@@ -6345,7 +7215,7 @@
               source="http://www.eclipse.org/emf/2002/GenModel">
             <details
                 key="documentation"
-                value="Maximum value of variable (value ≤ max). If not defined, the maximum is the largest positive number that can be represented on the machine. The max definition is an information from the FMU to the environment defining the region in which the FMU is designed to operate."/>
+                value="The maximum value that the environment can expect the FMU to set the variable to. By default this is the maximum finite value that a 64-bit double precision floating-point number can represent."/>
           </eAnnotations>
         </eStructuralFeatures>
         <eStructuralFeatures
@@ -6357,7 +7227,7 @@
               source="http://www.eclipse.org/emf/2002/GenModel">
             <details
                 key="documentation"
-                value="Minimum value of variable (value ≥ min). If not defined, the minimum is the largest negative number that can be represented on the machine. The min definition is an information from the FMU to the environment defining the region in which the FMU is designed to operate."/>
+                value="The minimum value that the environment can expect the FMU to set the variable to. By default this is the minimum finite value that a 64-bit double precision floating-point number can represent."/>
           </eAnnotations>
         </eStructuralFeatures>
         <eStructuralFeatures
@@ -6369,7 +7239,7 @@
               source="http://www.eclipse.org/emf/2002/GenModel">
             <details
                 key="documentation"
-                value="Physical quantity of the variable, for example “Angle”, or “Energy”. The quantity names are not standardized."/>
+                value="The name of the physical quantity the variable represents, for example “Force” or “Velocity”."/>
           </eAnnotations>
         </eStructuralFeatures>
         <eStructuralFeatures
@@ -6381,7 +7251,7 @@
               source="http://www.eclipse.org/emf/2002/GenModel">
             <details
                 key="documentation"
-                value="If this attribute is true, then the &quot;offset&quot; of &quot;displayUnit&quot; must be ignored (for example 10 degree Celsius = 10 Kelvin if &quot;relativeQuantity = true&quot; and not 283,15 Kelvin)."/>
+                value="When set, the variable represents a relative quantity, otherwise it represents an absolute quantity. For example a relative temperature of 10 degree Celsius equals to a relative temperature of 10 Kelvin. However, an absolute temperature of 10 degree Celsius equals to an absolute temperature of 283.15 Kelvin."/>
           </eAnnotations>
         </eStructuralFeatures>
         <eStructuralFeatures
@@ -6392,13 +7262,13 @@
               source="http://www.eclipse.org/emf/2002/GenModel">
             <details
                 key="documentation"
-                value="Unit of the variable defined with UnitDefinitions. Unit that is used for the model equations."/>
+                value="The unit that the FMU uses for the variable."/>
           </eAnnotations>
         </eStructuralFeatures>
       </eClassifiers>
       <eSubpackages
           name="type"
-          nsURI="http://inchron.com/realtime/root/3.2.0/model/fmi/type"
+          nsURI="http://inchron.com/realtime/root/3.3.0/model/fmi/type"
           nsPrefix="type">
         <eClassifiers
             xsi:type="ecore:EClass"
@@ -6415,7 +7285,14 @@
               lowerBound="1"
               upperBound="-1"
               eType="#//model/fmi/type/Item"
-              containment="true"/>
+              containment="true">
+            <eAnnotations
+                source="http://www.eclipse.org/emf/2002/GenModel">
+              <details
+                  key="documentation"
+                  value="The list of items that this enumeration consists of."/>
+            </eAnnotations>
+          </eStructuralFeatures>
           <eStructuralFeatures
               xsi:type="ecore:EAttribute"
               name="quantity"
@@ -6425,7 +7302,7 @@
                 source="http://www.eclipse.org/emf/2002/GenModel">
               <details
                   key="documentation"
-                  value="Physical quantity of the variable, for example “Angle”, or “Energy”. The quantity names are not standardized."/>
+                  value="The name of the physical quantity that the variable represents, for example “Force” or “Velocity”."/>
             </eAnnotations>
           </eStructuralFeatures>
         </eClassifiers>
@@ -6437,12 +7314,6 @@
             xsi:type="ecore:EClass"
             name="Item"
             eSuperTypes="#//model/ModelObject">
-          <eAnnotations
-              source="http://www.eclipse.org/emf/2002/GenModel">
-            <details
-                key="documentation"
-                value="Items of an enumeration as a sequence of &quot;name&quot; and &quot;value&quot; pairs.&#xA;The values can be any integer number, but must be unique within the same enumeration (in order that the mapping between &quot;name&quot; and &quot;value&quot; is bijective).&#xA;An Enumeration element must have at least one Item."/>
-          </eAnnotations>
           <eStructuralFeatures
               xsi:type="ecore:EAttribute"
               name="description"
@@ -6452,7 +7323,7 @@
                 source="http://www.eclipse.org/emf/2002/GenModel">
               <details
                   key="documentation"
-                  value=""/>
+                  value="The description of this item."/>
             </eAnnotations>
           </eStructuralFeatures>
           <eStructuralFeatures
@@ -6465,7 +7336,7 @@
                 source="http://www.eclipse.org/emf/2002/GenModel">
               <details
                   key="documentation"
-                  value="Must be a unique number in the same enumeration."/>
+                  value="The value of this item in the enumeration. It must be unique within the enumeration."/>
             </eAnnotations>
           </eStructuralFeatures>
         </eClassifiers>
@@ -6487,18 +7358,24 @@
                 source="http://www.eclipse.org/emf/2002/GenModel">
               <details
                   key="documentation"
-                  value="Description of the SimpleType."/>
+                  value="The description of this type."/>
             </eAnnotations>
           </eStructuralFeatures>
         </eClassifiers>
       </eSubpackages>
       <eSubpackages
           name="unit"
-          nsURI="http://inchron.com/realtime/root/3.2.0/model/fmi/unit"
+          nsURI="http://inchron.com/realtime/root/3.3.0/model/fmi/unit"
           nsPrefix="unit">
         <eClassifiers
             xsi:type="ecore:EClass"
             name="BaseUnit">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="Defines the factor, offset, and the exponents of the SI base units that make up this unit."/>
+          </eAnnotations>
           <eStructuralFeatures
               xsi:type="ecore:EAttribute"
               name="A"
@@ -6532,7 +7409,7 @@
                 source="http://www.eclipse.org/emf/2002/GenModel">
               <details
                   key="documentation"
-                  value="Factor to covert unit value to base unit value, i.e. BaseUnit_value = factor * Unit_value + offset"/>
+                  value="The factor to convert the value of a variable to BaseUnit. For example, to express a variable that has the unit Fahrenheit in BaseUnit Kelvin (K) the factor is 5/9 and the offset is 273.15 - 32 * 5/9."/>
             </eAnnotations>
           </eStructuralFeatures>
           <eStructuralFeatures
@@ -6592,7 +7469,7 @@
                 source="http://www.eclipse.org/emf/2002/GenModel">
               <details
                   key="documentation"
-                  value="Offset to covert unit value to base unit value, i.e. BaseUnit_value = factor * Unit_value + offset"/>
+                  value="The offset to convert the value of a variable to BaseUnit. For example, to express a variable that has the unit Fahrenheit in BaseUnit Kelvin (K) the factor is 5/9 and the offset is 273.15 - 32 * 5/9."/>
             </eAnnotations>
           </eStructuralFeatures>
           <eStructuralFeatures
@@ -6633,7 +7510,7 @@
                 source="http://www.eclipse.org/emf/2002/GenModel">
               <details
                   key="documentation"
-                  value="Factor to covert unit value to display unit value, i.e. DisplayUnit_value = factor * Unit_value + offset"/>
+                  value="The factor to convert the value of a variable to DisplayUnit. For example, to express a variable that has the unit Fahrenheit in DisplayUnit Celsius (C) the factor is 5/9 and the offset is -32 * 5/9."/>
             </eAnnotations>
           </eStructuralFeatures>
           <eStructuralFeatures
@@ -6645,7 +7522,7 @@
                 source="http://www.eclipse.org/emf/2002/GenModel">
               <details
                   key="documentation"
-                  value="Offset to covert unit value to display unit value, i.e. DiplayUnit_value = factor * Unit_value + offset"/>
+                  value="The offset to convert the value of a variable to DisplayUnit. For example, to express a variable that has the unit Fahrenheit in DisplayUnit Celsius (C) the factor is 5/9 and the offset is -32 * 5/9."/>
             </eAnnotations>
           </eStructuralFeatures>
         </eClassifiers>
@@ -6657,19 +7534,33 @@
               xsi:type="ecore:EReference"
               name="baseUnit"
               eType="#//model/fmi/unit/BaseUnit"
-              containment="true"/>
+              containment="true">
+            <eAnnotations
+                source="http://www.eclipse.org/emf/2002/GenModel">
+              <details
+                  key="documentation"
+                  value="The unit associated to a variable that is derived from the SI base units."/>
+            </eAnnotations>
+          </eStructuralFeatures>
           <eStructuralFeatures
               xsi:type="ecore:EReference"
               name="displayUnits"
               ordered="false"
               upperBound="-1"
               eType="#//model/fmi/unit/DisplayUnit"
-              containment="true"/>
+              containment="true">
+            <eAnnotations
+                source="http://www.eclipse.org/emf/2002/GenModel">
+              <details
+                  key="documentation"
+                  value="A list of unit definitions in which a variable can be shown."/>
+            </eAnnotations>
+          </eStructuralFeatures>
         </eClassifiers>
       </eSubpackages>
       <eSubpackages
           name="variable"
-          nsURI="http://inchron.com/realtime/root/3.2.0/model/fmi/variable"
+          nsURI="http://inchron.com/realtime/root/3.3.0/model/fmi/variable"
           nsPrefix="variable">
         <eClassifiers
             xsi:type="ecore:EClass"
@@ -6678,16 +7569,36 @@
           <eStructuralFeatures
               xsi:type="ecore:EReference"
               name="declaredType"
-              eType="#//model/fmi/type/Boolean"/>
+              eType="#//model/fmi/type/Boolean">
+            <eAnnotations
+                source="http://www.eclipse.org/emf/2002/GenModel">
+              <details
+                  key="documentation"
+                  value="The type to base the variable on. Any attribute set in the variable takes precedence over what is set in the same attribute of the type."/>
+            </eAnnotations>
+          </eStructuralFeatures>
           <eStructuralFeatures
               xsi:type="ecore:EAttribute"
               name="start"
               eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
-              defaultValueLiteral="false"/>
+              defaultValueLiteral="false">
+            <eAnnotations
+                source="http://www.eclipse.org/emf/2002/GenModel">
+              <details
+                  key="documentation"
+                  value="The value of the variable when instantiating the FMU."/>
+            </eAnnotations>
+          </eStructuralFeatures>
         </eClassifiers>
         <eClassifiers
             xsi:type="ecore:EEnum"
             name="Causality">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="A property of a variable that describes its purpose."/>
+          </eAnnotations>
           <eLiterals
               name="calculatedParameter"
               literal="calculatedParameter">
@@ -6695,7 +7606,7 @@
                 source="http://www.eclipse.org/emf/2002/GenModel">
               <details
                   key="documentation"
-                  value="&quot;calculatedParameter&quot; : A data value that is constant during the simulation and is computed during initialization or when tunable parameters change. variability must be &quot;fixed&quot; or &quot;tunable&quot;. initial must be &quot;approx&quot;, &quot;calculated&quot; or not present (meaning calculated)."/>
+                  value="The variable may depend on other variables. Its value is calculated during the initialization of the FMU and when dependent variables change."/>
             </eAnnotations>
           </eLiterals>
           <eLiterals
@@ -6705,7 +7616,7 @@
                 source="http://www.eclipse.org/emf/2002/GenModel">
               <details
                   key="documentation"
-                  value="&quot;independent&quot; : The independent variable (usually “time”). All variables are a function of this independent variable. variability must be &quot;continuous&quot;. At most one ScalarVariable of an FMU can be defined as &quot;independent&quot;. If no variable is defined as &quot;independent&quot;, it is implicitely present with name = &quot;time&quot; and unit = &quot;s&quot;. If one variable is defined as &quot;independent&quot;, it must be defined as &quot;Real&quot; without a &quot;start&quot; attribute. It is not allowed to call function fmi2SetReal on an &quot;independent&quot; variable. Instead, its value is initialized with fmi2SetupExperiment and after initialization set by fmi2SetTime for ModelExchange and by arguments currentCommunicationPoint and communicationStepSize of fmi2DoStep for CoSimulation. [The actual value can be inquired with fmi2GetReal]."/>
+                  value="The variable is independent. There may only be one independent variable."/>
             </eAnnotations>
           </eLiterals>
           <eLiterals
@@ -6715,7 +7626,7 @@
                 source="http://www.eclipse.org/emf/2002/GenModel">
               <details
                   key="documentation"
-                  value="&quot;input&quot; : The variable value can be provided from another model or slave. It is not allowed to define initial."/>
+                  value="The variable can be used as a sink to connect an output variable of another FMU."/>
             </eAnnotations>
           </eLiterals>
           <eLiterals
@@ -6725,7 +7636,7 @@
                 source="http://www.eclipse.org/emf/2002/GenModel">
               <details
                   key="documentation"
-                  value="&quot;local&quot; : Local variable that is calculated from other variables or is a continuous-time state (see section 2.2.8). It is not allowed to use the variable value in another model or slave."/>
+                  value="The variable is read-only and exposes FMU internal data."/>
             </eAnnotations>
           </eLiterals>
           <eLiterals
@@ -6735,7 +7646,7 @@
                 source="http://www.eclipse.org/emf/2002/GenModel">
               <details
                   key="documentation"
-                  value="&quot;output&quot; : The variable value can be used by another model or slave. The algebraic relationship to the inputs is defined via the dependencies attribute of &lt; fmiModelDescription>&lt;ModelStructure>&lt;Outputs>&lt;Unknown>."/>
+                  value="The variable can be used as source to connect an input variable of another FMU."/>
             </eAnnotations>
           </eLiterals>
           <eLiterals
@@ -6745,7 +7656,7 @@
                 source="http://www.eclipse.org/emf/2002/GenModel">
               <details
                   key="documentation"
-                  value="&quot;parameter&quot; : Independent parameter (a data value that is constant during the simulation and is provided by the environment and cannot be used in connections). variability must be &quot;fixed&quot; or &quot;tunable&quot;. initial must be exact or not present (meaning exact )."/>
+                  value="The variable influences the behavior of the FMU."/>
             </eAnnotations>
           </eLiterals>
         </eClassifiers>
@@ -6757,7 +7668,14 @@
               xsi:type="ecore:EReference"
               name="declaredType"
               lowerBound="1"
-              eType="#//model/fmi/type/Enumeration"/>
+              eType="#//model/fmi/type/Enumeration">
+            <eAnnotations
+                source="http://www.eclipse.org/emf/2002/GenModel">
+              <details
+                  key="documentation"
+                  value="The type to base the variable on. Any attribute set in the variable takes precedence over what is set in the same attribute of the type."/>
+            </eAnnotations>
+          </eStructuralFeatures>
           <eStructuralFeatures
               xsi:type="ecore:EAttribute"
               name="max"
@@ -6767,7 +7685,7 @@
                 source="http://www.eclipse.org/emf/2002/GenModel">
               <details
                   key="documentation"
-                  value=""/>
+                  value="The maximum value that the environment can expect the FMU to set the variable to."/>
             </eAnnotations>
           </eStructuralFeatures>
           <eStructuralFeatures
@@ -6779,7 +7697,7 @@
                 source="http://www.eclipse.org/emf/2002/GenModel">
               <details
                   key="documentation"
-                  value=""/>
+                  value="The minimum value that the environment can expect the FMU to set the variable to."/>
             </eAnnotations>
           </eStructuralFeatures>
           <eStructuralFeatures
@@ -6791,30 +7709,71 @@
                 source="http://www.eclipse.org/emf/2002/GenModel">
               <details
                   key="documentation"
-                  value=""/>
+                  value="The name of the physical quantity the variable represents, for example “Force” or “Velocity”."/>
             </eAnnotations>
           </eStructuralFeatures>
           <eStructuralFeatures
               xsi:type="ecore:EAttribute"
               name="start"
               eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
-              defaultValueLiteral="0"/>
+              defaultValueLiteral="0">
+            <eAnnotations
+                source="http://www.eclipse.org/emf/2002/GenModel">
+              <details
+                  key="documentation"
+                  value="The value of the variable when instantiating the FMU."/>
+            </eAnnotations>
+          </eStructuralFeatures>
         </eClassifiers>
         <eClassifiers
             xsi:type="ecore:EEnum"
             name="Initial">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="A property of a variable that describes the type of its value when the FMU sets it during the initialization of the FMU."/>
+          </eAnnotations>
           <eLiterals
               name="approx"
-              literal="approx"/>
+              literal="approx">
+            <eAnnotations
+                source="http://www.eclipse.org/emf/2002/GenModel">
+              <details
+                  key="documentation"
+                  value="The value is an approximation."/>
+            </eAnnotations>
+          </eLiterals>
           <eLiterals
               name="calculated"
-              literal="calculated"/>
+              literal="calculated">
+            <eAnnotations
+                source="http://www.eclipse.org/emf/2002/GenModel">
+              <details
+                  key="documentation"
+                  value="The value is calculated from other variables."/>
+            </eAnnotations>
+          </eLiterals>
           <eLiterals
               name="exact"
-              literal="exact"/>
+              literal="exact">
+            <eAnnotations
+                source="http://www.eclipse.org/emf/2002/GenModel">
+              <details
+                  key="documentation"
+                  value="The value is exact."/>
+            </eAnnotations>
+          </eLiterals>
           <eLiterals
               name="unset"
-              literal="unset"/>
+              literal="unset">
+            <eAnnotations
+                source="http://www.eclipse.org/emf/2002/GenModel">
+              <details
+                  key="documentation"
+                  value="Use the default value for initial according to the selected combination of causality and variability."/>
+            </eAnnotations>
+          </eLiterals>
         </eClassifiers>
         <eClassifiers
             xsi:type="ecore:EClass"
@@ -6823,12 +7782,26 @@
           <eStructuralFeatures
               xsi:type="ecore:EReference"
               name="declaredType"
-              eType="#//model/fmi/type/Integer"/>
+              eType="#//model/fmi/type/Integer">
+            <eAnnotations
+                source="http://www.eclipse.org/emf/2002/GenModel">
+              <details
+                  key="documentation"
+                  value="The type to base the variable on. Any attribute set in the variable takes precedence over what is set in the same attribute of the type."/>
+            </eAnnotations>
+          </eStructuralFeatures>
           <eStructuralFeatures
               xsi:type="ecore:EAttribute"
               name="start"
               eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
-              defaultValueLiteral="0"/>
+              defaultValueLiteral="0">
+            <eAnnotations
+                source="http://www.eclipse.org/emf/2002/GenModel">
+              <details
+                  key="documentation"
+                  value="The value of the variable when instantiating the FMU."/>
+            </eAnnotations>
+          </eStructuralFeatures>
         </eClassifiers>
         <eClassifiers
             xsi:type="ecore:EClass"
@@ -6837,12 +7810,26 @@
           <eStructuralFeatures
               xsi:type="ecore:EReference"
               name="declaredType"
-              eType="#//model/fmi/type/Real"/>
+              eType="#//model/fmi/type/Real">
+            <eAnnotations
+                source="http://www.eclipse.org/emf/2002/GenModel">
+              <details
+                  key="documentation"
+                  value="The type to base the variable on. Any attribute set in the variable takes precedence over what is set in the same attribute of the type."/>
+            </eAnnotations>
+          </eStructuralFeatures>
           <eStructuralFeatures
               xsi:type="ecore:EAttribute"
               name="start"
               eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
-              defaultValueLiteral="0"/>
+              defaultValueLiteral="0">
+            <eAnnotations
+                source="http://www.eclipse.org/emf/2002/GenModel">
+              <details
+                  key="documentation"
+                  value="The value of the variable when instantiating the FMU."/>
+            </eAnnotations>
+          </eStructuralFeatures>
         </eClassifiers>
         <eClassifiers
             xsi:type="ecore:EClass"
@@ -6853,7 +7840,14 @@
               xsi:type="ecore:EAttribute"
               name="causality"
               eType="#//model/fmi/variable/Causality"
-              defaultValueLiteral="local"/>
+              defaultValueLiteral="local">
+            <eAnnotations
+                source="http://www.eclipse.org/emf/2002/GenModel">
+              <details
+                  key="documentation"
+                  value="Describes the purpose of the variable."/>
+            </eAnnotations>
+          </eStructuralFeatures>
           <eStructuralFeatures
               xsi:type="ecore:EAttribute"
               name="description"
@@ -6863,14 +7857,21 @@
                 source="http://www.eclipse.org/emf/2002/GenModel">
               <details
                   key="documentation"
-                  value=""/>
+                  value="The description of the variable."/>
             </eAnnotations>
           </eStructuralFeatures>
           <eStructuralFeatures
               xsi:type="ecore:EAttribute"
               name="initial"
               eType="#//model/fmi/variable/Initial"
-              defaultValueLiteral="unset"/>
+              defaultValueLiteral="unset">
+            <eAnnotations
+                source="http://www.eclipse.org/emf/2002/GenModel">
+              <details
+                  key="documentation"
+                  value="Defines how the FMU initializes the value of the variable."/>
+            </eAnnotations>
+          </eStructuralFeatures>
           <eStructuralFeatures
               xsi:type="ecore:EAttribute"
               name="valueReference"
@@ -6881,18 +7882,31 @@
                 source="http://www.eclipse.org/emf/2002/GenModel">
               <details
                   key="documentation"
-                  value="Identifier for variable value in FMI2 function calls (not necessarily unique with respect to all variables)."/>
+                  value="A unique value identifying the variable."/>
             </eAnnotations>
           </eStructuralFeatures>
           <eStructuralFeatures
               xsi:type="ecore:EAttribute"
               name="variability"
               eType="#//model/fmi/variable/Variability"
-              defaultValueLiteral="continuous"/>
+              defaultValueLiteral="continuous">
+            <eAnnotations
+                source="http://www.eclipse.org/emf/2002/GenModel">
+              <details
+                  key="documentation"
+                  value="Describes if and how the value of the variable changes."/>
+            </eAnnotations>
+          </eStructuralFeatures>
         </eClassifiers>
         <eClassifiers
             xsi:type="ecore:EEnum"
             name="Variability">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="A property of a variable that describes if and how its value changes."/>
+          </eAnnotations>
           <eLiterals
               name="constant"
               literal="constant">
@@ -6900,7 +7914,7 @@
                 source="http://www.eclipse.org/emf/2002/GenModel">
               <details
                   key="documentation"
-                  value="&quot;constant&quot; : The value of the variable never changes."/>
+                  value="The value does not change."/>
             </eAnnotations>
           </eLiterals>
           <eLiterals
@@ -6910,7 +7924,7 @@
                 source="http://www.eclipse.org/emf/2002/GenModel">
               <details
                   key="documentation"
-                  value="&quot;continuous&quot; : Only a variable of type = “ Real ” can be “ continuous ”.&#xA;ModelExchange: No restrictions on value changes.&#xA;CoSimulation: By convention, the variable is from a differential."/>
+                  value="The value depends on the single independent variable and can change at any time."/>
             </eAnnotations>
           </eLiterals>
           <eLiterals
@@ -6920,7 +7934,7 @@
                 source="http://www.eclipse.org/emf/2002/GenModel">
               <details
                   key="documentation"
-                  value="&quot;discrete&quot; :&#xA;ModelExchange: The value of the variable is constant between external and internal events (= time, state, step events defined implicitly in the FMU).&#xA;CoSimulation: By convention, the variable is from a “real” sampled data system and its value is only changed at Communication Points (also inside the slave)."/>
+                  value="The value depends on the single independent variable and can only change at communication points."/>
             </eAnnotations>
           </eLiterals>
           <eLiterals
@@ -6930,7 +7944,7 @@
                 source="http://www.eclipse.org/emf/2002/GenModel">
               <details
                   key="documentation"
-                  value="&quot;fixed&quot; : The value of the variable is fixed after initialization, in other words after fmi2ExitInitializationMode was called the variable value does not change anymore."/>
+                  value="The value does not depend on the single independent variable and does not change after the initialization of the FMU."/>
             </eAnnotations>
           </eLiterals>
           <eLiterals
@@ -6940,7 +7954,7 @@
                 source="http://www.eclipse.org/emf/2002/GenModel">
               <details
                   key="documentation"
-                  value="&quot;tunable&quot; : The value of the variable is constant between external events (ModelExchange) and between Communication Points (CoSimulation) due to changing variables with causality = &quot;parameter&quot; or &quot;input&quot; and variability = &quot;tunable&quot; . Whenever a parameter or input signal with variability = &quot;tunable&quot; changes, then an event is triggered externally (ModelExchange) or the change is performed at the next Communication Point (CoSimulation) and the variables with variability = &quot;tunable&quot; and causality = &quot;calculatedParameter&quot; or &quot;output&quot; must be newly computed."/>
+                  value="The value does not depend on the single independent variable and changes only at communication points."/>
             </eAnnotations>
           </eLiterals>
         </eClassifiers>
@@ -6948,7 +7962,7 @@
     </eSubpackages>
     <eSubpackages
         name="memory"
-        nsURI="http://inchron.com/realtime/root/3.2.0/model/memory"
+        nsURI="http://inchron.com/realtime/root/3.3.0/model/memory"
         nsPrefix="memory">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -7036,13 +8050,34 @@
               value="This enumeration defines the different types of CacheMemories."/>
         </eAnnotations>
         <eLiterals
-            name="Instruction"/>
+            name="Instruction">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="Instruction cache."/>
+          </eAnnotations>
+        </eLiterals>
         <eLiterals
             name="Data"
-            value="1"/>
+            value="1">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="Data cache."/>
+          </eAnnotations>
+        </eLiterals>
         <eLiterals
             name="Unified"
-            value="2"/>
+            value="2">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="Cache for instructions and data."/>
+          </eAnnotations>
+        </eLiterals>
       </eClassifiers>
       <eClassifiers
           xsi:type="ecore:EEnum"
@@ -7055,10 +8090,24 @@
         </eAnnotations>
         <eLiterals
             name="WriteThrough"
-            literal="WriteThrough"/>
+            literal="WriteThrough">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="Write through caches forward changes in cache lines immediatly."/>
+          </eAnnotations>
+        </eLiterals>
         <eLiterals
             name="WriteBack"
-            value="1"/>
+            value="1">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="Write back caches forward changes in cache lines when they are evicted."/>
+          </eAnnotations>
+        </eLiterals>
       </eClassifiers>
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -7302,7 +8351,7 @@
               source="http://www.eclipse.org/emf/2002/GenModel">
             <details
                 key="documentation"
-                value="The scheduling policy of this Interconnect defaults to Priority. RoundRobin or FCFS are also possible."/>
+                value="Reserved. The scheduling policy of an Interconnect defaults to Priority. RoundRobin or FCFS are also possible."/>
           </eAnnotations>
         </eStructuralFeatures>
         <eStructuralFeatures
@@ -7369,7 +8418,7 @@
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="documentation"
-              value="This enumeration defines the different scheduling behaviors supported by Interconnects."/>
+              value="This enumeration defines the different scheduling behaviors supported by Interconnects. Currently unused."/>
         </eAnnotations>
         <eLiterals
             name="Priority"/>
@@ -7607,7 +8656,7 @@
     </eSubpackages>
     <eSubpackages
         name="metric"
-        nsURI="http://inchron.com/realtime/root/3.2.0/model/metric"
+        nsURI="http://inchron.com/realtime/root/3.3.0/model/metric"
         nsPrefix="metric">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -7711,6 +8760,39 @@
       </eClassifiers>
       <eClassifiers
           xsi:type="ecore:EClass"
+          name="EventNetExecTime"
+          eSuperTypes="#//model/metric/TRMetric">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="A metric for calculating the net execution time of a process between any two TraceEvents."/>
+        </eAnnotations>
+        <eStructuralFeatures
+            xsi:type="ecore:EReference"
+            name="start"
+            lowerBound="1"
+            eType="#//model/TraceEvent"/>
+        <eStructuralFeatures
+            xsi:type="ecore:EReference"
+            name="end"
+            lowerBound="1"
+            eType="#//model/TraceEvent"/>
+        <eStructuralFeatures
+            xsi:type="ecore:EReference"
+            name="process"
+            lowerBound="1"
+            eType="#//model/Process">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="The process to be evaluated."/>
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers
+          xsi:type="ecore:EClass"
           name="FRComparator"
           eSuperTypes="#//model/metric/FRVMetric #//model/metric/NumericComparator">
         <eAnnotations
@@ -7739,7 +8821,7 @@
             xsi:type="ecore:EAttribute"
             name="interval"
             lowerBound="1"
-            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"
+            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
             defaultValueLiteral="0">
           <eAnnotations
               source="http://www.eclipse.org/emf/2002/GenModel">
@@ -7751,7 +8833,7 @@
         <eStructuralFeatures
             xsi:type="ecore:EAttribute"
             name="start"
-            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"
+            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
             defaultValueLiteral="0">
           <eAnnotations
               source="http://www.eclipse.org/emf/2002/GenModel">
@@ -7816,6 +8898,46 @@
               key="documentation"
               value="The FT comparator compares the float value of the source metric with the float interval (see base class NumericComparator for details) and returns a corresponding verdict measure."/>
         </eAnnotations>
+        <eStructuralFeatures
+            xsi:type="ecore:EReference"
+            name="source"
+            lowerBound="1"
+            eType="#//model/metric/FTMetric"/>
+      </eClassifiers>
+      <eClassifiers
+          xsi:type="ecore:EClass"
+          name="FTHistogram"
+          eSuperTypes="#//model/metric/Histogram">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="A histogram distribution of a float variable (plus additional statistics)."/>
+        </eAnnotations>
+        <eStructuralFeatures
+            xsi:type="ecore:EAttribute"
+            name="interval"
+            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
+            defaultValueLiteral="0.04">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="The binning interval. See also 'start'."/>
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures
+            xsi:type="ecore:EAttribute"
+            name="start"
+            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
+            defaultValueLiteral="0.0">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="The start value of the first binning interval. See also 'interval'."/>
+          </eAnnotations>
+        </eStructuralFeatures>
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="source"
@@ -8005,6 +9127,56 @@
             name="source"
             lowerBound="1"
             eType="#//model/metric/FunctionExecution"/>
+      </eClassifiers>
+      <eClassifiers
+          xsi:type="ecore:EClass"
+          name="FunctionExecutionTimeComposition"
+          eSuperTypes="#//model/metric/Metric">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The function execution time composition metric calculates the accumulated times other processes preempt the given process for each function execution. Additionally, the total preemption time of the process is calculated for each function execution."/>
+        </eAnnotations>
+        <eStructuralFeatures
+            xsi:type="ecore:EReference"
+            name="function"
+            lowerBound="1"
+            eType="#//model/Function"/>
+        <eStructuralFeatures
+            xsi:type="ecore:EReference"
+            name="process"
+            lowerBound="1"
+            eType="#//model/Process"/>
+        <eStructuralFeatures
+            xsi:type="ecore:EAttribute"
+            name="numberOfEvaluations"
+            lowerBound="1"
+            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+            defaultValueLiteral="-1">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="Number of function executions for which the preemption times shall be calculated. The metric will return the executions with the worst response time. If this attribute is set to the default value (-1) the preemption times are calculated for all function executions."/>
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers
+          xsi:type="ecore:EClass"
+          name="FunctionFinder"
+          eSuperTypes="#//model/metric/Metric">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The FunctionFinder metric collects all functions running in the context of a given process."/>
+        </eAnnotations>
+        <eStructuralFeatures
+            xsi:type="ecore:EReference"
+            name="process"
+            lowerBound="1"
+            eType="#//model/Process"/>
       </eClassifiers>
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -8311,7 +9483,7 @@
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="documentation"
-              value="The NetSlackTime metric returns the net slack time for a process within the time range given by the termination of the process and the deadline event."/>
+              value="The NetSlackTime metric returns the net slack time for a process within the time range given by the termination of the process and its deadline."/>
         </eAnnotations>
         <eStructuralFeatures
             xsi:type="ecore:EReference"
@@ -8341,10 +9513,24 @@
             name="Undefined"/>
         <eLiterals
             name="Delta"
-            value="1"/>
+            value="1">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="The deadline of the process is its activation time plus the deadlineDelta."/>
+          </eAnnotations>
+        </eLiterals>
         <eLiterals
             name="Event"
-            value="2"/>
+            value="2">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="The deadline of the process is given by its deadlineEvent."/>
+          </eAnnotations>
+        </eLiterals>
       </eClassifiers>
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -8372,7 +9558,7 @@
             xsi:type="ecore:EAttribute"
             name="prewarnMarginAtLowerLimit"
             lowerBound="1"
-            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"
+            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
             defaultValueLiteral="0">
           <eAnnotations
               source="http://www.eclipse.org/emf/2002/GenModel">
@@ -8385,7 +9571,7 @@
             xsi:type="ecore:EAttribute"
             name="prewarnMarginAtUpperLimit"
             lowerBound="1"
-            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"
+            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
             defaultValueLiteral="0">
           <eAnnotations
               source="http://www.eclipse.org/emf/2002/GenModel">
@@ -8403,7 +9589,7 @@
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="documentation"
-              value="The preemption time metric calculates the accumulated time a process preempts the given process for each process execution. Additionally the total preemption time of the process is calculated for each execution."/>
+              value="The preemption time metric calculates the accumulated times other processes preempt the given process for each process execution. Additionally, the total preemption time of the process is calculated for each execution."/>
         </eAnnotations>
         <eStructuralFeatures
             xsi:type="ecore:EReference"
@@ -8487,26 +9673,75 @@
           name="ProcessExecutionMetricType">
         <eLiterals
             name="NetExecutionTime"
-            literal="NetExecutionTime"/>
+            literal="NetExecutionTime">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="The net (core) execution time consumption of the process."/>
+          </eAnnotations>
+        </eLiterals>
         <eLiterals
             name="GrossExecutionTime"
-            value="1"/>
+            value="1">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="The time between the start and termination of the process."/>
+          </eAnnotations>
+        </eLiterals>
         <eLiterals
             name="ResponseTime"
-            value="2"/>
+            value="2">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="The time between the activation and termination of the process."/>
+          </eAnnotations>
+        </eLiterals>
         <eLiterals
             name="PreemptionTime"
-            value="3"/>
+            value="3">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="The time between the activation and termination of the process, in which the process is interrupted or preempted by other processes."/>
+          </eAnnotations>
+        </eLiterals>
         <eLiterals
             name="InitialPendingTime"
-            value="4"/>
+            value="4">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="The time between the activation and start of the process."/>
+          </eAnnotations>
+        </eLiterals>
         <eLiterals
             name="StartToStartTime"
-            value="5"/>
+            value="5">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="The time between two consecutive process starts."/>
+          </eAnnotations>
+        </eLiterals>
         <eLiterals
             name="SlackTime"
             value="6"
-            literal="SlackTime"/>
+            literal="SlackTime">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="The time between the termination and next activation of the process."/>
+          </eAnnotations>
+        </eLiterals>
       </eClassifiers>
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -8542,11 +9777,13 @@
         <eStructuralFeatures
             xsi:type="ecore:EAttribute"
             name="filteredRtosFailures"
+            ordered="false"
             upperBound="-1"
             eType="#//model/requirement/RTOSFailure"/>
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="blacklist"
+            ordered="false"
             upperBound="-1"
             eType="#//model/Process"/>
         <eStructuralFeatures
@@ -8675,7 +9912,7 @@
             xsi:type="ecore:EAttribute"
             name="prewarnMarginAtLowerLimit"
             lowerBound="1"
-            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"
+            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
             defaultValueLiteral="0">
           <eAnnotations
               source="http://www.eclipse.org/emf/2002/GenModel">
@@ -8688,7 +9925,7 @@
             xsi:type="ecore:EAttribute"
             name="prewarnMarginAtUpperLimit"
             lowerBound="1"
-            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"
+            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
             defaultValueLiteral="0">
           <eAnnotations
               source="http://www.eclipse.org/emf/2002/GenModel">
@@ -8905,7 +10142,7 @@
     </eSubpackages>
     <eSubpackages
         name="peripheral"
-        nsURI="http://inchron.com/realtime/root/3.2.0/model/peripheral"
+        nsURI="http://inchron.com/realtime/root/3.3.0/model/peripheral"
         nsPrefix="peripheral">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -9567,7 +10804,7 @@
     </eSubpackages>
     <eSubpackages
         name="requirement"
-        nsURI="http://inchron.com/realtime/root/3.2.0/model/requirement"
+        nsURI="http://inchron.com/realtime/root/3.3.0/model/requirement"
         nsPrefix="requirement">
       <eAnnotations
           source="http://www.eclipse.org/emf/2002/GenModel">
@@ -10118,29 +11355,6 @@
       </eClassifiers>
       <eClassifiers
           xsi:type="ecore:EClass"
-          name="MetricRequirement"
-          eSuperTypes="#//model/requirement/Requirement">
-        <eAnnotations
-            source="http://www.eclipse.org/emf/2002/GenModel">
-          <details
-              key="documentation"
-              value="A requirement acting on metric evaluations."/>
-        </eAnnotations>
-        <eStructuralFeatures
-            xsi:type="ecore:EReference"
-            name="metric"
-            lowerBound="1"
-            eType="#//model/metric/Template">
-          <eAnnotations
-              source="http://www.eclipse.org/emf/2002/GenModel">
-            <details
-                key="documentation"
-                value="The metric to be evaluated."/>
-          </eAnnotations>
-        </eStructuralFeatures>
-      </eClassifiers>
-      <eClassifiers
-          xsi:type="ecore:EClass"
           name="NetExecTimeRequirement"
           eSuperTypes="#//model/requirement/TimingRequirement">
         <eAnnotations
@@ -10175,10 +11389,24 @@
             name="Undefined"/>
         <eLiterals
             name="Delta"
-            value="1"/>
+            value="1">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="The deadline of the process is its activation time plus the deadlineDelta."/>
+          </eAnnotations>
+        </eLiterals>
         <eLiterals
             name="Event"
-            value="2"/>
+            value="2">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="The deadline of the process is given by its deadlineEvent."/>
+          </eAnnotations>
+        </eLiterals>
       </eClassifiers>
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -10550,7 +11778,7 @@
             xsi:type="ecore:EAttribute"
             name="prewarnMarginAtLowerLimit"
             lowerBound="1"
-            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"
+            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
             defaultValueLiteral="0">
           <eAnnotations
               source="http://www.eclipse.org/emf/2002/GenModel">
@@ -10563,7 +11791,7 @@
             xsi:type="ecore:EAttribute"
             name="prewarnMarginAtUpperLimit"
             lowerBound="1"
-            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"
+            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
             defaultValueLiteral="0">
           <eAnnotations
               source="http://www.eclipse.org/emf/2002/GenModel">
@@ -10576,7 +11804,7 @@
     </eSubpackages>
     <eSubpackages
         name="stimulation"
-        nsURI="http://inchron.com/realtime/root/3.2.0/model/stimulation"
+        nsURI="http://inchron.com/realtime/root/3.3.0/model/stimulation"
         nsPrefix="stimulation">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -10658,7 +11886,7 @@
         <eStructuralFeatures
             xsi:type="ecore:EAttribute"
             name="disturbanceProbability"
-            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"
+            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
             defaultValueLiteral="0"/>
         <eStructuralFeatures
             xsi:type="ecore:EReference"
@@ -10668,7 +11896,7 @@
         <eStructuralFeatures
             xsi:type="ecore:EAttribute"
             name="lossProbability"
-            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"
+            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
             defaultValueLiteral="0"/>
       </eClassifiers>
       <eClassifiers
@@ -10943,14 +12171,35 @@
         </eAnnotations>
         <eLiterals
             name="Min"
-            literal="Min"/>
+            literal="Min">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="The start offset is the constant min Time."/>
+          </eAnnotations>
+        </eLiterals>
         <eLiterals
             name="Max"
             value="1"
-            literal="Max"/>
+            literal="Max">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="The start offset is the constant max Time."/>
+          </eAnnotations>
+        </eLiterals>
         <eLiterals
             name="Uniform"
-            value="3"/>
+            value="3">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="The start offset is a value from the uniform distribution between min and max Time."/>
+          </eAnnotations>
+        </eLiterals>
       </eClassifiers>
       <eClassifiers
           xsi:type="ecore:EClass"

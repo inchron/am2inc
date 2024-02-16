@@ -47,7 +47,7 @@ CROSSBUILDARCH = $$(WINCROSSBUILDARCH)
 i686: DEFINES += TARGETBITS=32
 else: DEFINES += TARGETBITS=64
 
-QMAKE_CXXFLAGS += -Wno-error=cpp -Wall -Wextra -Werror
+QMAKE_CXXFLAGS += -Wno-error=cpp -Wall -Wextra
 
 CROSSBUILD = $$(WINCROSSBUILD)
 ! isEmpty(CROSSBUILD): CONFIG += crossbuild

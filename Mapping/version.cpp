@@ -13,7 +13,9 @@
 
 namespace am2inc {
 
-QString EXPORT_AM2INC_DLL getGitVersion() {
+QString EXPORT_AM2INC_DLL getGitVersion();
+
+QString getGitVersion() {
 	return QString(GIT_VERSION);
 }
 

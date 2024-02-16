@@ -1,4 +1,4 @@
-/* -*- c++ -*-
+/* * c++ *
  *
  * Copyright 2020 INCHRON AG <info@inchron.com>
  */
@@ -13,7 +13,9 @@
 
 namespace amalthea {
 
-QString EXPORT_AMALTHEA_MODEL_DLL getGitVersion() {
+QString EXPORT_AMALTHEA_MODEL_DLL getGitVersion();
+
+QString getGitVersion() {
 	return QString(GIT_VERSION);
 }
 

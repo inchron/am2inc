@@ -7,9 +7,8 @@
 /** @file swModel.cpp
  * Groups all code related to Amalthea's SwModel.
  */
-#include "../Converter.h"
-
 #include "../AttributeCreator.h"
+#include "../Converter.h"
 #include "../Diagnostic.h"
 #include "../StimulusTraits.h"
 
@@ -21,14 +20,15 @@
  * not (yet) implemented in C++. Hence, the logic goes from the Process to the
  * Stimulus.
  */
-void Converter::addStimulus(const am::Process_ptr& am, const sm3::Process_ptr& process) {
-	for (auto&& stimulus : am->getStimuli()) {
-		auto gen = _oc.find<sm3s::StimuliGenerator>(stimulus, ObjectCache::Default);
-		auto conn = _oc.find<sm3::Connection>(stimulus, ObjectCache::Default);
+void Converter::addStimulus( const am::Process_ptr& am,
+							 const sm3::Process_ptr& process ) {
+	for ( auto&& stimulus : am->getStimuli() ) {
+		auto gen = _oc.find<sm3s::StimuliGenerator>( stimulus, ObjectCache::Default );
+		auto conn = _oc.find<sm3::Connection>( stimulus, ObjectCache::Default );
 
-		if (!gen && !conn) {
+		if ( !gen && !conn ) {
 			const auto id = stimulus->eClass()->getClassifierID();
-			switch (id) {
+			switch ( id ) {
 			case am::ModelPackage::ARRIVALCURVESTIMULUS:
 			case am::ModelPackage::CUSTOMSTIMULUS:
 			case am::ModelPackage::EVENTSTIMULUS:
@@ -37,93 +37,100 @@ void Converter::addStimulus(const am::Process_ptr& am, const sm3::Process_ptr& p
 				return;
 
 			case am::ModelPackage::INTERPROCESSSTIMULUS:
-				conn = _oc.make<sm3::ModelFactory, sm3::ActivationConnection>(stimulus);
+				conn = _oc.make<sm3::ModelFactory, sm3::ActivationConnection>( stimulus );
 				break;
 
 			case am::ModelPackage::PERIODICBURSTSTIMULUS:
-				gen = _oc.make<sm3s::StimulationFactory,
-							   StimulusTrait<am::PeriodicBurstStimulus>::type >(stimulus);
+				gen =
+					_oc.make<sm3s::StimulationFactory,
+							 StimulusTrait<am::PeriodicBurstStimulus>::type>( stimulus );
 				break;
 			case am::ModelPackage::PERIODICSTIMULUS:
 				gen = _oc.make<sm3s::StimulationFactory,
-							   StimulusTrait<am::PeriodicStimulus>::type >(stimulus);
+							   StimulusTrait<am::PeriodicStimulus>::type>( stimulus );
 				break;
 			case am::ModelPackage::PERIODICSYNTHETICSTIMULUS:
 				gen = _oc.make<sm3s::StimulationFactory,
-							   StimulusTrait<am::PeriodicSyntheticStimulus>::type >(stimulus);
+							   StimulusTrait<am::PeriodicSyntheticStimulus>::type>(
+					stimulus );
 				break;
 			case am::ModelPackage::RELATIVEPERIODICSTIMULUS:
 				gen = _oc.make<sm3s::StimulationFactory,
-							   StimulusTrait<am::RelativePeriodicStimulus>::type >(stimulus);
+							   StimulusTrait<am::RelativePeriodicStimulus>::type>(
+					stimulus );
 				break;
 			case am::ModelPackage::SINGLESTIMULUS:
 				gen = _oc.make<sm3s::StimulationFactory,
-							   StimulusTrait<am::SingleStimulus>::type >(stimulus);
+							   StimulusTrait<am::SingleStimulus>::type>( stimulus );
 				break;
 			}
 		}
 
 		auto activationAction = sm3::create<sm3::ActivateProcess>();
-		activationAction->setName(std::string("Activate") + process->getName());
-		activationAction->setTarget(process);
+		activationAction->setName( std::string( "Activate" ) + process->getName() );
+		activationAction->setTarget( process );
 
 		sm3::CallGraph_ptr callGraph;
-		if (gen) {
+		if ( gen ) {
 			callGraph = gen->getTargets();
-			if (!callGraph) {
+			if ( !callGraph ) {
 				callGraph = sm3::create<sm3::CallGraph>();
-				gen->setTargets(callGraph);
+				gen->setTargets( callGraph );
 			}
 		} else {
 			callGraph = conn->getCallGraph();
-			if (!callGraph) {
+			if ( !callGraph ) {
 				callGraph = sm3::create<sm3::CallGraph>();
-				conn->setCallGraph(callGraph);
+				conn->setCallGraph( callGraph );
 			}
 		}
 
 		sm3::CallSequence_ptr callSequence;
-		if (callGraph->getGraphEntries().size() == 0) {
-			if (auto&& cond = stimulus->getExecutionCondition()) {
-				auto modeSwitch = sm3::create<sm3::ModeSwitch>();
-				callGraph->getGraphEntries().push_back_unsafe(modeSwitch);
-				setName(*modeSwitch);
-				modeSwitch->setEvaluateConditionsOnEntry(true);
+		if ( callGraph->getGraphEntries().size() == 0 ) {
+			if ( auto&& cond = stimulus->getExecutionCondition() ) {
+				auto modeSwitch = sm3::create<sm3::Switch>();
+				callGraph->getGraphEntries().push_back_unsafe( modeSwitch );
+				setName( *modeSwitch );
+				modeSwitch->setEvaluateConditionsOnEntry( true );
 
-				_mseCounter.push(0u);
-				auto modeSwitchEntry = sm3::create<sm3::ModeSwitchEntry>();
-				modeSwitch->getEntries().push_back_unsafe(modeSwitchEntry);
-				setName(*modeSwitchEntry);
-				_mseCounter.pop();
+				_switchEntryCounter.push( 0u );
+				auto modeSwitchEntry = sm3::create<sm3::SwitchEntry>();
+				modeSwitch->getEntries().push_back_unsafe( modeSwitchEntry );
+				setName( *modeSwitchEntry );
+				_switchEntryCounter.pop();
 				modeSwitchEntry->setCondition(
-					_oc.make<sm3::ModelFactory, sm3::ModeCondition>(cond));
+					_oc.make<sm3::ModelFactory, sm3::Condition>( cond ) );
 
 				callSequence = sm3::create<sm3::CallSequence>();
-				modeSwitchEntry->getGraphEntries().push_back_unsafe(callSequence);
-				setName(*callSequence);
+				modeSwitchEntry->getGraphEntries().push_back_unsafe( callSequence );
+				setName( *callSequence );
 
 			} else {
 				callSequence = sm3::create<sm3::CallSequence>();
-				callGraph->getGraphEntries().push_back_unsafe(callSequence);
-				setName(*callSequence);
+				callGraph->getGraphEntries().push_back_unsafe( callSequence );
+				setName( *callSequence );
 			}
 		} else {
-			if (auto&& cond = stimulus->getExecutionCondition()) {
-				auto modeSwitch = ecore::as<sm3::ModeSwitch>(callGraph->getGraphEntries().get(0));
-				auto modeSwitchEntry = ecore::as<sm3::ModeSwitchEntry>(modeSwitch->getEntries().get(0));
-				callSequence = ecore::as<sm3::CallSequence>(modeSwitchEntry->getGraphEntries().get(0));
+			if ( auto&& cond = stimulus->getExecutionCondition() ) {
+				auto modeSwitch =
+					ecore::as<sm3::Switch>( callGraph->getGraphEntries().get( 0 ) );
+				auto modeSwitchEntry =
+					ecore::as<sm3::SwitchEntry>( modeSwitch->getEntries().get( 0 ) );
+				callSequence = ecore::as<sm3::CallSequence>(
+					modeSwitchEntry->getGraphEntries().get( 0 ) );
 
 			} else {
-				callSequence = ecore::as<sm3::CallSequence>(callGraph->getGraphEntries().get(0));
+				callSequence =
+					ecore::as<sm3::CallSequence>( callGraph->getGraphEntries().get( 0 ) );
 			}
 		}
 
-		callSequence->getCalls().push_back_unsafe(activationAction);
+		callSequence->getCalls().push_back_unsafe( activationAction );
 
-		if (auto ips = ecore::as<am::InterProcessStimulus>(stimulus)) {
-			if (auto&& counter = ips->getCounter()) {
-				activationAction->setPeriod(counter->getPrescaler());
-				activationAction->setOffset(counter->getOffset());
+		if ( auto ips = ecore::as<am::InterProcessStimulus>( stimulus ) ) {
+			if ( auto&& counter = ips->getCounter() ) {
+				activationAction->setPeriod( counter->getPrescaler() );
+				activationAction->setOffset( counter->getOffset() );
 			}
 		}
 	}
@@ -131,9 +138,8 @@ void Converter::addStimulus(const am::Process_ptr& am, const sm3::Process_ptr& p
 
 /** Add TraceEvents to a Process.
  */
-void Converter::addEvents(const root::model::Process_ptr& process) {
-	static const std::vector<
-		std::pair<sm3::TraceEventType, std::string> > s_events = {
+void Converter::addEvents( const root::model::Process_ptr& process ) {
+	static const std::vector<std::pair<sm3::TraceEventType, std::string>> s_events = {
 		{ sm3::TraceEventType::Activate, "Activate" },
 		{ sm3::TraceEventType::Start, "Start" },
 		{ sm3::TraceEventType::Terminate, "Terminate" },
@@ -143,70 +149,69 @@ void Converter::addEvents(const root::model::Process_ptr& process) {
 	};
 
 	const auto count = process->isIsr() ? 3u : 6u;
-	for (auto i = 0u; i < count; ++i) {
+	for ( auto i = 0u; i < count; ++i ) {
 		auto event = sm3::create<sm3::TraceEvent>();
-		event->setType(s_events[i].first);
-		event->setName(s_events[i].second);
-		process->getTraceEvents().push_back_unsafe(event);
+		event->setType( s_events[i].first );
+		event->setName( s_events[i].second );
+		process->getTraceEvents().push_back_unsafe( event );
 	}
 }
 
 /** Add TraceEvents to a Function.
  */
-void Converter::addEvents(const root::model::Function_ptr& function) {
-	static const std::vector<
-		std::pair<sm3::TraceEventType, std::string> > s_events = {
+void Converter::addEvents( const root::model::Function_ptr& function ) {
+	static const std::vector<std::pair<sm3::TraceEventType, std::string>> s_events = {
 		{ sm3::TraceEventType::Entry, "Entry" },
 		{ sm3::TraceEventType::Exit, "Exit" },
 	};
 
 	const auto count = 2;
-	for (auto i = 0u; i < count; ++i) {
+	for ( auto i = 0u; i < count; ++i ) {
 		auto event = sm3::create<sm3::TraceEvent>();
-		event->setType(s_events[i].first);
-		event->setName(s_events[i].second);
-		function->getTraceEvents().push_back_unsafe(event);
+		event->setType( s_events[i].first );
+		event->setName( s_events[i].second );
+		function->getTraceEvents().push_back_unsafe( event );
 	}
 }
 
 
-void Converter::work(const am::ISR_ptr& am, am::ISR*) {
-	if (_mode == PreOrder) {
-		auto process = _oc.make<sm3::ModelFactory, sm3::Process>(am);
-		process->setIsr(true);
-		process->setName(am->getName());
-		addEvents(process);
-		addStimulus(am, process);
+void Converter::work( const am::ISR_ptr& am, am::ISR* ) {
+	if ( _mode == PreOrder ) {
+		auto process = _oc.make<sm3::ModelFactory, sm3::Process>( am );
+		process->setIsr( true );
+		process->setName( am->getName() );
+		addEvents( process );
+		addStimulus( am, process );
 	}
 }
 
-void Converter::work(const am::OsEvent_ptr& am, am::OsEvent*) {
-	if (_mode == PreOrder) {
-		auto event = _oc.make<sm3::ModelFactory, sm3::Event>(am);
-		event->setName(am->getName());
+void Converter::work( const am::OsEvent_ptr& am, am::OsEvent* ) {
+	if ( _mode == PreOrder ) {
+		auto event = _oc.make<sm3::ModelFactory, sm3::Event>( am );
+		event->setName( am->getName() );
 	}
 }
 
-void Converter::work(const am::Label_ptr& am, am::Label*) {
-	if (_mode == PreOrder) {
-		auto dataObject = _oc.make<sm3m::MemoryFactory, sm3m::DataObject>(am);
-		dataObject->setName(am->getName());
-		dataObject->setSize(AttributeCreator<sm3::DataSize>()(am->getSize()));
+void Converter::work( const am::Label_ptr& am, am::Label* ) {
+	if ( _mode == PreOrder ) {
+		auto dataObject = _oc.make<sm3m::MemoryFactory, sm3m::DataObject>( am );
+		dataObject->setName( am->getName() );
+		dataObject->setSize( AttributeCreator<sm3::DataSize>()( am->getSize() ) );
 	}
 }
 
-void Converter::work(const am::Runnable_ptr& am, am::Runnable*) {
-	if (_mode == PreOrder) {
-		auto run = _oc.make<sm3::ModelFactory, sm3::Function>(am);
-		run->setName(am->getName());
-		addEvents(run);
+void Converter::work( const am::Runnable_ptr& am, am::Runnable* ) {
+	if ( _mode == PreOrder ) {
+		auto run = _oc.make<sm3::ModelFactory, sm3::Function>( am );
+		run->setName( am->getName() );
+		addEvents( run );
 	}
 }
 
 namespace details {
 
-bool isPreemptable(const am::Task_ptr& am) {
-	switch (am->getPreemption()) {
+bool isPreemptable( const am::Task_ptr& am ) {
+	switch ( am->getPreemption() ) {
 	default:
 	case am::Preemption::_undefined_:
 	case am::Preemption::preemptive:
@@ -217,16 +222,17 @@ bool isPreemptable(const am::Task_ptr& am) {
 	}
 }
 
-} // namespace details
+}  // namespace details
 
-void Converter::work(const am::Task_ptr& am, am::Task*) {
-	if (_mode == PreOrder) {
-		auto process = _oc.make<sm3::ModelFactory, sm3::Process>(am);
-		process->setName(am->getName());
-		process->setPreemptable(details::isPreemptable(am));
-		process->setActivationLimit(std::max(1, am->getMultipleTaskActivationLimit()));
-		addEvents(process);
-		addStimulus(am, process);
+void Converter::work( const am::Task_ptr& am, am::Task* ) {
+	if ( _mode == PreOrder ) {
+		auto process = _oc.make<sm3::ModelFactory, sm3::Process>( am );
+		process->setName( am->getName() );
+		process->setPreemptable( details::isPreemptable( am ) );
+		process->setActivationLimit(
+			std::max( 1, am->getMultipleTaskActivationLimit() ) );
+		addEvents( process );
+		addStimulus( am, process );
 	}
 }
 
@@ -242,26 +248,27 @@ void Converter::work(const am::Task_ptr& am, am::Task*) {
  * created and initialized if it does not exist, hence the order does not
  * matter.
  */
-sm3::ModeGroup_ptr Converter::createModeGroup(ObjectCache& oc, const am::ModeLabel_ptr& label) {
-	if (auto ptr = oc.find<sm3::ModeGroup>(label, ObjectCache::Default))
+sm3::ModeGroup_ptr Converter::createModeGroup( ObjectCache& oc,
+											   const am::ModeLabel_ptr& label ) {
+	if ( auto ptr = oc.find<sm3::ModeGroup>( label, ObjectCache::Default ) )
 		return ptr;
 
 	auto modeDefinition = label->getMode();
-	auto enumMode = ecore::as<am::EnumMode>(modeDefinition);
+	auto enumMode = ecore::as<am::EnumMode>( modeDefinition );
 
-	auto modeGroup = oc.make<sm3::ModelFactory, sm3::ModeGroup>(label);
-	modeGroup->setName(label->getName());
+	auto modeGroup = oc.make<sm3::ModelFactory, sm3::ModeGroup>( label );
+	modeGroup->setName( label->getName() );
 
 	sm3::Mode_ptr initialMode;
-	for (auto&& literal : enumMode->getLiterals()) {
+	for ( auto&& literal : enumMode->getLiterals() ) {
 		auto mode = sm3::create<sm3::Mode>();
-		mode->setName(literal->getName());
-		modeGroup->getModes().push_back_unsafe(mode);
-		if (literal->getName() == label->getInitialValue())
+		mode->setName( literal->getName() );
+		modeGroup->getModes().push_back_unsafe( mode );
+		if ( literal->getName() == label->getInitialValue() )
 			initialMode = mode;
 	}
 
-	modeGroup->setInitialMode(initialMode);
+	modeGroup->setInitialMode( initialMode );
 
 	return modeGroup;
 }
@@ -273,26 +280,27 @@ sm3::ModeGroup_ptr Converter::createModeGroup(ObjectCache& oc, const am::ModeLab
  * and details::createRelationalExpression(). The new Counter is only created
  * and initialized if it does not exist, hence the order does not matter.
  */
-sm3::Counter_ptr Converter::createCounter(ObjectCache& oc, const am::ModeLabel_ptr& label) {
-	if (auto ptr = oc.find<sm3::Counter>(label, ObjectCache::Default))
+sm3::Counter_ptr Converter::createCounter( ObjectCache& oc,
+										   const am::ModeLabel_ptr& label ) {
+	if ( auto ptr = oc.find<sm3::Counter>( label, ObjectCache::Default ) )
 		return ptr;
 
 	auto modeDefinition = label->getMode();
-	auto numericMode = ecore::as<am::NumericMode>(modeDefinition);
+	auto numericMode = ecore::as<am::NumericMode>( modeDefinition );
 
-	auto counter = oc.make<sm3::ModelFactory, sm3::Counter>(label);
-	counter->setName(label->getName());
+	auto counter = oc.make<sm3::ModelFactory, sm3::Counter>( label );
+	counter->setName( label->getName() );
 
 	auto initialValue = 0;
-	if (!label->getInitialValue().empty()) {
+	if ( !label->getInitialValue().empty() ) {
 		try {
-			initialValue = std::stoi(label->getInitialValue());
-		} catch (...) {
+			initialValue = std::stoi( label->getInitialValue() );
+		} catch ( ... ) {
 			std::cerr << "Warning: Cannot convert initial value of NumericMode-Label '"
 					  << label->getName() << "' to an integer value.\n";
 		}
 	}
-	counter->setInitialValue(initialValue);
+	counter->setInitialValue( initialValue );
 
 	return counter;
 }
@@ -306,24 +314,25 @@ sm3::Counter_ptr Converter::createCounter(ObjectCache& oc, const am::ModeLabel_p
  * are required to contained in a Component, hence relax() creates a helper
  * Component if needed.
  */
-void Converter::work(const am::ModeLabel_ptr& label, am::ModeLabel*) {
-	if (_mode == PreOrder) {
+void Converter::work( const am::ModeLabel_ptr& label, am::ModeLabel* ) {
+	if ( _mode == PreOrder ) {
 		auto modeDefinition = label->getMode();
-		if (!modeDefinition) {
+		if ( !modeDefinition ) {
 			std::cerr << "Ignoring ModeLabel '" << label->getName()
 					  << "' without reference to a Mode\n";
 			return;
 		}
 
-		if (auto enumMode = ecore::as<am::EnumMode>(modeDefinition)) {
-			auto modeGroup = createModeGroup(_oc, label);
-			_model->getGlobalModeGroups().push_back_unsafe(modeGroup);
+		if ( auto enumMode = ecore::as<am::EnumMode>( modeDefinition ) ) {
+			auto modeGroup = createModeGroup( _oc, label );
+			_model->getGlobalModeGroups().push_back_unsafe( modeGroup );
 
-		} else if (modeDefinition->eClass() == am::ModelPackage::_instance()->getNumericMode()) {
+		} else if ( modeDefinition->eClass()
+					== am::ModelPackage::_instance()->getNumericMode() ) {
 			/* The am::NumericMode does not have any additional parameters, so
 			 * the default values of a sm3::Counter are used. */
-			auto counter = createCounter(_oc, label);
-			_model->getGlobalCounters().push_back_unsafe(counter);
+			auto counter = createCounter( _oc, label );
+			_model->getGlobalCounters().push_back_unsafe( counter );
 		}
 	}
 }
@@ -333,72 +342,69 @@ void Converter::work(const am::ModeLabel_ptr& label, am::ModeLabel*) {
  *
  * \sa work(const am::ModeLabel_ptr&, ...)
  */
-void Converter::work(const am::EnumMode_ptr& am, am::EnumMode*) {
-	skipChildren();
-}
+void Converter::work( const am::EnumMode_ptr& am, am::EnumMode* ) { skipChildren(); }
 
 /** An am::EnumMode is translated into a new sm3::Counter for each
  * am::ModeLabel, which refers to it.
  *
  * \sa work(const am::ModeLabel_ptr&, ...)
  */
-void Converter::work(const am::NumericMode_ptr&, am::NumericMode*) {
-	skipChildren();
-}
+void Converter::work( const am::NumericMode_ptr&, am::NumericMode* ) { skipChildren(); }
 
 sm3::RelationalExpression_ptr Converter::createRelationalExpression(
-	ObjectCache& oc, const am::ModeCondition_ptr& am) {
+	ObjectCache& oc, const am::ModeCondition_ptr& am ) {
 	sm3::RelationalExpression_ptr expression;
 
-	if (auto mvc = ecore::as<am::ModeValueCondition>(am)) {
+	if ( auto mvc = ecore::as<am::ModeValueCondition>( am ) ) {
 		/* Compare one am::ModeLabel -> sm::ModeGroup | sm3::Counter against a
 		 * (string) value. */
 		auto label = mvc->getLabel();
-		if ( ecore::as<am::EnumMode>(label->getMode()) ) {
+		if ( ecore::as<am::EnumMode>( label->getMode() ) ) {
 			/* EnumMode */
 			auto sm3 = sm3::create<sm3::ModeGroupExpression>();
-			auto modeGroup = createModeGroup(oc, label);
-			sm3->setModeGroup(modeGroup);
+			auto modeGroup = createModeGroup( oc, label );
+			sm3->setModeGroup( modeGroup );
 
 			std::string value = mvc->getValue();
-			for (const auto&& mode : modeGroup->getModes())
-				if (mode->getName() == value)
-					sm3->setValue(mode);
+			for ( const auto&& mode : modeGroup->getModes() )
+				if ( mode->getName() == value )
+					sm3->setValue( mode );
 
 			expression = sm3;
 
 		} else {
 			/* NumericMode */
-			auto sm3 = sm3::create<sm3::CounterExpression>();
-			auto counter = createCounter(oc, label);
-			sm3->setCounter(counter);
+			auto sm3 = sm3::create<sm3::ValueExpression>();
+			auto counter = createCounter( oc, label );
+			sm3->setValue( counter );
 
 			auto value = 0;
 			try {
-				value = std::stoi(mvc->getValue());
-			} catch (...) {
-				std::cerr << "Warning: Cannot convert value of ModeValueCondition with a NumericMode-Label '"
+				value = std::stoi( mvc->getValue() );
+			} catch ( ... ) {
+				std::cerr << "Warning: Cannot convert value of ModeValueCondition with a "
+							 "NumericMode-Label '"
 						  << label->getName() << "' to an integer value.\n";
 			}
-			sm3->setValue(value);
+			sm3->setConstant( value );
 
 			expression = sm3;
 		}
 
-	} else if (auto mlc = ecore::as<am::ModeLabelCondition>(am)) {
+	} else if ( auto mlc = ecore::as<am::ModeLabelCondition>( am ) ) {
 		/* Compare two am::ModeLabel -> sm::ModeGroup | sm3::Counter against
 		 * each other. */
 		auto label1 = mlc->getLabel1();
-		if ( ecore::as<am::EnumMode>(label1->getMode()) ) {
+		if ( ecore::as<am::EnumMode>( label1->getMode() ) ) {
 			/* EnumMode */
 			auto sm3 = sm3::create<sm3::ModeGroupComparison>();
-			auto modeGroup1 = createModeGroup(oc, label1);
-			sm3->setModeGroup1(modeGroup1);
+			auto modeGroup1 = createModeGroup( oc, label1 );
+			sm3->setModeGroup1( modeGroup1 );
 
 			auto label2 = mlc->getLabel2();
-			if ( ecore::as<am::EnumMode>(label2->getMode()) ) {
-				auto modeGroup2 = createModeGroup(oc, label2);
-				sm3->setModeGroup2(modeGroup2);
+			if ( ecore::as<am::EnumMode>( label2->getMode() ) ) {
+				auto modeGroup2 = createModeGroup( oc, label2 );
+				sm3->setModeGroup2( modeGroup2 );
 			} else {
 				std::cerr << "Cannot compare ModeGroup and Counter: Ignoring '"
 						  << label2->getName() << "' used as label2.\n";
@@ -408,14 +414,14 @@ sm3::RelationalExpression_ptr Converter::createRelationalExpression(
 
 		} else {
 			/* NumericMode */
-			auto sm3 = sm3::create<sm3::CounterComparison>();
-			auto counter1 = createCounter(oc, label1);
-			sm3->setCounter1(counter1);
+			auto sm3 = sm3::create<sm3::ValueComparison>();
+			auto counter1 = createCounter( oc, label1 );
+			sm3->setValue1( counter1 );
 
 			auto label2 = mlc->getLabel2();
-			if ( ecore::as<am::NumericMode>(label2->getMode()) ) {
-				auto counter2 = createCounter(oc, label2);
-				sm3->setCounter2(counter2);
+			if ( ecore::as<am::NumericMode>( label2->getMode() ) ) {
+				auto counter2 = createCounter( oc, label2 );
+				sm3->setValue2( counter2 );
 			} else {
 				std::cerr << "Cannot compare ModeGroup and Counter: Ignoring '"
 						  << label2->getName() << "' used as label2.\n";
@@ -426,19 +432,19 @@ sm3::RelationalExpression_ptr Converter::createRelationalExpression(
 	}
 
 	auto relation = am->getRelation();
-	switch (relation) {
+	switch ( relation ) {
 	default:
 	case am::RelationalOperator::EQUAL:
-		expression->setRelationalOperator(sm3::RelationalOperator::eq);
+		expression->setRelationalOperator( sm3::RelationalOperator::eq );
 		break;
 	case am::RelationalOperator::NOT_EQUAL:
-		expression->setRelationalOperator(sm3::RelationalOperator::ne);
+		expression->setRelationalOperator( sm3::RelationalOperator::ne );
 		break;
 	case am::RelationalOperator::LESS_THAN:
-		expression->setRelationalOperator(sm3::RelationalOperator::lt);
+		expression->setRelationalOperator( sm3::RelationalOperator::lt );
 		break;
 	case am::RelationalOperator::GREATER_THAN:
-		expression->setRelationalOperator(sm3::RelationalOperator::gt);
+		expression->setRelationalOperator( sm3::RelationalOperator::gt );
 		break;
 	}
 
@@ -453,34 +459,36 @@ sm3::RelationalExpression_ptr Converter::createRelationalExpression(
  * am::WhileLoop::condition. In general, it is translated into a sm3::ModeCondition,
  * which is aggregated by the Model.
  */
-void Converter::work(const am::ModeConditionDisjunction_ptr& am, am::ModeConditionDisjunction*) {
-	if (_mode == PreOrder) {
-		auto condition = _oc.make<sm3::ModelFactory, sm3::ModeCondition>(am);
-		setName(*condition);
-		_model->getGlobalModeConditions().push_back_unsafe(condition);
+void Converter::work( const am::ModeConditionDisjunction_ptr& am,
+					  am::ModeConditionDisjunction* ) {
+	if ( _mode == PreOrder ) {
+		auto condition = _oc.make<sm3::ModelFactory, sm3::Condition>( am );
+		setName( *condition );
+		_model->getGlobalConditions().push_back_unsafe( condition );
 
 		/* 1..* ModeConditionDisjunctionEntry interface -> ModeCondition interface ->
 		 * ModeValueCondition
 		 * ModeLabelCondition */
-		for (auto&& entry : am->getEntries()) {
-			if (auto amModeCondition = ecore::as<am::ModeCondition>(entry)) {
+		for ( auto&& entry : am->getEntries() ) {
+			if ( auto amModeCondition = ecore::as<am::ModeCondition>( entry ) ) {
 				/* Wrap the am::ModeCondition into a sm3::RelationalExpression
 				 * and a sm3::ModeConjunction, then add it to the
 				 * sm3::ModeCondition. */
-				auto conjunction = sm3::create<sm3::ModeConjunction>();
-				auto expression = createRelationalExpression(_oc, amModeCondition);
-				conjunction->getExpressions().push_back_unsafe(expression);
-				condition->getConjunctions().push_back_unsafe(conjunction);
+				auto conjunction = sm3::create<sm3::Conjunction>();
+				auto expression = createRelationalExpression( _oc, amModeCondition );
+				conjunction->getExpressions().push_back_unsafe( expression );
+				condition->getConjunctions().push_back_unsafe( conjunction );
 
-			} else if (auto amMcConjunction = ecore::as<am::ModeConditionConjunction>(entry)) {
+			} else if ( auto amMcConjunction =
+							ecore::as<am::ModeConditionConjunction>( entry ) ) {
 				/* Create a sm3::ModeConjunction and add all the
 				 * am::ModeConditions as sm3::RelationalExpressions to it. */
-				auto conjunction = sm3::create<sm3::ModeConjunction>();
-				for (auto&& amModeCondition : amMcConjunction->getEntries()) {
-					auto expression = createRelationalExpression(_oc, amModeCondition);
-					conjunction->getExpressions().push_back_unsafe(expression);
+				auto conjunction = sm3::create<sm3::Conjunction>();
+				for ( auto&& amModeCondition : amMcConjunction->getEntries() ) {
+					auto expression = createRelationalExpression( _oc, amModeCondition );
+					conjunction->getExpressions().push_back_unsafe( expression );
 				}
-				condition->getConjunctions().push_back_unsafe(conjunction);
+				condition->getConjunctions().push_back_unsafe( conjunction );
 			}
 		}
 

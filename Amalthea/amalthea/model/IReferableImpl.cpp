@@ -69,8 +69,8 @@ void IReferable::_initialize()
 }
 
 ::ecore::EBoolean IReferable::validateInvariants(
-        ::ecore::EDiagnosticChain _diagnostics,
-        std::map< ::ecore::EJavaObject, ::ecore::EJavaObject > _context)
+        [[maybe_unused]]::ecore::EDiagnosticChain _diagnostics,
+        [[maybe_unused]]std::map< ::ecore::EJavaObject, ::ecore::EJavaObject > _context)
 {
 #if 0
     // This is the original body of the EOperation as specified in
@@ -116,7 +116,7 @@ void IReferable::_initialize()
 }
 
 void IReferable::eSet(::ecore::EInt _featureID,
-        ::ecore::EJavaObject const &_newValue)
+        [[maybe_unused]] ::ecore::EJavaObject const &_newValue)
 {
     switch (_featureID)
     {
@@ -170,7 +170,7 @@ void IReferable::eUnset(::ecore::EInt _featureID)
 /** Set the local end of a reference with an EOpposite property.
  */
 void IReferable::_inverseAdd(::ecore::EInt _featureID,
-        ::ecore::EJavaObject const &_newValue)
+        [[maybe_unused]] ::ecore::EJavaObject const &_newValue)
 {
     switch (_featureID)
     {
@@ -182,7 +182,7 @@ void IReferable::_inverseAdd(::ecore::EInt _featureID,
 /** Unset the local end of a reference with an EOpposite property.
  */
 void IReferable::_inverseRemove(::ecore::EInt _featureID,
-        ::ecore::EJavaObject const &_oldValue)
+        [[maybe_unused]] ::ecore::EJavaObject const &_oldValue)
 {
     switch (_featureID)
     {
