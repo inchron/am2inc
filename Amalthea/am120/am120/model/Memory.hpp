@@ -1,0 +1,94 @@
+// -*- mode: c++; c-basic-style: "bsd"; c-basic-offset: 4; -*-
+/*
+ * am120/model/Memory.hpp
+ * This file was created by EMF4CPP 3.0.0 and is copyrighted by the
+ * respective user and/or provider of the processed ECORE model.
+ *
+ * EMF4CPP is free software. You can obtain it from
+ * https://github.com/catedrasaes-umu/emf4cpp
+ */
+
+#ifndef AM120_MODEL_MEMORY_HPP
+#define AM120_MODEL_MEMORY_HPP
+
+#include <am120/model/dllModel.hpp>
+#include <am120/model_forward.hpp>
+
+#include <ecore_forward.hpp>
+#include <am120/model/HwModule.hpp>
+#include <am120/model/HwDestination.hpp>
+
+#include "ModelPackage.hpp"
+
+/*PROTECTED REGION ID(Memory_pre) START*/
+// Please, enable the protected region if you add manually written code.
+// To do this, add the keyword ENABLED before START.
+/*PROTECTED REGION END*/
+
+namespace am120
+{
+    namespace model
+    {
+
+    class EXPORT_AM120_MODEL_DLL Memory : public virtual ::am120::model::HwModule, public virtual ::am120::model::HwDestination
+    {
+    public:
+        Memory();
+
+        virtual ~Memory();
+
+        virtual void _initialize();
+
+        // Operations
+
+        // Attributes
+
+        // References
+        virtual ::am120::model::MemoryDefinition_ptr getDefinition () const;
+        virtual void setDefinition (::am120::model::MemoryDefinition_ptr _definition);
+
+        virtual const ::ecorecpp::mapping::EList< ::am120::model::MemoryMapping_ptr >& getMappings () const;
+        virtual ::ecorecpp::mapping::EList< ::am120::model::MemoryMapping_ptr >& getMappings ();
+
+        /* This is the same value as getClassifierId() returns, but as a static
+         * value it can be used in template expansions. */
+        static const int classifierId = ModelPackage::MEMORY;
+
+        /*PROTECTED REGION ID(Memory) ENABLED START*/
+        using HwModule::getPorts;
+        /*PROTECTED REGION END*/
+
+        // EObjectImpl
+        virtual ::ecore::EJavaObject eGet ( ::ecore::EInt _featureID, ::ecore::EBoolean _resolve);
+        virtual void eSet ( ::ecore::EInt _featureID, ::ecore::EJavaObject const& _newValue);
+        virtual ::ecore::EBoolean eIsSet ( ::ecore::EInt _featureID);
+        virtual void eUnset ( ::ecore::EInt _featureID);
+        virtual ::ecore::EClass_ptr _eClass ();
+        virtual void _inverseAdd ( ::ecore::EInt _featureID, ::ecore::EJavaObject const& _newValue);
+        virtual void _inverseRemove ( ::ecore::EInt _featureID, ::ecore::EJavaObject const& _oldValue);
+
+        /*PROTECTED REGION ID(MemoryImpl) START*/
+        // Please, enable the protected region if you add manually written code.
+        // To do this, add the keyword ENABLED before START.
+        /*PROTECTED REGION END*/
+
+    protected:
+        Memory_ptr _this()
+        {   return std::dynamic_pointer_cast<Memory>(shared_from_this());}
+
+        // Attributes
+
+        // References
+
+        std::weak_ptr< ::am120::model::MemoryDefinition > m_definition;
+
+        ::ecore::EList_ptr< ::am120::model::MemoryMapping_ptr > m_mappings;
+
+    };
+
+}
+ // model
+}// am120
+
+#endif // AM120_MODEL_MEMORY_HPP
+

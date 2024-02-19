@@ -9,17 +9,3 @@
  * SPDX-License-Identifier: EPL-2.0
  */
 #include "ObjectCache.h"
-
-#include <amalthea/model/ModelFactory.hpp>
-
-#include <root/RootFactory.hpp>
-
-
-/* Some test code */
-ObjectCache oc;
-
-void test() {
-	auto amObject = amalthea::model::create<amalthea::model::Amalthea>();
-
-	auto e = oc.make<root::RootFactory, root::Root>( amObject );
-}

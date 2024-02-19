@@ -10,8 +10,7 @@
  */
 #pragma once
 
-#include <am2inc/Mappings.hpp>
-#include <amalthea/model/ModelItemDispatcher.hpp>
+#include <am120/model/ModelItemDispatcher.hpp>
 #include <list>
 #include <stack>
 
@@ -23,15 +22,14 @@
 #include "ObjectCache.h"
 
 
-class Converter : public amalthea::model::ModelItemDispatcher<Converter> {
+class Converter : public am120::model::ModelItemDispatcher<Converter> {
 public:
 	Converter();
 
 	void clear();
-	void convert( const amalthea::model::Amalthea_ptr& );
+	void convert( const am120::model::Amalthea_ptr& );
 	void relax();
 
-	const ecore::Ptr<am2inc::Mappings>& getMappings() const { return _mappings; }
 	const ecore::Ptr<root::Root>& getRoot() const { return _root; }
 
 	using Status = ecorecpp::util::TreeWalker::Status;
@@ -39,187 +37,164 @@ public:
 	Status postOrder( const ecore::EObject_ptr& );
 	void skipChildren();
 
-	void addMapping( const std::vector<amalthea::model::ReferableBaseObject_ptr>&,
+	void addMapping( const std::vector<am120::model::ReferableBaseObject_ptr>&,
 					 const std::vector<root::Referable_ptr>& );
 
 	using ModelItemDispatcher::work;
 
 	/* Amalthea HwModel */
-	void work( const amalthea::model::FrequencyDomain_ptr&,
-			   amalthea::model::FrequencyDomain* );
+	void work( const am120::model::FrequencyDomain_ptr&, am120::model::FrequencyDomain* );
 
 	/* Hardware model elements
 	 * https://www.eclipse.org/app4mc/help/app4mc-0.9.8/index.html#section3.8.1.1 */
-	void work( const amalthea::model::HwFeatureCategory_ptr&,
-			   amalthea::model::HwFeatureCategory* );
-	void work( const amalthea::model::HwFeature_ptr&, amalthea::model::HwFeature* );
-	void work( const amalthea::model::HwStructure_ptr&, amalthea::model::HwStructure* );
-	void work( const amalthea::model::HwConnection_ptr&, amalthea::model::HwConnection* );
-	void work( const amalthea::model::HwPort_ptr&, amalthea::model::HwPort* );
+	void work( const am120::model::HwFeatureCategory_ptr&,
+			   am120::model::HwFeatureCategory* );
+	void work( const am120::model::HwFeature_ptr&, am120::model::HwFeature* );
+	void work( const am120::model::HwStructure_ptr&, am120::model::HwStructure* );
+	void work( const am120::model::HwConnection_ptr&, am120::model::HwConnection* );
+	void work( const am120::model::HwPort_ptr&, am120::model::HwPort* );
 
 	/* Hardware modules and access elements
 	 * https://www.eclipse.org/app4mc/help/app4mc-0.9.8/index.html#section3.8.1.3 */
-	void work( const amalthea::model::ProcessingUnit_ptr&,
-			   amalthea::model::ProcessingUnit* );
-	void work( const amalthea::model::Memory_ptr&, amalthea::model::Memory* );
-	void work( const amalthea::model::Cache_ptr&, amalthea::model::Cache* );
-	void work( const amalthea::model::ConnectionHandler_ptr&,
-			   amalthea::model::ConnectionHandler* );
-	void work( const amalthea::model::HwAccessElement_ptr&,
-			   amalthea::model::HwAccessElement* );
-	void work( const amalthea::model::HwAccessPath_ptr&, amalthea::model::HwAccessPath* );
+	void work( const am120::model::ProcessingUnit_ptr&, am120::model::ProcessingUnit* );
+	void work( const am120::model::Memory_ptr&, am120::model::Memory* );
+	void work( const am120::model::Cache_ptr&, am120::model::Cache* );
+	void work( const am120::model::ConnectionHandler_ptr&,
+			   am120::model::ConnectionHandler* );
+	void work( const am120::model::HwAccessElement_ptr&, am120::model::HwAccessElement* );
+	void work( const am120::model::HwAccessPath_ptr&, am120::model::HwAccessPath* );
 
 	/* Amalthea StimuliModel */
-	void work( const amalthea::model::ArrivalCurveStimulus_ptr&,
-			   amalthea::model::ArrivalCurveStimulus* );
-	void work( const amalthea::model::CustomStimulus_ptr&,
-			   amalthea::model::CustomStimulus* );
-	void work( const amalthea::model::EventStimulus_ptr&,
-			   amalthea::model::EventStimulus* );
-	void work( const amalthea::model::InterProcessStimulus_ptr&,
-			   amalthea::model::InterProcessStimulus* );
-	void work( const amalthea::model::PeriodicBurstStimulus_ptr&,
-			   amalthea::model::PeriodicBurstStimulus* );
-	void work( const amalthea::model::PeriodicStimulus_ptr&,
-			   amalthea::model::PeriodicStimulus* );
-	void work( const amalthea::model::PeriodicSyntheticStimulus_ptr&,
-			   amalthea::model::PeriodicSyntheticStimulus* );
-	void work( const amalthea::model::RelativePeriodicStimulus_ptr&,
-			   amalthea::model::RelativePeriodicStimulus* );
-	void work( const amalthea::model::SingleStimulus_ptr&,
-			   amalthea::model::SingleStimulus* );
-	void work( const amalthea::model::VariableRateStimulus_ptr&,
-			   amalthea::model::VariableRateStimulus* );
+	void work( const am120::model::ArrivalCurveStimulus_ptr&,
+			   am120::model::ArrivalCurveStimulus* );
+	void work( const am120::model::CustomStimulus_ptr&, am120::model::CustomStimulus* );
+	void work( const am120::model::EventStimulus_ptr&, am120::model::EventStimulus* );
+	void work( const am120::model::InterProcessStimulus_ptr&,
+			   am120::model::InterProcessStimulus* );
+	void work( const am120::model::PeriodicBurstStimulus_ptr&,
+			   am120::model::PeriodicBurstStimulus* );
+	void work( const am120::model::PeriodicStimulus_ptr&,
+			   am120::model::PeriodicStimulus* );
+	void work( const am120::model::PeriodicSyntheticStimulus_ptr&,
+			   am120::model::PeriodicSyntheticStimulus* );
+	void work( const am120::model::RelativePeriodicStimulus_ptr&,
+			   am120::model::RelativePeriodicStimulus* );
+	void work( const am120::model::SingleStimulus_ptr&, am120::model::SingleStimulus* );
+	void work( const am120::model::VariableRateStimulus_ptr&,
+			   am120::model::VariableRateStimulus* );
 
 	/* Amalthea SwModel */
-	void work( const amalthea::model::ISR_ptr&, amalthea::model::ISR* );
-	void work( const amalthea::model::Label_ptr&, amalthea::model::Label* );
-	void work( const amalthea::model::OsEvent_ptr&, amalthea::model::OsEvent* );
-	void work( const amalthea::model::Runnable_ptr&, amalthea::model::Runnable* );
-	void work( const amalthea::model::Task_ptr&, amalthea::model::Task* );
-	void work( const amalthea::model::ModeLabel_ptr&, amalthea::model::ModeLabel* );
-	void work( const amalthea::model::EnumMode_ptr&, amalthea::model::EnumMode* );
-	void work( const amalthea::model::NumericMode_ptr&, amalthea::model::NumericMode* );
-	void work( const amalthea::model::ModeConditionDisjunction_ptr&,
-			   amalthea::model::ModeConditionDisjunction* );
+	void work( const am120::model::ISR_ptr&, am120::model::ISR* );
+	void work( const am120::model::Label_ptr&, am120::model::Label* );
+	void work( const am120::model::OsEvent_ptr&, am120::model::OsEvent* );
+	void work( const am120::model::Runnable_ptr&, am120::model::Runnable* );
+	void work( const am120::model::Task_ptr&, am120::model::Task* );
+	void work( const am120::model::ModeLabel_ptr&, am120::model::ModeLabel* );
+	void work( const am120::model::EnumMode_ptr&, am120::model::EnumMode* );
+	void work( const am120::model::NumericMode_ptr&, am120::model::NumericMode* );
+	void work( const am120::model::ModeConditionDisjunction_ptr&,
+			   am120::model::ModeConditionDisjunction* );
 
-	void addStimulus( const amalthea::model::Process_ptr&,
-					  const root::model::Process_ptr& );
+	void addStimulus( const am120::model::Process_ptr&, const root::model::Process_ptr& );
 	void addEvents( const root::model::Process_ptr& );
 	void addEvents( const root::model::Function_ptr& );
 
 	/* Amalthea ActivityGraph and ActivityGraphItems */
-	void work( const amalthea::model::ActivityGraph_ptr&,
-			   amalthea::model::ActivityGraph* );
-	void work( const amalthea::model::ChannelReceive_ptr&,
-			   amalthea::model::ChannelReceive* );
-	void work( const amalthea::model::ChannelSend_ptr&, amalthea::model::ChannelSend* );
-	void work( const amalthea::model::ClearEvent_ptr&, amalthea::model::ClearEvent* );
-	void work( const amalthea::model::CustomEventTrigger_ptr&,
-			   amalthea::model::CustomEventTrigger* );
-	void work( const amalthea::model::EnforcedMigration_ptr&,
-			   amalthea::model::EnforcedMigration* );
-	void work( const amalthea::model::ExecutionNeed_ptr&,
-			   amalthea::model::ExecutionNeed* );
-	void work( const amalthea::model::GetResultServerCall_ptr&,
-			   amalthea::model::GetResultServerCall* );
-	void work( const amalthea::model::Group_ptr&, amalthea::model::Group* );
-	void work( const amalthea::model::InterProcessTrigger_ptr&,
-			   amalthea::model::InterProcessTrigger* );
-	void work( const amalthea::model::LabelAccess_ptr&, amalthea::model::LabelAccess* );
-	void work( const amalthea::model::ModeLabelAccess_ptr&,
-			   amalthea::model::ModeLabelAccess* );
-	void work( const amalthea::model::ModeSwitch_ptr&, amalthea::model::ModeSwitch* );
-	void work( const amalthea::model::ModeSwitchDefault_ptr&,
-			   amalthea::model::ModeSwitchDefault* );
-	void work( const amalthea::model::ModeSwitchEntry_ptr&,
-			   amalthea::model::ModeSwitchEntry* );
-	void work( const amalthea::model::ProbabilitySwitch_ptr&,
-			   amalthea::model::ProbabilitySwitch* );
-	void work( const amalthea::model::ProbabilitySwitchEntry_ptr&,
-			   amalthea::model::ProbabilitySwitchEntry* );
-	void work( const amalthea::model::WhileLoop_ptr&, amalthea::model::WhileLoop* );
-	void work( const amalthea::model::RunnableCall_ptr&, amalthea::model::RunnableCall* );
-	void work( const amalthea::model::SchedulePoint_ptr&,
-			   amalthea::model::SchedulePoint* );
-	void work( const amalthea::model::SemaphoreAccess_ptr&,
-			   amalthea::model::SemaphoreAccess* );
-	void work( const amalthea::model::SenderReceiverRead_ptr&,
-			   amalthea::model::SenderReceiverRead* );
-	void work( const amalthea::model::SenderReceiverWrite_ptr&,
-			   amalthea::model::SenderReceiverWrite* );
-	void work( const amalthea::model::SetEvent_ptr&, amalthea::model::SetEvent* );
-	void work( const amalthea::model::SynchronousServerCall_ptr&,
-			   amalthea::model::SynchronousServerCall* );
-	void work( const amalthea::model::TerminateProcess_ptr&,
-			   amalthea::model::TerminateProcess* );
-	void work( const amalthea::model::Ticks_ptr&, amalthea::model::Ticks* );
-	void work( const amalthea::model::WaitEvent_ptr&, amalthea::model::WaitEvent* );
+	void work( const am120::model::ActivityGraph_ptr&, am120::model::ActivityGraph* );
+	void work( const am120::model::ChannelReceive_ptr&, am120::model::ChannelReceive* );
+	void work( const am120::model::ChannelSend_ptr&, am120::model::ChannelSend* );
+	void work( const am120::model::ClearEvent_ptr&, am120::model::ClearEvent* );
+	void work( const am120::model::CustomEventTrigger_ptr&,
+			   am120::model::CustomEventTrigger* );
+	void work( const am120::model::EnforcedMigration_ptr&,
+			   am120::model::EnforcedMigration* );
+	void work( const am120::model::ExecutionNeed_ptr&, am120::model::ExecutionNeed* );
+	void work( const am120::model::GetResultServerCall_ptr&,
+			   am120::model::GetResultServerCall* );
+	void work( const am120::model::Group_ptr&, am120::model::Group* );
+	void work( const am120::model::InterProcessTrigger_ptr&,
+			   am120::model::InterProcessTrigger* );
+	void work( const am120::model::LabelAccess_ptr&, am120::model::LabelAccess* );
+	void work( const am120::model::ModeLabelAccess_ptr&, am120::model::ModeLabelAccess* );
+	void work( const am120::model::ModeSwitch_ptr&, am120::model::ModeSwitch* );
+	void work( const am120::model::ModeSwitchDefault_ptr&,
+			   am120::model::ModeSwitchDefault* );
+	void work( const am120::model::ModeSwitchEntry_ptr&, am120::model::ModeSwitchEntry* );
+	void work( const am120::model::ProbabilitySwitch_ptr&,
+			   am120::model::ProbabilitySwitch* );
+	void work( const am120::model::ProbabilitySwitchEntry_ptr&,
+			   am120::model::ProbabilitySwitchEntry* );
+	void work( const am120::model::WhileLoop_ptr&, am120::model::WhileLoop* );
+	void work( const am120::model::RunnableCall_ptr&, am120::model::RunnableCall* );
+	void work( const am120::model::SchedulePoint_ptr&, am120::model::SchedulePoint* );
+	void work( const am120::model::SemaphoreAccess_ptr&, am120::model::SemaphoreAccess* );
+	void work( const am120::model::SenderReceiverRead_ptr&,
+			   am120::model::SenderReceiverRead* );
+	void work( const am120::model::SenderReceiverWrite_ptr&,
+			   am120::model::SenderReceiverWrite* );
+	void work( const am120::model::SetEvent_ptr&, am120::model::SetEvent* );
+	void work( const am120::model::SynchronousServerCall_ptr&,
+			   am120::model::SynchronousServerCall* );
+	void work( const am120::model::TerminateProcess_ptr&,
+			   am120::model::TerminateProcess* );
+	void work( const am120::model::Ticks_ptr&, am120::model::Ticks* );
+	void work( const am120::model::WaitEvent_ptr&, am120::model::WaitEvent* );
 
 	/* Amalthea osModel */
-	void work( const amalthea::model::OperatingSystem_ptr&,
-			   amalthea::model::OperatingSystem* );
-	void work( const amalthea::model::InterruptController_ptr&,
-			   amalthea::model::InterruptController* );
-	void work( const amalthea::model::TaskScheduler_ptr&,
-			   amalthea::model::TaskScheduler* );
-	void work( const amalthea::model::TaskSchedulingAlgorithm_ptr&,
-			   amalthea::model::TaskSchedulingAlgorithm* );
-	void work( const amalthea::model::SchedulerAssociation_ptr&,
-			   amalthea::model::SchedulerAssociation* );
-	void work( const amalthea::model::Semaphore_ptr&, amalthea::model::Semaphore* );
+	void work( const am120::model::OperatingSystem_ptr&, am120::model::OperatingSystem* );
+	void work( const am120::model::InterruptController_ptr&,
+			   am120::model::InterruptController* );
+	void work( const am120::model::TaskScheduler_ptr&, am120::model::TaskScheduler* );
+	void work( const am120::model::TaskSchedulingAlgorithm_ptr&,
+			   am120::model::TaskSchedulingAlgorithm* );
+	void work( const am120::model::SchedulerAssociation_ptr&,
+			   am120::model::SchedulerAssociation* );
+	void work( const am120::model::Semaphore_ptr&, am120::model::Semaphore* );
 
 	/* Amalthea mappingModel */
-	void work( const amalthea::model::MappingModel_ptr&, amalthea::model::MappingModel* );
-	void work( const amalthea::model::MemoryMapping_ptr&,
-			   amalthea::model::MemoryMapping* );
-	void work( const amalthea::model::PhysicalSectionMapping_ptr&,
-			   amalthea::model::PhysicalSectionMapping* );
-	void work( const amalthea::model::RunnableAllocation_ptr&,
-			   amalthea::model::RunnableAllocation* );
-	void work( const amalthea::model::SchedulerAllocation_ptr&,
-			   amalthea::model::SchedulerAllocation* );
-	void work( const amalthea::model::ISRAllocation_ptr&,
-			   amalthea::model::ISRAllocation* );
-	void work( const amalthea::model::TaskAllocation_ptr&,
-			   amalthea::model::TaskAllocation* );
+	void work( const am120::model::MappingModel_ptr&, am120::model::MappingModel* );
+	void work( const am120::model::MemoryMapping_ptr&, am120::model::MemoryMapping* );
+	void work( const am120::model::PhysicalSectionMapping_ptr&,
+			   am120::model::PhysicalSectionMapping* );
+	void work( const am120::model::RunnableAllocation_ptr&,
+			   am120::model::RunnableAllocation* );
+	void work( const am120::model::SchedulerAllocation_ptr&,
+			   am120::model::SchedulerAllocation* );
+	void work( const am120::model::ISRAllocation_ptr&, am120::model::ISRAllocation* );
+	void work( const am120::model::TaskAllocation_ptr&, am120::model::TaskAllocation* );
 
 	/* Amalthea eventModel */
-	void work( const amalthea::model::EventSet_ptr&, amalthea::model::EventSet* );
-	void work( const amalthea::model::ComponentEvent_ptr&,
-			   amalthea::model::ComponentEvent* );
-	void work( const amalthea::model::ProcessEvent_ptr&, amalthea::model::ProcessEvent* );
-	void work( const amalthea::model::ProcessChainEvent_ptr&,
-			   amalthea::model::ProcessChainEvent* );
-	void work( const amalthea::model::SemaphoreEvent_ptr&,
-			   amalthea::model::SemaphoreEvent* );
-	void work( const amalthea::model::StimulusEvent_ptr&,
-			   amalthea::model::StimulusEvent* );
-	void work( const amalthea::model::ChannelEvent_ptr&, amalthea::model::ChannelEvent* );
-	void work( const amalthea::model::CustomEvent_ptr&, amalthea::model::CustomEvent* );
-	void work( const amalthea::model::LabelEvent_ptr&, amalthea::model::LabelEvent* );
-	void work( const amalthea::model::RunnableEvent_ptr&,
-			   amalthea::model::RunnableEvent* );
+	void work( const am120::model::EventSet_ptr&, am120::model::EventSet* );
+	void work( const am120::model::ComponentEvent_ptr&, am120::model::ComponentEvent* );
+	void work( const am120::model::ProcessEvent_ptr&, am120::model::ProcessEvent* );
+	void work( const am120::model::ProcessChainEvent_ptr&,
+			   am120::model::ProcessChainEvent* );
+	void work( const am120::model::SemaphoreEvent_ptr&, am120::model::SemaphoreEvent* );
+	void work( const am120::model::StimulusEvent_ptr&, am120::model::StimulusEvent* );
+	void work( const am120::model::ChannelEvent_ptr&, am120::model::ChannelEvent* );
+	void work( const am120::model::CustomEvent_ptr&, am120::model::CustomEvent* );
+	void work( const am120::model::LabelEvent_ptr&, am120::model::LabelEvent* );
+	void work( const am120::model::RunnableEvent_ptr&, am120::model::RunnableEvent* );
 
 	/* Amalthea constraintsModel */
-	std::list<amalthea::model::Event_ptr> getAmaltheaEventSequence(
-		const amalthea::model::AbstractEventChain_ptr& am );
-	void work( const amalthea::model::EventChain_ptr&, amalthea::model::EventChain* );
-	void work( const amalthea::model::TimingConstraint_ptr&,
-			   amalthea::model::TimingConstraint* );
-	void work( const amalthea::model::AffinityConstraint_ptr&,
-			   amalthea::model::AffinityConstraint* );
-	void work( const amalthea::model::RunnableSequencingConstraint_ptr&,
-			   amalthea::model::RunnableSequencingConstraint* );
-	void work( const amalthea::model::DataAgeConstraint_ptr&,
-			   amalthea::model::DataAgeConstraint* );
-	void work( const amalthea::model::Requirement_ptr&, amalthea::model::Requirement* );
-	void work( const amalthea::model::DataCoherencyGroup_ptr&,
-			   amalthea::model::DataCoherencyGroup* );
-	void work( const amalthea::model::DataStabilityGroup_ptr&,
-			   amalthea::model::DataStabilityGroup* );
-	void work( const amalthea::model::PhysicalSectionConstraint_ptr&,
-			   amalthea::model::PhysicalSectionConstraint* );
+	std::list<am120::model::Event_ptr> getAmaltheaEventSequence(
+		const am120::model::AbstractEventChain_ptr& am );
+	void work( const am120::model::EventChain_ptr&, am120::model::EventChain* );
+	void work( const am120::model::TimingConstraint_ptr&,
+			   am120::model::TimingConstraint* );
+	void work( const am120::model::AffinityConstraint_ptr&,
+			   am120::model::AffinityConstraint* );
+	void work( const am120::model::RunnableSequencingConstraint_ptr&,
+			   am120::model::RunnableSequencingConstraint* );
+	void work( const am120::model::DataAgeConstraint_ptr&,
+			   am120::model::DataAgeConstraint* );
+	void work( const am120::model::Requirement_ptr&, am120::model::Requirement* );
+	void work( const am120::model::DataCoherencyGroup_ptr&,
+			   am120::model::DataCoherencyGroup* );
+	void work( const am120::model::DataStabilityGroup_ptr&,
+			   am120::model::DataStabilityGroup* );
+	void work( const am120::model::PhysicalSectionConstraint_ptr&,
+			   am120::model::PhysicalSectionConstraint* );
 
 
 	/* All relaxations, split according to structure. */
@@ -237,11 +212,11 @@ public:
 
 	/* Helper functions used by multiple modules. */
 	static root::model::ModeGroup_ptr createModeGroup(
-		ObjectCache&, const amalthea::model::ModeLabel_ptr& );
-	static root::model::Counter_ptr createCounter(
-		ObjectCache&, const amalthea::model::ModeLabel_ptr& );
+		ObjectCache&, const am120::model::ModeLabel_ptr& );
+	static root::model::Counter_ptr createCounter( ObjectCache&,
+												   const am120::model::ModeLabel_ptr& );
 	static root::model::RelationalExpression_ptr createRelationalExpression(
-		ObjectCache& oc, const amalthea::model::ModeCondition_ptr& );
+		ObjectCache& oc, const am120::model::ModeCondition_ptr& );
 
 private:
 	enum Mode { PreOrder, PostOrder } _mode{ PreOrder };
@@ -250,7 +225,6 @@ private:
 
 	ObjectCache _oc;
 
-	ecore::Ptr<am2inc::Mappings> _mappings;
 	ecore::Ptr<root::Root> _root;
 	ecore::Ptr<root::model::Model> _model;
 	ecore::Ptr<root::model::Clock> _idealClock;

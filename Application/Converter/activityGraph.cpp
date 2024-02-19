@@ -31,8 +31,10 @@
 #include "../AttributeCreator.h"
 #include "../Converter.h"
 #include "../Diagnostic.h"
-#include "../StimulusTraits.h"
 #include "../TimeOperators.h"
+#include "StimulusTraits.h"
+
+namespace am = am120::model;
 
 namespace details {
 
@@ -293,10 +295,10 @@ sm3::TimeDistribution_ptr createTimeDistribution( am::IDiscreteValueDeviation_pt
 
 	switch ( am->eClass()->getClassifierID() ) {
 	case am::ModelPackage::DISCRETEVALUECONSTANT:
-		td->setMin(
-			AttributeCreator<sm3::Time>()( am->getLowerBound(), sm3::TimeUnit::T ) );
-		td->setMax(
-			AttributeCreator<sm3::Time>()( am->getUpperBound(), sm3::TimeUnit::T ) );
+		td->setMin( AttributeCreator<sm3::Time, am::ModelPackage>()( am->getLowerBound(),
+																	 sm3::TimeUnit::T ) );
+		td->setMax( AttributeCreator<sm3::Time, am::ModelPackage>()( am->getUpperBound(),
+																	 sm3::TimeUnit::T ) );
 		td->setType( sm3::TimeDistributionType::Min );
 		break;
 
@@ -307,10 +309,10 @@ sm3::TimeDistribution_ptr createTimeDistribution( am::IDiscreteValueDeviation_pt
 			// entry := DiscreteValueInterval + #occurrences
 			auto dde = sm3::create<sm3::DiscreteDistributionEntry>();
 			dde->setCount( entry->getOccurrences() );
-			dde->setLower( AttributeCreator<sm3::Time>()( entry->getLowerBound(),
-														  sm3::TimeUnit::T ) );
-			dde->setUpper( AttributeCreator<sm3::Time>()( entry->getUpperBound(),
-														  sm3::TimeUnit::T ) );
+			dde->setLower( AttributeCreator<sm3::Time, am::ModelPackage>()(
+				entry->getLowerBound(), sm3::TimeUnit::T ) );
+			dde->setUpper( AttributeCreator<sm3::Time, am::ModelPackage>()(
+				entry->getUpperBound(), sm3::TimeUnit::T ) );
 			td->getDiscreteDistribution().push_back_unsafe( dde );
 		}
 		td->setType( sm3::TimeDistributionType::Discrete );
@@ -326,10 +328,10 @@ sm3::TimeDistribution_ptr createTimeDistribution( am::IDiscreteValueDeviation_pt
 		 * definition of the corresponding discrete value classes is analogous).
 		 */
 		auto bound = ecore::as<am::DiscreteValueBoundaries>( am );
-		td->setMin(
-			AttributeCreator<sm3::Time>()( bound->getLowerBound(), sm3::TimeUnit::T ) );
-		td->setMax(
-			AttributeCreator<sm3::Time>()( bound->getUpperBound(), sm3::TimeUnit::T ) );
+		td->setMin( AttributeCreator<sm3::Time, am::ModelPackage>()(
+			bound->getLowerBound(), sm3::TimeUnit::T ) );
+		td->setMax( AttributeCreator<sm3::Time, am::ModelPackage>()(
+			bound->getUpperBound(), sm3::TimeUnit::T ) );
 		switch ( bound->getSamplingType() ) {
 		case am::SamplingType::_default_: {
 			/** _default_ implies (Amalthea class) Constant, which does not exist in the
@@ -339,8 +341,8 @@ sm3::TimeDistribution_ptr createTimeDistribution( am::IDiscreteValueDeviation_pt
 			/** Providing the mean value is mandatory.
 			 * \note Rounding error due to integer truncation applies. */
 			const auto mean = ( *td->getMax() - *td->getMin() ) / 2;
-			td->setMean(
-				AttributeCreator<sm3::Time>()( mean.getValue(), sm3::TimeUnit::T ) );
+			td->setMean( AttributeCreator<sm3::Time, am::ModelPackage>()(
+				mean.getValue(), sm3::TimeUnit::T ) );
 		} break;
 		case am::SamplingType::BestCase:
 			td->setType( sm3::TimeDistributionType::BestCase );
@@ -369,11 +371,12 @@ sm3::TimeDistribution_ptr createTimeDistribution( am::IDiscreteValueDeviation_pt
 
 	case am::ModelPackage::DISCRETEVALUESTATISTICS: {
 		auto stat = ecore::as<am::DiscreteValueStatistics>( am );
-		auto avg = AttributeCreator<sm3::Time>()( stat->getAverage(), sm3::TimeUnit::T );
-		auto min =
-			AttributeCreator<sm3::Time>()( stat->getLowerBound(), sm3::TimeUnit::T );
-		auto max =
-			AttributeCreator<sm3::Time>()( stat->getUpperBound(), sm3::TimeUnit::T );
+		auto avg = AttributeCreator<sm3::Time, am::ModelPackage>()( stat->getAverage(),
+																	sm3::TimeUnit::T );
+		auto min = AttributeCreator<sm3::Time, am::ModelPackage>()( stat->getLowerBound(),
+																	sm3::TimeUnit::T );
+		auto max = AttributeCreator<sm3::Time, am::ModelPackage>()( stat->getUpperBound(),
+																	sm3::TimeUnit::T );
 
 		/* In general it is not safe to handle EMF objects, which are not
 		 * created on the heap and are not managed by a std::shared_ptr<>. */
@@ -396,33 +399,34 @@ sm3::TimeDistribution_ptr createTimeDistribution( am::IDiscreteValueDeviation_pt
 	} break;
 
 	case am::ModelPackage::DISCRETEVALUEUNIFORMDISTRIBUTION: {
-		td->setMin(
-			AttributeCreator<sm3::Time>()( am->getLowerBound(), sm3::TimeUnit::T ) );
-		td->setMax(
-			AttributeCreator<sm3::Time>()( am->getUpperBound(), sm3::TimeUnit::T ) );
+		td->setMin( AttributeCreator<sm3::Time, am::ModelPackage>()( am->getLowerBound(),
+																	 sm3::TimeUnit::T ) );
+		td->setMax( AttributeCreator<sm3::Time, am::ModelPackage>()( am->getUpperBound(),
+																	 sm3::TimeUnit::T ) );
 		td->setType( sm3::TimeDistributionType::Uniform );
 	} break;
 
 	case am::ModelPackage::DISCRETEVALUEGAUSSDISTRIBUTION: {
-		td->setMin(
-			AttributeCreator<sm3::Time>()( am->getLowerBound(), sm3::TimeUnit::T ) );
-		td->setMax(
-			AttributeCreator<sm3::Time>()( am->getUpperBound(), sm3::TimeUnit::T ) );
+		td->setMin( AttributeCreator<sm3::Time, am::ModelPackage>()( am->getLowerBound(),
+																	 sm3::TimeUnit::T ) );
+		td->setMax( AttributeCreator<sm3::Time, am::ModelPackage>()( am->getUpperBound(),
+																	 sm3::TimeUnit::T ) );
 		auto gauss = ecore::as<am::DiscreteValueGaussDistribution>( am );
-		td->setMean(
-			AttributeCreator<sm3::Time>()( gauss->getMean(), sm3::TimeUnit::T ) );
-		td->setSigma( AttributeCreator<sm3::Time>()( gauss->getSd(), sm3::TimeUnit::T ) );
+		td->setMean( AttributeCreator<sm3::Time, am::ModelPackage>()(
+			gauss->getMean(), sm3::TimeUnit::T ) );
+		td->setSigma( AttributeCreator<sm3::Time, am::ModelPackage>()(
+			gauss->getSd(), sm3::TimeUnit::T ) );
 		td->setType( sm3::TimeDistributionType::Normal );
 	} break;
 
 	case am::ModelPackage::DISCRETEVALUEWEIBULLESTIMATORSDISTRIBUTION: {
-		td->setMin(
-			AttributeCreator<sm3::Time>()( am->getLowerBound(), sm3::TimeUnit::T ) );
-		td->setMax(
-			AttributeCreator<sm3::Time>()( am->getUpperBound(), sm3::TimeUnit::T ) );
+		td->setMin( AttributeCreator<sm3::Time, am::ModelPackage>()( am->getLowerBound(),
+																	 sm3::TimeUnit::T ) );
+		td->setMax( AttributeCreator<sm3::Time, am::ModelPackage>()( am->getUpperBound(),
+																	 sm3::TimeUnit::T ) );
 		auto stat = ecore::as<am::DiscreteValueWeibullEstimatorsDistribution>( am );
-		td->setMean(
-			AttributeCreator<sm3::Time>()( stat->getAverage(), sm3::TimeUnit::T ) );
+		td->setMean( AttributeCreator<sm3::Time, am::ModelPackage>()(
+			stat->getAverage(), sm3::TimeUnit::T ) );
 		/* OutlierProbability has to be in the range ]0..1]. */
 		double outlier = stat->getPRemainPromille() / 1000.;
 		if ( outlier <= 0. )
@@ -433,10 +437,10 @@ sm3::TimeDistribution_ptr createTimeDistribution( am::IDiscreteValueDeviation_pt
 	} break;
 
 	case am::ModelPackage::DISCRETEVALUEBETADISTRIBUTION: {
-		td->setMin(
-			AttributeCreator<sm3::Time>()( am->getLowerBound(), sm3::TimeUnit::T ) );
-		td->setMax(
-			AttributeCreator<sm3::Time>()( am->getUpperBound(), sm3::TimeUnit::T ) );
+		td->setMin( AttributeCreator<sm3::Time, am::ModelPackage>()( am->getLowerBound(),
+																	 sm3::TimeUnit::T ) );
+		td->setMax( AttributeCreator<sm3::Time, am::ModelPackage>()( am->getUpperBound(),
+																	 sm3::TimeUnit::T ) );
 		const auto stat = ecore::as<am::DiscreteValueBetaDistribution>( am );
 		td->setAlpha( stat->getAlpha() );
 		td->setBeta( stat->getBeta() );

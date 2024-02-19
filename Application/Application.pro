@@ -17,8 +17,7 @@ TARGET = am2inc
 QMAKE_TARGET_DESCRIPTION = Tool-Suite 3 Amalthea Importer
 
 INCLUDEPATH += ..
-INCLUDEPATH += ../Amalthea ../Amalthea/amalthea
-INCLUDEPATH += ../Mapping
+INCLUDEPATH += ../Amalthea ../Amalthea/am120
 INCLUDEPATH += ../Root/model
 INCLUDEPATH += $${EMF4CPP}/include/emf4cpp
 
@@ -26,12 +25,12 @@ INCLUDEPATH += $${EMF4CPP}/include/emf4cpp
 # to rerun qmake to update the dependencies.
 Makefile.target = $(MAKEFILE)
 Makefile.depends += \
-    $$relative_path($$PWD/../Amalthea/amalthea_model.pri, $$OUT_PWD) \
-    $$relative_path($$PWD/../Root/model/root.pri, $$OUT_PWD) \
-    $$relative_path($$PWD/../Mapping/am2inc.pri, $$OUT_PWD)
+    $$relative_path($$PWD/../Amalthea/am120/am120_model.pri, $$OUT_PWD) \
+    $$relative_path($$PWD/../Root/model/root.pri, $$OUT_PWD)
 QMAKE_EXTRA_TARGETS += Makefile
 
 DEFINES += VERSION=\\\"$$VERSION\\\"
+DEFINES += MAKE_AM120_MODEL_STATIC
 
 QMAKE_CXXFLAGS += -Wno-unused-parameter
 
@@ -40,8 +39,9 @@ QT -= gui
 CONFIG += console
 
 LIBS += -L../Amalthea/$${DESTDIR} -lAmalthea
+LIBS += -L../Amalthea/am120/$${DESTDIR} -lam120
 LIBS += -L../Root/$${DESTDIR} -lRoot
-LIBS += -L../Mapping/$${DESTDIR} -lMapping
+#LIBS += -L../Mapping/$${DESTDIR} -lMapping
 
 
 ! isEmpty(EMF4CPP): LIBS += -L$${EMF4CPP}/lib
@@ -76,6 +76,8 @@ HEADERS += \
     ObjectCache.h \
     Options.h \
     TimeOperators.h \
+    StimulusTraits.h \
+    Converter/StimulusTraits.h \
 
 SOURCES += \
     Application.cpp \

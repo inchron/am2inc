@@ -10,6 +10,7 @@
  */
 #include "Application.h"
 
+
 #include <iostream>
 #include <stdlib.h>
 #include <unistd.h>
@@ -19,15 +20,15 @@
 #include <ecorecpp.hpp>
 #include <ecorecpp/resource/XMLResource.hpp>
 
-#include <amalthea/model.hpp>
-#include <amalthea/model/ModelPackage.hpp>
+#include <am120/model.hpp>
+#include <am120/model/ModelPackage.hpp>
 #include <Amalthea/XMLResource.h>
 #include <root.hpp>
 #include <root/RootPackage.hpp>
 
 #include "Converter.h"
 
-namespace am = amalthea::model;
+namespace am = am120::model;
 namespace sm3 = root::model;
 namespace sm3m = root::model::memory;
 
@@ -160,7 +161,6 @@ bool Application::convert() {
 				_converter.convert( amalthea );
 		}
 
-	_mappings = _converter.getMappings();
 	_root = _converter.getRoot();
 
 	return false;
@@ -189,13 +189,6 @@ bool Application::writeOutput() {
 		std::ostringstream stream;
 		rootXmi->save( stream );
 		std::cout << stream.str();
-	}
-
-	if ( !_options->getMappingName().isEmpty() ) {
-		auto mappingXmi = _resourceSet->createResource(
-			QUrl::fromLocalFile( _options->getMappingName() ) );
-		mappingXmi->getContents()->push_back( _mappings );
-		mappingXmi->save();
 	}
 
 	return false;

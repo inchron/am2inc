@@ -7,11 +7,11 @@
 /** @file eventModel.cpp
 * Groups all code related to Amalthea's EventModel.
 */
-#include "../Converter.h"
-
 #include "../AttributeCreator.h"
+#include "../Converter.h"
 #include "../Diagnostic.h"
 
+namespace am = am120::model;
 namespace sm3 = root::model;
 
 void Converter::work( const am::EventSet_ptr&, am::EventSet* ) {

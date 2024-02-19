@@ -13,6 +13,7 @@
 #include "../Converter.h"
 #include "../Diagnostic.h"
 
+namespace am = am120::model;
 namespace sm3 = root::model;
 
 /** Retrive the sequence of am::Events from an am::EventChain definition.

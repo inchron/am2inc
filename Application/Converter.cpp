@@ -12,6 +12,8 @@
 
 #include "AttributeCreator.h"
 
+namespace am = am120::model;
+
 /** Clear the internal state.
  *
  * For an unknown reason the ObjectCache blocks the serialization of the
@@ -20,8 +22,6 @@
 void Converter::clear() { _oc.clear(); }
 
 Converter::Converter() {
-	_mappings = am2inc::create<am2inc::Mappings>();
-
 	_root = root::create<root::Root>();
 	_model = sm3::create<sm3::Model>();
 	_model->setName( "New Project" );
@@ -80,12 +80,14 @@ void Converter::skipChildren() { _status = Status::SkipChildren; }
 
 void Converter::addMapping( const std::vector<am::ReferableBaseObject_ptr>& am,
 							const std::vector<root::Referable_ptr>& inc ) {
+	/*
 	auto mapping = am2inc::create<am2inc::Mapping>();
 	for ( auto&& a : am )
 		mapping->getAmalthea().push_back_unsafe( a );
 	for ( auto&& i : inc )
 		mapping->getInchron().push_back_unsafe( i );
 	_mappings->getMappings().push_back_unsafe( mapping );
+*/
 }
 
 /** Set an automatic name for a CallSequenceItem.

@@ -8,15 +8,15 @@
  */
 #include <QString>
 
-#include <amalthea/model/dllModel.hpp>
 #include "../gitversion.h"
+#include "dllAmalthea.h"
 
 namespace amalthea {
 
-QString EXPORT_AMALTHEA_MODEL_DLL getGitVersion();
+QString EXPORT_AMALTHEA_DLL getGitVersion();
 
 QString getGitVersion() {
 	return QString(GIT_VERSION);
 }
 
-} // namespace amalthea
+}  // namespace amalthea

@@ -7,16 +7,16 @@
 /** @file mappingModel.cpp
  * Groups all code related to Amalthea's HwModel.
  */
-#include "../Converter.h"
-
 #include "../AttributeCreator.h"
+#include "../Converter.h"
 #include "../Diagnostic.h"
-#include "../StimulusTraits.h"
+#include "StimulusTraits.h"
 
+namespace am = am120::model;
 
-void Converter::work(const amalthea::model::MappingModel_ptr&,
-					 amalthea::model::MappingModel*) {
-	if (_mode == PreOrder) {
+void Converter::work( const am120::model::MappingModel_ptr&,
+					  am120::model::MappingModel* ) {
+	if ( _mode == PreOrder ) {
 		/* Nothing to do. */
 
 	} else {
@@ -32,71 +32,74 @@ void Converter::work(const amalthea::model::MappingModel_ptr&,
 		 * InterruptController contained by the OperatingSystem only adds the
 		 * name, which is not used at all, hence it does not matter if it has
 		 * been processed or will be processed. */
-		for (auto&& system : _model->getSystems()) {
-			auto genericSystem = ecore::as<sm3::GenericSystem>(system);
-			if (!genericSystem)
+		for ( auto&& system : _model->getSystems() ) {
+			auto genericSystem = ecore::as<sm3::GenericSystem>( system );
+			if ( !genericSystem )
 				continue;
 
 			auto& allSchedulers = genericSystem->getRtosConfig()->getSchedulables();
-			if (allSchedulers.size() == 0)
+			if ( allSchedulers.size() == 0 )
 				continue;
-			auto rootScheduler = ecore::as<sm3::Scheduler>(allSchedulers.get(0));
+			auto rootScheduler = ecore::as<sm3::Scheduler>( allSchedulers.get( 0 ) );
 
-			while (allSchedulers.size() > 1) {
-				auto scheduler = ecore::as<sm3::Scheduler>(allSchedulers.get(1));
+			while ( allSchedulers.size() > 1 ) {
+				auto scheduler = ecore::as<sm3::Scheduler>( allSchedulers.get( 1 ) );
 				auto& current = scheduler->getSchedulables();
-				while (current.size() > 0) {
-					auto schedulable = current.get(0);
+				while ( current.size() > 0 ) {
+					auto schedulable = current.get( 0 );
 					/* Move to new containment. */
-					current.remove(schedulable);
-					rootScheduler->getSchedulables().push_back_unsafe(schedulable);
+					current.remove( schedulable );
+					rootScheduler->getSchedulables().push_back_unsafe( schedulable );
 
 					/* Copy CpuCore affinity from old scheduler to schedulable
 					 * and add to new scheduler. */
-					for (auto&& cpuCore : scheduler->getCpuCores()) {
-						schedulable->getCpuCores().push_back(cpuCore);
-						rootScheduler->getCpuCores().push_back(cpuCore);
+					for ( auto&& cpuCore : scheduler->getCpuCores() ) {
+						schedulable->getCpuCores().push_back( cpuCore );
+						rootScheduler->getCpuCores().push_back( cpuCore );
 					}
 				}
 
-				allSchedulers.remove(scheduler);
-				_oc.reverseRemove(scheduler);
+				allSchedulers.remove( scheduler );
+				_oc.reverseRemove( scheduler );
 			}
 		}
 	}
 }
 
 
-void Converter::work(const am::MemoryMapping_ptr& am, am::MemoryMapping*) {
-	if (_mode == PreOrder) {
+void Converter::work( const am::MemoryMapping_ptr& am, am::MemoryMapping* ) {
+	if ( _mode == PreOrder ) {
 		/* There are 8 concrete types of AbstractMemoryElements. A
 		 * MemoryElementTrait would be helpful. */
 		if ( am->getAbstractElement()->eClass()->getClassifierID()
 			 != am::ModelPackage::LABEL )
 			return;
 
-		auto label = _oc.make<sm3m::MemoryFactory, sm3m::DataObject>(am->getAbstractElement());
-		auto memory = _oc.make<sm3m::MemoryFactory, sm3m::Memory>(am->getMemory());
+		auto label =
+			_oc.make<sm3m::MemoryFactory, sm3m::DataObject>( am->getAbstractElement() );
+		auto memory = _oc.make<sm3m::MemoryFactory, sm3m::Memory>( am->getMemory() );
 		/* ignored: am->getMemoryPositionAddress() */
-		label->setMemory(memory);
+		label->setMemory( memory );
 	}
 }
 
-void Converter::work(const am::PhysicalSectionMapping_ptr&, am::PhysicalSectionMapping*) {
+void Converter::work( const am::PhysicalSectionMapping_ptr&,
+					  am::PhysicalSectionMapping* ) {
 	static Diagnostic::NotImplemented<am::PhysicalSectionMapping> message;
 }
 
 /** A SchedulerAllocation maps InterruptControllers and TaskSchedulers to ProcessingUnits.
  */
-void Converter::work(const am::SchedulerAllocation_ptr& am, am::SchedulerAllocation*) {
-	if (_mode == PreOrder) {
-		auto scheduler = _oc.make<sm3::ModelFactory, sm3::Scheduler>(am->getScheduler());
+void Converter::work( const am::SchedulerAllocation_ptr& am, am::SchedulerAllocation* ) {
+	if ( _mode == PreOrder ) {
+		auto scheduler =
+			_oc.make<sm3::ModelFactory, sm3::Scheduler>( am->getScheduler() );
 		/* @todo only used for the process of the UserDefinedScheduler.
 		 * auto executingCore = _oc.find<sm3::Scheduler>(am->getExecutingPU()); */
 
-		for (auto&& amCore : am->getResponsibility()) {
-			auto core = _oc.find<sm3::CpuCore>(amCore, ObjectCache::Default);
-			scheduler->getCpuCores().push_back(core);
+		for ( auto&& amCore : am->getResponsibility() ) {
+			auto core = _oc.find<sm3::CpuCore>( amCore, ObjectCache::Default );
+			scheduler->getCpuCores().push_back( core );
 		}
 	}
 }
@@ -106,7 +109,7 @@ void Converter::work(const am::SchedulerAllocation_ptr& am, am::SchedulerAllocat
  * RunnableAllocations and the TaskAllocations of the Tasks, which call those
  * Runnables, are in sync. Otherwise there will be undefined behaviour.
  */
-void Converter::work(const am::RunnableAllocation_ptr&, am::RunnableAllocation*) {
+void Converter::work( const am::RunnableAllocation_ptr&, am::RunnableAllocation* ) {
 	static Diagnostic::NotImplemented<am::RunnableAllocation> message;
 }
 
@@ -117,49 +120,50 @@ void Converter::work(const am::RunnableAllocation_ptr&, am::RunnableAllocation*)
  * root, so all Isrs are later moved to a single Scheduler and the remaining
  * empty InterruptControllers will be deleted again.
  */
-void Converter::work(const amalthea::model::ISRAllocation_ptr& am,
-					 amalthea::model::ISRAllocation*) {
-	if (_mode == PreOrder) {
-		auto isr = _oc.find<sm3::Process>(am->getIsr(), ObjectCache::Default);
-		auto isrScheduler = _oc.find<sm3::Scheduler>(am->getController(), ObjectCache::Default);
-		if (isr && isrScheduler) {
+void Converter::work( const am120::model::ISRAllocation_ptr& am,
+					  am120::model::ISRAllocation* ) {
+	if ( _mode == PreOrder ) {
+		auto isr = _oc.find<sm3::Process>( am->getIsr(), ObjectCache::Default );
+		auto isrScheduler =
+			_oc.find<sm3::Scheduler>( am->getController(), ObjectCache::Default );
+		if ( isr && isrScheduler ) {
 			/* We assume there is only 1 ISRAllocation per ISR. */
-			isrScheduler->getSchedulables().push_back_unsafe(isr);
-			isr->setPriority(am->getPriority());
+			isrScheduler->getSchedulables().push_back_unsafe( isr );
+			isr->setPriority( am->getPriority() );
 		}
 	}
 }
 
 namespace details {
-	am::TaskScheduler_ptr getAmaltheaScheduler( const am::TaskScheduler_ptr& ts ) {
-		if ( ts && ts->getSchedulingAlgorithm()
-			 && ts->getSchedulingAlgorithm()->eClass()
-					== am::ModelPackage::_instance()->getGrouping()
-			 && ts->getParentAssociation() ) {
-			if ( auto parent = ts->getParentAssociation()->getParent() )
-				return getAmaltheaScheduler( parent );
-		}
-
-		return ts;
+am::TaskScheduler_ptr getAmaltheaScheduler( const am::TaskScheduler_ptr& ts ) {
+	if ( ts && ts->getSchedulingAlgorithm()
+		 && ts->getSchedulingAlgorithm()->eClass()
+				== am::ModelPackage::_instance()->getGrouping()
+		 && ts->getParentAssociation() ) {
+		if ( auto parent = ts->getParentAssociation()->getParent() )
+			return getAmaltheaScheduler( parent );
 	}
-} // end namespace details
 
-void Converter::work(const am::TaskAllocation_ptr& am, am::TaskAllocation*) {
-	if (_mode == PreOrder) {
-		auto task = _oc.find<sm3::Process>(am->getTask(), ObjectCache::Default);
+	return ts;
+}
+}  // end namespace details
+
+void Converter::work( const am::TaskAllocation_ptr& am, am::TaskAllocation* ) {
+	if ( _mode == PreOrder ) {
+		auto task = _oc.find<sm3::Process>( am->getTask(), ObjectCache::Default );
 		auto scheduler = _oc.make<sm3::ModelFactory, sm3::Scheduler>(
 			details::getAmaltheaScheduler( am->getScheduler() ) );
 		/* We assume there is only 1 TaskAllocation per Task. */
-		scheduler->getSchedulables().push_back_unsafe(task);
+		scheduler->getSchedulables().push_back_unsafe( task );
 
-		for (auto&& amCore : am->getAffinity()) {
-			auto core = _oc.make<sm3::ModelFactory, sm3::CpuCore>(amCore);
-			task->getCpuCores().push_back(core);
+		for ( auto&& amCore : am->getAffinity() ) {
+			auto core = _oc.make<sm3::ModelFactory, sm3::CpuCore>( amCore );
+			task->getCpuCores().push_back( core );
 		}
 
-		if (auto parameters = am->getSchedulingParameters()) {
+		if ( auto parameters = am->getSchedulingParameters() ) {
 			int priority = parameters->getPriority();
-			task->setPriority(priority);
+			task->setPriority( priority );
 			/* Other attributes of SchedulingParameters are ignored. */
 		}
 

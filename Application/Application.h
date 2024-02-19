@@ -10,14 +10,14 @@
  */
 #pragma once
 
+#include <am120/model_forward.hpp>
 #include <memory>
+#include <root_forward.hpp>
 
 #include <QCoreApplication>
+
 #include <ecorecpp/resource/ResourceSet.hpp>
 
-#include <amalthea/model_forward.hpp>
-#include <am2inc_forward.hpp>
-#include <root_forward.hpp>
 #include <root/model_forward.hpp>
 
 #include "Converter.h"
@@ -25,8 +25,9 @@
 
 class Application : public QCoreApplication {
 	Q_OBJECT
+
 public:
-	Application(int& argc, char** argv);
+	Application( int& argc, char** argv );
 	~Application() override;
 
 public slots:
@@ -39,9 +40,9 @@ protected slots:
 	bool writeOutput();
 
 protected:
-	void error(Options::Status, const QString&);
-	void warning(const QString&);
-	void info(unsigned int verbosity, const QString& msg);
+	void error( Options::Status, const QString& );
+	void warning( const QString& );
+	void info( unsigned int verbosity, const QString& msg );
 
 	std::string readStdIn();
 
@@ -49,7 +50,6 @@ private:
 	std::shared_ptr<Options> _options;
 	ecore::Ptr<ecorecpp::resource::ResourceSet> _resourceSet;
 
-	am2inc::Mappings_ptr _mappings;
 	ecore::Ptr<root::Root> _root;
 	Converter _converter;
 };

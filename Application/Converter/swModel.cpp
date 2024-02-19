@@ -10,8 +10,9 @@
 #include "../AttributeCreator.h"
 #include "../Converter.h"
 #include "../Diagnostic.h"
-#include "../StimulusTraits.h"
+#include "StimulusTraits.h"
 
+namespace am = am120::model;
 
 /** Add an sm3::ActivateProcess to the CallGraph of all am::Stimulus, which
  * are referenced by the am::Process.
@@ -196,7 +197,8 @@ void Converter::work( const am::Label_ptr& am, am::Label* ) {
 	if ( _mode == PreOrder ) {
 		auto dataObject = _oc.make<sm3m::MemoryFactory, sm3m::DataObject>( am );
 		dataObject->setName( am->getName() );
-		dataObject->setSize( AttributeCreator<sm3::DataSize>()( am->getSize() ) );
+		dataObject->setSize(
+			AttributeCreator<sm3::DataSize, am::ModelPackage>()( am->getSize() ) );
 	}
 }
 
