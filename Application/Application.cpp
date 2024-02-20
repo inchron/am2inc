@@ -10,7 +10,6 @@
  */
 #include "Application.h"
 
-
 #include <iostream>
 #include <stdlib.h>
 #include <unistd.h>
@@ -21,9 +20,7 @@
 #include <ecorecpp/resource/XMLResource.hpp>
 
 #include <am120/model.hpp>
-#include <am120/model/ModelPackage.hpp>
 #include <Amalthea/XMLResource.h>
-#include <root.hpp>
 #include <root/RootPackage.hpp>
 
 #include "Converter.h"
@@ -157,22 +154,25 @@ bool Application::convert() {
 	for ( auto&& resource : _resourceSet->getResources() )
 		for ( auto&& content : *resource->getContents() ) {
 			auto amalthea = ecore::as<am::Amalthea>( content );
-			if ( amalthea )
-				_converter.convert( amalthea );
+			if ( amalthea ) {
+				if ( not _converter )
+					_converter = Converter::create( amalthea );
+				_converter->convert( amalthea );
+			}
 		}
 
-	_root = _converter.getRoot();
+	_root = _converter->getRoot();
 
 	return false;
 }
 
 bool Application::relax() {
-	_converter.relax();
+	_converter->relax();
 	return false;
 }
 
 bool Application::writeOutput() {
-	_converter.clear();
+	_converter->clear();
 	if ( _options->noOutput() ) {
 		info( 1, QStringLiteral( "Writing no output as requested" ) );
 		return false;

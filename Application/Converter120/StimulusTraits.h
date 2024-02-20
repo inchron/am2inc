@@ -10,9 +10,9 @@
  */
 #pragma once
 
-#include <am120/model.hpp>
 #include <ecore_forward.hpp>
 
+#include <am120/model.hpp>
 #include <root/model/stimulation.hpp>
 
 #include "../StimulusTraits.h"

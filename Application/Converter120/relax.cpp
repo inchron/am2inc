@@ -5,13 +5,15 @@
  * Copyright 2020 INCHRON AG <info@inchron.com>
  */
 #include "../AttributeCreator.h"
-#include "../Converter.h"
+#include "Converter.h"
 
 /** @file relax.cpp
  * Groups all code related to fixing a possible incomplete model.
  */
 
 namespace am = am120::model;
+
+namespace am120 {
 
 /** Check and repair the model as much as possible, e.g. add Interconnects and
  * connect all CpuCores to them.
@@ -344,3 +346,5 @@ void Converter::relaxFreeObjects() {
 		_model->getSystems().push_back( globalSystem );
 	}
 }
+
+}  // namespace am120

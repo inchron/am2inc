@@ -8,12 +8,13 @@
 * Groups all code related to Amalthea's EventModel.
 */
 #include "../AttributeCreator.h"
-#include "../Converter.h"
 #include "../Diagnostic.h"
+#include "Converter.h"
 
 namespace am = am120::model;
 namespace sm3 = root::model;
 
+namespace am120 {
 void Converter::work( const am::EventSet_ptr&, am::EventSet* ) {
 	static Diagnostic::NotImplemented<am::EventSet> message;
 }
@@ -106,3 +107,5 @@ void Converter::work( const am::RunnableEvent_ptr& am, am::RunnableEvent* ) {
 		}
 	}
 }
+
+}  // namespace am120

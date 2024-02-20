@@ -29,12 +29,14 @@
  *
  */
 #include "../AttributeCreator.h"
-#include "../Converter.h"
 #include "../Diagnostic.h"
 #include "../TimeOperators.h"
+#include "Converter.h"
 #include "StimulusTraits.h"
 
 namespace am = am120::model;
+
+namespace am120 {
 
 namespace details {
 
@@ -759,3 +761,5 @@ void Converter::work( const am::SynchronousServerCall_ptr&, am::SynchronousServe
 void Converter::work( const am::TerminateProcess_ptr&, am::TerminateProcess* ) {
 	static Diagnostic::NotImplemented<am::TerminateProcess> message;
 }
+
+}  // namespace am120

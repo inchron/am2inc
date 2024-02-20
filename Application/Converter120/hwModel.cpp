@@ -8,9 +8,12 @@
  * Groups all code related to Amalthea's HwModel.
  */
 #include "../AttributeCreator.h"
-#include "../Converter.h"
+#include "Converter.h"
 
 namespace am = am120::model;
+
+namespace am120 {
+
 
 void Converter::work( const am::FrequencyDomain_ptr& am, am::FrequencyDomain* ) {
 	if ( _mode == PreOrder ) {
@@ -332,3 +335,5 @@ void Converter::work( const am::HwAccessElement_ptr&, am::HwAccessElement* ) {}
 /** am::HwAccessPath is currently unsupported.
  */
 void Converter::work( const am::HwAccessPath_ptr&, am::HwAccessPath* ) {}
+
+}  // namespace am120

@@ -10,11 +10,11 @@
  */
 #include "Options.h"
 
-#include <am120/model/ModelPackage.hpp>
 #include <iostream>
 
 #include <QSettings>
 
+#include <am120/model/ModelPackage.hpp>
 #include <root/RootPackage.hpp>
 
 #include "../gitversion.h"

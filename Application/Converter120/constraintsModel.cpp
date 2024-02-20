@@ -10,12 +10,13 @@
 #include <exception>
 
 #include "../AttributeCreator.h"
-#include "../Converter.h"
 #include "../Diagnostic.h"
+#include "Converter.h"
 
 namespace am = am120::model;
 namespace sm3 = root::model;
 
+namespace am120 {
 /** Retrive the sequence of am::Events from an am::EventChain definition.
  *
  * This method tries to extract a sequence of events from an amalthea EventChain
@@ -159,3 +160,5 @@ void Converter::work( const am::PhysicalSectionConstraint_ptr&,
 					  am::PhysicalSectionConstraint* ) {
 	static Diagnostic::NotImplemented<am::PhysicalSectionConstraint> message;
 }
+
+}  // namespace am120

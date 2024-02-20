@@ -8,11 +8,13 @@
  * Groups all code related to Amalthea's SwModel.
  */
 #include "../AttributeCreator.h"
-#include "../Converter.h"
 #include "../Diagnostic.h"
+#include "Converter.h"
 #include "StimulusTraits.h"
 
 namespace am = am120::model;
+
+namespace am120 {
 
 /** Add an sm3::ActivateProcess to the CallGraph of all am::Stimulus, which
  * are referenced by the am::Process.
@@ -499,3 +501,5 @@ void Converter::work( const am::ModeConditionDisjunction_ptr& am,
 
 	skipChildren();
 }
+
+}  // namespace am120

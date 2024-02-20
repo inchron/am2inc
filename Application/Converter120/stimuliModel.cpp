@@ -8,13 +8,14 @@
  * Groups all code related to Amalthea's StimuliModel.
  */
 #include "../AttributeCreator.h"
-#include "../Converter.h"
 #include "../Diagnostic.h"
 #include "../TimeOperators.h"
+#include "Converter.h"
 #include "StimulusTraits.h"
 
 namespace sm3s = root::model::stimulation;
 
+namespace am120 {
 
 void Converter::work( const am::ArrivalCurveStimulus_ptr&, am::ArrivalCurveStimulus* ) {
 	static Diagnostic::NotImplemented<am::ArrivalCurveStimulus> message;
@@ -334,3 +335,5 @@ void Converter::work( const am::SingleStimulus_ptr& am, am::SingleStimulus* ) {
 void Converter::work( const am::VariableRateStimulus_ptr&, am::VariableRateStimulus* ) {
 	static Diagnostic::NotImplemented<am::VariableRateStimulus> message;
 }
+
+}  // namespace am120

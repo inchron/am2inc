@@ -8,9 +8,10 @@
  * Groups all code related to Amalthea's OsModel.
  */
 #include "../AttributeCreator.h"
-#include "../Converter.h"
+#include "Converter.h"
 #include "StimulusTraits.h"
 
+namespace am120 {
 
 void Converter::work( const am120::model::OperatingSystem_ptr& am,
 					  am120::model::OperatingSystem* ) {
@@ -105,3 +106,5 @@ void Converter::work( const am120::model::Semaphore_ptr& am, am120::model::Semap
 		// ignored: am->getPriorityCeilingProtocol()
 	}
 }
+
+}  // namespace am120

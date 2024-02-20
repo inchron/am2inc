@@ -10,9 +10,23 @@
  */
 #include "Converter.h"
 
-#include "AttributeCreator.h"
+#include <ecore/EClass.hpp>
 
-namespace am = am120::model;
+#include <am120/model/ModelPackage.hpp>
+
+#include "AttributeCreator.h"
+#include "Converter120/Converter.h"
+
+std::unique_ptr<Converter> Converter::create(
+	const ecore::EObject_ptr& potentialAmaltheaObject ) {
+	const auto eClass = potentialAmaltheaObject->eClass();
+	const auto ePkg = eClass->getEPackage();
+
+	if ( ePkg == am120::model::ModelPackage::_instance() )
+		return std::make_unique<am120::Converter>();
+
+	return {};
+}
 
 /** Clear the internal state.
  *
@@ -20,6 +34,8 @@ namespace am = am120::model;
  * contained EObjects.
  */
 void Converter::clear() { _oc.clear(); }
+
+void Converter::relax() {}
 
 Converter::Converter() {
 	_root = root::create<root::Root>();
@@ -50,44 +66,6 @@ Converter::Converter() {
 		_model->getClocks().push_back( clock );
 		_idealClock = clock;
 	}
-}
-
-/** Main entry to the Converter, part of the fixed framework.
- */
-void Converter::convert( const am::Amalthea_ptr& am ) {
-	auto pre = std::bind( &Converter::preOrder, this, std::placeholders::_1 );
-	auto post = std::bind( &Converter::postOrder, this, std::placeholders::_1 );
-
-	ecorecpp::util::TreeWalker walker( pre, post );
-	walker.traverse( am );
-}
-
-ecorecpp::util::TreeWalker::Status Converter::preOrder( const ecore::EObject_ptr& obj ) {
-	_status = ecorecpp::util::TreeWalker::Status::Continue;
-	_mode = PreOrder;
-	enter( obj );
-	return _status;
-}
-
-ecorecpp::util::TreeWalker::Status Converter::postOrder( const ecore::EObject_ptr& obj ) {
-	_status = ecorecpp::util::TreeWalker::Status::Continue;
-	_mode = PostOrder;
-	enter( obj );
-	return _status;
-}
-
-void Converter::skipChildren() { _status = Status::SkipChildren; }
-
-void Converter::addMapping( const std::vector<am::ReferableBaseObject_ptr>& am,
-							const std::vector<root::Referable_ptr>& inc ) {
-	/*
-	auto mapping = am2inc::create<am2inc::Mapping>();
-	for ( auto&& a : am )
-		mapping->getAmalthea().push_back_unsafe( a );
-	for ( auto&& i : inc )
-		mapping->getInchron().push_back_unsafe( i );
-	_mappings->getMappings().push_back_unsafe( mapping );
-*/
 }
 
 /** Set an automatic name for a CallSequenceItem.
@@ -137,9 +115,3 @@ void Converter::setName( root::model::ModelObject& mo, const std::string& nameIn
 	auto name = nameIn.empty() ? mo.eClass()->getName() : nameIn;
 	mo.setName( name + "_" + std::to_string( _moCounter++ ) );
 }
-
-/*
- * @see Converter/hwModel.cpp for the conversion of Amalthea's HwModel.
- *
- * @see Converter/swModel.cpp for the conversion of Amalthea's SwModel.
- */

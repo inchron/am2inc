@@ -10,14 +10,13 @@
  */
 #pragma once
 
-#include <am120/model_forward.hpp>
 #include <memory>
-#include <root_forward.hpp>
 
 #include <QCoreApplication>
 
 #include <ecorecpp/resource/ResourceSet.hpp>
 
+#include <am120/model_forward.hpp>
 #include <root/model_forward.hpp>
 
 #include "Converter.h"
@@ -51,5 +50,5 @@ private:
 	ecore::Ptr<ecorecpp::resource::ResourceSet> _resourceSet;
 
 	ecore::Ptr<root::Root> _root;
-	Converter _converter;
+	std::unique_ptr<Converter> _converter;
 };

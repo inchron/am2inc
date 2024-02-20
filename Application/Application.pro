@@ -37,6 +37,8 @@ QMAKE_CXXFLAGS += -Wno-unused-parameter
 QT += core
 QT -= gui
 CONFIG += console
+CONFIG -= release
+CONFIG += debug
 
 LIBS += -L../Amalthea/$${DESTDIR} -lAmalthea
 LIBS += -L../Amalthea/am120/$${DESTDIR} -lam120
@@ -77,21 +79,14 @@ HEADERS += \
     Options.h \
     TimeOperators.h \
     StimulusTraits.h \
-    Converter/StimulusTraits.h \
+    \
+    Converter120/Converter.h \
+    Converter120/StimulusTraits.h \
 
 SOURCES += \
     Application.cpp \
     AttributeCreator.cpp \
     Converter.cpp \
-    Converter/activityGraph.cpp \
-    Converter/constraintsModel.cpp \
-    Converter/eventModel.cpp \
-    Converter/hwModel.cpp \
-    Converter/mappingModel.cpp \
-    Converter/osModel.cpp \
-    Converter/relax.cpp \
-    Converter/stimuliModel.cpp \
-    Converter/swModel.cpp \
     CreatorTraits.cpp \
     EcoreModelChecker.cpp \
     ModelChecker.cpp \
@@ -99,3 +94,14 @@ SOURCES += \
     Options.cpp \
     TimeOperators.cpp \
     main.cpp \
+    \
+    Converter120/Converter.cpp \
+    Converter120/activityGraph.cpp \
+    Converter120/constraintsModel.cpp \
+    Converter120/eventModel.cpp \
+    Converter120/hwModel.cpp \
+    Converter120/mappingModel.cpp \
+    Converter120/osModel.cpp \
+    Converter120/relax.cpp \
+    Converter120/stimuliModel.cpp \
+    Converter120/swModel.cpp \

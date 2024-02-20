@@ -8,11 +8,13 @@
  * Groups all code related to Amalthea's HwModel.
  */
 #include "../AttributeCreator.h"
-#include "../Converter.h"
 #include "../Diagnostic.h"
+#include "Converter.h"
 #include "StimulusTraits.h"
 
 namespace am = am120::model;
+
+namespace am120 {
 
 void Converter::work( const am120::model::MappingModel_ptr&,
 					  am120::model::MappingModel* ) {
@@ -170,3 +172,5 @@ void Converter::work( const am::TaskAllocation_ptr& am, am::TaskAllocation* ) {
 		/* ParameterExtensions are ignored. */
 	}
 }
+
+}  // namespace am120

@@ -8,7 +8,6 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-#include <am120/model/ModelPackage.hpp>
 #include <memory>
 
 #include <QCoreApplication>
@@ -18,6 +17,7 @@
 #include <ecore/EPackage.hpp>
 #include <ecorecpp/MetaModelRepository.hpp>
 
+#include <am120/model/ModelPackage.hpp>
 #include <root/RootPackage.hpp>
 
 #include "Application.h"
