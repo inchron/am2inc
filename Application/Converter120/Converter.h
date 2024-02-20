@@ -32,9 +32,6 @@ public:
 	Status preOrder( const ecore::EObject_ptr& );
 	Status postOrder( const ecore::EObject_ptr& );
 
-	void addMapping( const std::vector<am120::model::ReferableBaseObject_ptr>&,
-					 const std::vector<root::Referable_ptr>& );
-
 	using ModelItemDispatcher::work;
 
 	/* Amalthea HwModel */

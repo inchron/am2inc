@@ -4,7 +4,7 @@
     xmlns:xmi="http://www.omg.org/XMI"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
-    name="am2inc" nsURI="http://inchron.com/mapping/am2inc/0.1.0"
+    name="am2inc" nsURI="http://inchron.com/mapping/am2inc/0.2.0"
     nsPrefix="am2inc">
   <eClassifiers
       xsi:type="ecore:EClass"
@@ -23,7 +23,7 @@
         xsi:type="ecore:EReference"
         name="amalthea"
         upperBound="-1"
-        eType="ecore:EClass amalthea.ecore#//ReferableBaseObject"/>
+        eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject"/>
     <eStructuralFeatures
         xsi:type="ecore:EReference"
         name="inchron"

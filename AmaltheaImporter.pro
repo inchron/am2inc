@@ -15,10 +15,12 @@ TEMPLATE = subdirs
 SUBDIRS += \
     Amalthea \
     Application \
+    Mapping \
     Root \
     gitversion \
 
 gitversion.file = gitversion.pri
 
 Amalthea.depends += gitversion
-Application.depends += Amalthea Root
+Mapping.depends += gitversion Amalthea Root
+Application.depends += Amalthea Mapping Root

@@ -39,18 +39,6 @@ ecorecpp::util::TreeWalker::Status Converter::postOrder( const ecore::EObject_pt
 	return _status;
 }
 
-void Converter::addMapping( const std::vector<am::ReferableBaseObject_ptr>& am,
-							const std::vector<root::Referable_ptr>& inc ) {
-	/*
-	auto mapping = am2inc::create<am2inc::Mapping>();
-	for ( auto&& a : am )
-		mapping->getAmalthea().push_back_unsafe( a );
-	for ( auto&& i : inc )
-		mapping->getInchron().push_back_unsafe( i );
-	_mappings->getMappings().push_back_unsafe( mapping );
-*/
-}
-
 /*
  * @see Converter/hwModel.cpp for the conversion of Amalthea's HwModel.
  *

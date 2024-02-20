@@ -49,6 +49,7 @@ private:
 	std::shared_ptr<Options> _options;
 	ecore::Ptr<ecorecpp::resource::ResourceSet> _resourceSet;
 
+	am2inc::Mappings_ptr _mappings;
 	ecore::Ptr<root::Root> _root;
 	std::unique_ptr<Converter> _converter;
 };

@@ -15,6 +15,7 @@
 #include <ecore_forward.hpp>
 #include <ecorecpp/util/TreeWalker.hpp>
 
+#include <am2inc/Mappings.hpp>
 #include <root_forward.hpp>
 
 #include "ObjectCache.h"
@@ -32,6 +33,7 @@ public:
 	virtual void convert( const ecore::EObject_ptr& ) = 0;
 	virtual void relax();
 
+	[[nodiscard]] const ecore::Ptr<am2inc::Mappings>& getMappings() const { return _mappings; }
 	[[nodiscard]] const root::Root_ptr& getRoot() const { return _root; }
 
 protected:
@@ -45,8 +47,12 @@ protected:
 				  const std::string& = std::string() );
 	void setName( root::model::ModelObject&, const std::string& = std::string() );
 
+	void addMapping( const std::vector<ecore::EObject_ptr>&,
+					 const std::vector<root::Referable_ptr>& );
+
 	ObjectCache _oc;
 
+	ecore::Ptr<am2inc::Mappings> _mappings;
 	ecore::Ptr<root::Root> _root;
 	ecore::Ptr<root::model::Model> _model;
 	ecore::Ptr<root::model::Clock> _idealClock;

@@ -30,7 +30,6 @@ QMAKE_CXXFLAGS += -Wno-unused-parameter
 INCLUDEPATH += .. ../Mapping
 
 win32 {
-    LIBS += -L../Amalthea/$${DESTDIR} -lAmalthea
     LIBS += -L../Root/$${DESTDIR} -lRoot
 }
 
@@ -47,7 +46,6 @@ SRCGEN = .
 VPATH = $${SRCGEN}
 INCLUDEPATH += $${SRCGEN}
 INCLUDEPATH += ../Root/model
-INCLUDEPATH += ../Amalthea/amalthea ../Amalthea
 
 #
 # list of source files created by emf4cpp

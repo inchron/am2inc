@@ -10,6 +10,8 @@
  */
 #include "Converter.h"
 
+#include <Mapping/am2inc.hpp>
+
 #include <ecore/EClass.hpp>
 
 #include <am120/model/ModelPackage.hpp>
@@ -38,6 +40,8 @@ void Converter::clear() { _oc.clear(); }
 void Converter::relax() {}
 
 Converter::Converter() {
+	_mappings = am2inc::create<am2inc::Mappings>();
+
 	_root = root::create<root::Root>();
 	_model = sm3::create<sm3::Model>();
 	_model->setName( "New Project" );
@@ -114,4 +118,14 @@ void Converter::setName( root::model::ProbabilitySwitchEntry& pse,
 void Converter::setName( root::model::ModelObject& mo, const std::string& nameIn ) {
 	auto name = nameIn.empty() ? mo.eClass()->getName() : nameIn;
 	mo.setName( name + "_" + std::to_string( _moCounter++ ) );
+}
+
+void Converter::addMapping( const std::vector<ecore::EObject_ptr>& am,
+							const std::vector<root::Referable_ptr>& inc ) {
+	auto mapping = am2inc::create<am2inc::Mapping>();
+	for ( auto&& a : am )
+		mapping->getAmalthea().push_back_unsafe( a );
+	for ( auto&& i : inc )
+		mapping->getInchron().push_back_unsafe( i );
+	_mappings->getMappings().push_back_unsafe( mapping );
 }

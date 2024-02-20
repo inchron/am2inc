@@ -18,6 +18,7 @@ QMAKE_TARGET_DESCRIPTION = Tool-Suite 3 Amalthea Importer
 
 INCLUDEPATH += ..
 INCLUDEPATH += ../Amalthea ../Amalthea/am120
+INCLUDEPATH += ../Mapping
 INCLUDEPATH += ../Root/model
 INCLUDEPATH += $${EMF4CPP}/include/emf4cpp
 
@@ -37,13 +38,11 @@ QMAKE_CXXFLAGS += -Wno-unused-parameter
 QT += core
 QT -= gui
 CONFIG += console
-CONFIG -= release
-CONFIG += debug
 
 LIBS += -L../Amalthea/$${DESTDIR} -lAmalthea
 LIBS += -L../Amalthea/am120/$${DESTDIR} -lam120
 LIBS += -L../Root/$${DESTDIR} -lRoot
-#LIBS += -L../Mapping/$${DESTDIR} -lMapping
+LIBS += -L../Mapping/$${DESTDIR} -lMapping
 
 
 ! isEmpty(EMF4CPP): LIBS += -L$${EMF4CPP}/lib

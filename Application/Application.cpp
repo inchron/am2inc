@@ -11,16 +11,18 @@
 #include "Application.h"
 
 #include <iostream>
-#include <stdlib.h>
+#include <memory>
 #include <unistd.h>
 
 #include <QString>
 
 #include <ecorecpp.hpp>
+#include <ecorecpp/resource/URIConverter.hpp>
 #include <ecorecpp/resource/XMLResource.hpp>
 
 #include <am120/model.hpp>
 #include <Amalthea/XMLResource.h>
+#include <root.hpp>
 #include <root/RootPackage.hpp>
 
 #include "Converter.h"
@@ -33,8 +35,9 @@ namespace sm3m = root::model::memory;
 Application::Application( int& argc, char** argv )
 	: QCoreApplication( argc, argv ), _options( std::make_shared<Options>( *this ) ),
 	  _resourceSet( ecore::make<ecorecpp::resource::ResourceSet>() ) {
-	_resourceSet->getResourceFactoryRegistry()->getProtocolToFactoryMap()["file"].reset(
-		new ecorecpp::resource::XMLResourceFactory() );
+	auto& map = _resourceSet->getResourceFactoryRegistry()->getProtocolToFactoryMap();
+	map["file"] = std::make_unique<ecorecpp::resource::XMLResourceFactory>();
+	map["inchron"] = std::make_unique<ecorecpp::resource::XMLResourceFactory>();
 
 	/* Disable required minimum number of CpuCores in this application. */
 	auto sm3Pkg = sm3::ModelPackage::_instance();
@@ -161,6 +164,7 @@ bool Application::convert() {
 			}
 		}
 
+	_mappings = _converter->getMappings();
 	_root = _converter->getRoot();
 
 	return false;
@@ -178,9 +182,16 @@ bool Application::writeOutput() {
 		return false;
 	}
 
+	const std::string toplevelUri = "inchron://root";
+
 	auto projectUrl = QUrl::fromLocalFile( _options->getOutputName() );
 	info( 1, QStringLiteral( "Writing output to %1" ).arg( projectUrl.toLocalFile() ) );
-	auto rootXmi = _resourceSet->createResource( projectUrl );
+	_resourceSet->getURIConverter()->getURIMap()[toplevelUri] =
+		projectUrl.adjusted( QUrl::RemoveQuery | QUrl::RemoveFragment )
+			.toString()
+			.toStdString();
+	auto rootXmi =
+		_resourceSet->createResource( QUrl( QString::fromStdString( toplevelUri ) ) );
 	rootXmi->getContents()->push_back( _root );
 
 	if ( !_options->getOutputName().isEmpty() && _options->getOutputName() != "-" ) {
@@ -189,6 +200,13 @@ bool Application::writeOutput() {
 		std::ostringstream stream;
 		rootXmi->save( stream );
 		std::cout << stream.str();
+	}
+
+	if ( !_options->getMappingName().isEmpty() ) {
+		auto mappingXmi = _resourceSet->createResource(
+			QUrl::fromLocalFile( _options->getMappingName() ) );
+		mappingXmi->getContents()->push_back( _mappings );
+		mappingXmi->save();
 	}
 
 	return false;
