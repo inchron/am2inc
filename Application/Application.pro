@@ -17,7 +17,7 @@ TARGET = am2inc
 QMAKE_TARGET_DESCRIPTION = Tool-Suite 3 Amalthea Importer
 
 INCLUDEPATH += ..
-INCLUDEPATH += ../Amalthea ../Amalthea/am120
+INCLUDEPATH += ../Amalthea ../Amalthea/am120 ../Amalthea/am200
 INCLUDEPATH += ../Mapping
 INCLUDEPATH += ../Root/model
 INCLUDEPATH += $${EMF4CPP}/include/emf4cpp
@@ -27,6 +27,7 @@ INCLUDEPATH += $${EMF4CPP}/include/emf4cpp
 Makefile.target = $(MAKEFILE)
 Makefile.depends += \
     $$relative_path($$PWD/../Amalthea/am120/am120_model.pri, $$OUT_PWD) \
+    $$relative_path($$PWD/../Amalthea/am200/am200_model.pri, $$OUT_PWD) \
     $$relative_path($$PWD/../Root/model/root.pri, $$OUT_PWD)
 QMAKE_EXTRA_TARGETS += Makefile
 
@@ -40,6 +41,7 @@ CONFIG += console
 
 LIBS += -L../Amalthea/$${DESTDIR} -lAmalthea
 LIBS += -L../Amalthea/am120/$${DESTDIR} -lam120
+LIBS += -L../Amalthea/am200/$${DESTDIR} -lam200
 LIBS += -L../Root/$${DESTDIR} -lRoot
 LIBS += -L../Mapping/$${DESTDIR} -lMapping
 
