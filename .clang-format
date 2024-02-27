@@ -92,7 +92,7 @@ IncludeCategories:
     Priority: 4
   - Regex: '^<(ecore|ecorecpp)'
     Priority: 5
-  - Regex: '^<(am2inc|am120|am200|Amalthea|root)'
+  - Regex: '^<(am2inc|am120|am200|am210|Amalthea|root)'
     Priority: 6
   - Regex: '^<'
     Priority: 2

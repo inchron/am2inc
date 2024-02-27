@@ -18,6 +18,7 @@
 
 #include <am120/model/ModelPackage.hpp>
 #include <am200/model/ModelPackage.hpp>
+#include <am210/model/ModelPackage.hpp>
 #include <am2inc/Am2incPackage.hpp>
 #include <root/RootPackage.hpp>
 
@@ -45,6 +46,7 @@ int main( int argc, char* argv[] ) {
 	auto mmr = ecorecpp::MetaModelRepository::_instance();
 	loadPackages( mmr, am120::model::ModelPackage::_instance() );
 	loadPackages( mmr, am200::model::ModelPackage::_instance() );
+	loadPackages( mmr, am210::model::ModelPackage::_instance() );
 	loadPackages( mmr, am2inc::Am2incPackage::_instance() );
 	loadPackages( mmr, root::RootPackage::_instance() );
 	EcoreModelChecker::setToplevelPackage( root::RootPackage::_instance() );
