@@ -21,6 +21,7 @@
 #include <am210/model/ModelPackage.hpp>
 #include <am220/model/ModelPackage.hpp>
 #include <am2inc/Am2incPackage.hpp>
+#include <am320/model/ModelPackage.hpp>
 #include <root/RootPackage.hpp>
 
 #include "Application.h"
@@ -49,6 +50,7 @@ int main( int argc, char* argv[] ) {
 	loadPackages( mmr, am200::model::ModelPackage::_instance() );
 	loadPackages( mmr, am210::model::ModelPackage::_instance() );
 	loadPackages( mmr, am220::model::ModelPackage::_instance() );
+	loadPackages( mmr, am320::model::ModelPackage::_instance() );
 	loadPackages( mmr, am2inc::Am2incPackage::_instance() );
 	loadPackages( mmr, root::RootPackage::_instance() );
 	EcoreModelChecker::setToplevelPackage( root::RootPackage::_instance() );

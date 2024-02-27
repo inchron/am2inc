@@ -18,7 +18,8 @@ QMAKE_TARGET_DESCRIPTION = Tool-Suite 3 Amalthea Importer
 
 INCLUDEPATH += ..
 INCLUDEPATH += ../Amalthea ../Amalthea/am120 \
-               ../Amalthea/am200 ../Amalthea/am210 ../Amalthea/am220
+               ../Amalthea/am200 ../Amalthea/am210 ../Amalthea/am220 \
+               ../Amalthea/am320
 INCLUDEPATH += ../Mapping
 INCLUDEPATH += ../Root/model
 INCLUDEPATH += $${EMF4CPP}/include/emf4cpp
@@ -31,6 +32,7 @@ Makefile.depends += \
     $$relative_path($$PWD/../Amalthea/am200/am200_model.pri, $$OUT_PWD) \
     $$relative_path($$PWD/../Amalthea/am210/am210_model.pri, $$OUT_PWD) \
     $$relative_path($$PWD/../Amalthea/am220/am220_model.pri, $$OUT_PWD) \
+    $$relative_path($$PWD/../Amalthea/am320/am320_model.pri, $$OUT_PWD) \
     $$relative_path($$PWD/../Root/model/root.pri, $$OUT_PWD)
 QMAKE_EXTRA_TARGETS += Makefile
 
@@ -47,6 +49,7 @@ LIBS += -L../Amalthea/am120/$${DESTDIR} -lam120
 LIBS += -L../Amalthea/am200/$${DESTDIR} -lam200
 LIBS += -L../Amalthea/am210/$${DESTDIR} -lam210
 LIBS += -L../Amalthea/am220/$${DESTDIR} -lam220
+LIBS += -L../Amalthea/am320/$${DESTDIR} -lam320
 LIBS += -L../Root/$${DESTDIR} -lRoot
 LIBS += -L../Mapping/$${DESTDIR} -lMapping
 
