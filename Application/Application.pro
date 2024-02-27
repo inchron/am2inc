@@ -31,7 +31,6 @@ Makefile.depends += \
 QMAKE_EXTRA_TARGETS += Makefile
 
 DEFINES += VERSION=\\\"$$VERSION\\\"
-DEFINES += MAKE_AM120_MODEL_STATIC
 
 QMAKE_CXXFLAGS += -Wno-unused-parameter
 

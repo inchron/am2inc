@@ -12,9 +12,9 @@ include(../../config.pri)
 
 TEMPLATE = lib
 TARGET = am120
-QT += core
+CONFIG -= qt
 
-CONFIG += static
+CONFIG += dll
 CONFIG -= debug
 CONFIG += release
 
