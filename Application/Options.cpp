@@ -14,10 +14,10 @@
 
 #include <QSettings>
 
-#include <am120/model/ModelPackage.hpp>
 #include <root/RootPackage.hpp>
 
 #include "../gitversion.h"
+#include "Converter.h"
 
 
 Options::Options() {
@@ -154,8 +154,14 @@ Options::Options( QCoreApplication& app ) : Options() {
 void Options::showVersion() {
 	std::cout << "Version " << VERSION << " Build " __DATE__ " (" << GIT_VERSION << ")\n";
 
-	std::cout << "Amalthea : " << am120::model::ModelPackage::_instance()->getNsURI()
-			  << "\nINCHRON  : " << root::RootPackage::_instance()->getNsURI() << "\n";
+	std::cout << "Amalthea : ";
+	const auto& nsURIs = Converter::getNsURIs();
+	auto it = nsURIs.begin();
+	std::cout << *it++;
+	for ( ; it != nsURIs.end(); ++it )
+		std::cout << "\n           " << *it;
+
+	std::cout << "\nINCHRON  : " << root::RootPackage::_instance()->getNsURI() << "\n";
 	::exit( Ok );
 }
 

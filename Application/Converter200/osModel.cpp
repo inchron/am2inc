@@ -51,13 +51,6 @@ void Converter::work( const am200::model::InterruptController_ptr& am,
 
 void Converter::work( const am200::model::TaskScheduler_ptr& am,
 					  am200::model::TaskScheduler* ) {
-	if ( am->getSchedulingAlgorithm()
-		 && am->getSchedulingAlgorithm()->eClass()
-				== am::ModelPackage::_instance()->getGrouping() ) {
-		skipChildren();
-		return;
-	}
-
 	if ( _mode == PreOrder ) {
 		auto scheduler = _oc.make<sm3::ModelFactory, sm3::Scheduler>( am );
 		scheduler->setName( am->getName() );
@@ -69,29 +62,34 @@ void Converter::work( const am200::model::TaskScheduler_ptr& am,
 	}
 }
 
-void Converter::work( const am200::model::TaskSchedulingAlgorithm_ptr&,
-					  am200::model::TaskSchedulingAlgorithm* ) {
-	if ( _mode == PreOrder ) {
-		auto scheduler = _schedulerHierarchy.back();
-		auto classifierId = scheduler->eClass()->getClassifierID();
-		if ( classifierId == am::ModelPackage::FIXEDPRIORITYPREEMPTIVE ) {
-			scheduler->setType( sm3::SchedulerType::Preemptive );
-			scheduler->setStrategy( sm3::SchedulerStrategy::FixedPriority );
-		} else {
-			/* @todo */
-		}
-	}
-}
+//void Converter::work( const am200::model::TaskSchedulingAlgorithm_ptr&,
+//					  am200::model::TaskSchedulingAlgorithm* ) {
+//	if ( _mode == PreOrder ) {
+//		auto scheduler = _schedulerHierarchy.back();
+//		auto classifierId = scheduler->eClass()->getClassifierID();
+//		if ( classifierId == am::ModelPackage::FIXEDPRIORITYPREEMPTIVE ) {
+//			scheduler->setType( sm3::SchedulerType::Preemptive );
+//			scheduler->setStrategy( sm3::SchedulerStrategy::FixedPriority );
+//		} else {
+//			/* @todo */
+//		}
+//	}
+//}
 
 void Converter::work( const am200::model::SchedulerAssociation_ptr& am,
 					  am200::model::SchedulerAssociation* ) {
 	if ( _mode == PreOrder ) {
 		auto impactedScheduler = _schedulerHierarchy.back();
-		auto parentScheduler =
+		auto newParentScheduler =
 			_oc.make<sm3::ModelFactory, sm3::Scheduler>( am->getParent() );
+		const auto& oldParentScheduler =
+			ecore::as<sm3::Scheduler>( impactedScheduler->eContainer() );
+
 		/* We assume there is only 1 SchedulerAssociation per Scheduler. */
-		if ( parentScheduler )
-			parentScheduler->getSchedulables().push_back_unsafe( impactedScheduler );
+		if ( newParentScheduler ) {
+			oldParentScheduler->getSchedulables().remove( impactedScheduler );
+			newParentScheduler->getSchedulables().push_back( impactedScheduler );
+		}
 	}
 }
 

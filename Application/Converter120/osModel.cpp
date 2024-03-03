@@ -87,11 +87,16 @@ void Converter::work( const am120::model::SchedulerAssociation_ptr& am,
 					  am120::model::SchedulerAssociation* ) {
 	if ( _mode == PreOrder ) {
 		auto impactedScheduler = _schedulerHierarchy.back();
-		auto parentScheduler =
+		auto newParentScheduler =
 			_oc.make<sm3::ModelFactory, sm3::Scheduler>( am->getParent() );
+		const auto& oldParentScheduler =
+			ecore::as<sm3::Scheduler>( impactedScheduler->eContainer() );
+
 		/* We assume there is only 1 SchedulerAssociation per Scheduler. */
-		if ( parentScheduler )
-			parentScheduler->getSchedulables().push_back_unsafe( impactedScheduler );
+		if ( newParentScheduler ) {
+			oldParentScheduler->getSchedulables().remove( impactedScheduler );
+			newParentScheduler->getSchedulables().push_back_unsafe( impactedScheduler );
+		}
 	}
 }
 

@@ -1,6 +1,6 @@
 /* -*- c++ -*-
  *
- * Copyright (c) 2020-2021 INCHRON AG <info@inchron.com>
+ * Copyright (c) 2024 INCHRON AG <info@inchron.com>
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
@@ -137,8 +137,8 @@ public:
 	void work( const am200::model::InterruptController_ptr&,
 			   am200::model::InterruptController* );
 	void work( const am200::model::TaskScheduler_ptr&, am200::model::TaskScheduler* );
-	void work( const am200::model::TaskSchedulingAlgorithm_ptr&,
-			   am200::model::TaskSchedulingAlgorithm* );
+	//	void work( const am200::model::TaskSchedulingAlgorithm_ptr&,
+	//			   am200::model::TaskSchedulingAlgorithm* );
 	void work( const am200::model::SchedulerAssociation_ptr&,
 			   am200::model::SchedulerAssociation* );
 	void work( const am200::model::Semaphore_ptr&, am200::model::Semaphore* );

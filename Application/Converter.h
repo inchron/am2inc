@@ -28,12 +28,17 @@ protected:
 
 public:
 	static std::unique_ptr<Converter> create( const ecore::EObject_ptr& );
+	static const std::vector<std::string>& getNsURIs();
+
+	virtual ~Converter() = default;
 
 	virtual void clear();
 	virtual void convert( const ecore::EObject_ptr& ) = 0;
 	virtual void relax();
 
-	[[nodiscard]] const ecore::Ptr<am2inc::Mappings>& getMappings() const { return _mappings; }
+	[[nodiscard]] const ecore::Ptr<am2inc::Mappings>& getMappings() const {
+		return _mappings;
+	}
 	[[nodiscard]] const root::Root_ptr& getRoot() const { return _root; }
 
 protected:

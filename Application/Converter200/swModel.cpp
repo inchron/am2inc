@@ -237,6 +237,16 @@ void Converter::work( const am::Task_ptr& am, am::Task* ) {
 			std::max( 1, am->getMultipleTaskActivationLimit() ) );
 		addEvents( process );
 		addStimulus( am, process );
+
+	} else {
+		auto process = _oc.find<sm3::Process>( am, ObjectCache::Default );
+		if ( not process->getCallGraph() ) {
+			/* Process.callGraph is a [0..1] relation, however chronSUITE's
+			 * semantic check thinks it is an error. */
+			auto callGraph = sm3::create<sm3::CallGraph>();
+			process->setCallGraph( callGraph );
+			ModelChecker<sm3::CallGraph>().work( callGraph );
+		}
 	}
 }
 

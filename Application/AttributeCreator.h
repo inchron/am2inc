@@ -12,12 +12,12 @@
  * Basic helpers, especially for those types, which are pseudo attributes in
  * the INCHRON model.
  */
-
-#include <root.hpp>
+#pragma once
 
 #include <ecore/EEnum.hpp>
 #include <ecore/EEnumLiteral.hpp>
 
+#include <root.hpp>
 #include <root/model/memory/MemoryPackage.hpp>
 
 namespace sm3 = root::model;

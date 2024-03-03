@@ -10,6 +10,7 @@
 #include "../AttributeCreator.h"
 #include "../Diagnostic.h"
 #include "Converter.h"
+#include "ResolveValues.h"
 #include "StimulusTraits.h"
 
 namespace am = am200::model;
@@ -138,14 +139,6 @@ void Converter::work( const am200::model::ISRAllocation_ptr& am,
 
 namespace details {
 am::TaskScheduler_ptr getAmaltheaScheduler( const am::TaskScheduler_ptr& ts ) {
-	if ( ts && ts->getSchedulingAlgorithm()
-		 && ts->getSchedulingAlgorithm()->eClass()
-				== am::ModelPackage::_instance()->getGrouping()
-		 && ts->getParentAssociation() ) {
-		if ( auto parent = ts->getParentAssociation()->getParent() )
-			return getAmaltheaScheduler( parent );
-	}
-
 	return ts;
 }
 }  // end namespace details
@@ -163,9 +156,19 @@ void Converter::work( const am::TaskAllocation_ptr& am, am::TaskAllocation* ) {
 			task->getCpuCores().push_back( core );
 		}
 
-		if ( auto parameters = am->getSchedulingParameters() ) {
-			int priority = parameters->getPriority();
-			task->setPriority( priority );
+		for ( const auto& parameter : am->getSchedulingParameters() ) {
+			if ( parameter->getKey() ) {
+				const auto& name = parameter->getKey()->getName();
+				if ( name == "priority" ) {
+					int priority = ResolveValue::resolve<int>( parameter->getValue() );
+					task->setPriority( priority );
+				} else if ( name == "deadline" ) {
+					auto deadline =
+						ResolveValue::resolve<sm3::Time_ptr>( parameter->getValue() );
+					task->setDeadline( deadline );
+				}
+			}
+
 			/* Other attributes of SchedulingParameters are ignored. */
 		}
 
