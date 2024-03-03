@@ -85,8 +85,9 @@ HEADERS += \
     ModelChecker.h \
     ObjectCache.h \
     Options.h \
-    TimeOperators.h \
+    StableIntrinsicIds.h \
     StimulusTraits.h \
+    TimeOperators.h \
     \
     Converter120/Converter.h \
     Converter120/StimulusTraits.h \
@@ -100,6 +101,7 @@ SOURCES += \
     ModelChecker.cpp \
     ObjectCache.cpp \
     Options.cpp \
+    StableIntrinsicIds.cpp \
     TimeOperators.cpp \
     main.cpp \
     \

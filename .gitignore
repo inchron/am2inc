@@ -12,3 +12,10 @@ samples/
 .ycm_extra_conf.py
 local.pri
 log.txt
+
+.idea
+.local
+_build
+workspace
+**/*_resource.rc
+**/object_script.*

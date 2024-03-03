@@ -13,6 +13,7 @@
 #include <memory>
 
 #include <QCoreApplication>
+#include <QCryptographicHash>
 
 #include <ecorecpp/resource/ResourceSet.hpp>
 
@@ -48,6 +49,7 @@ protected:
 private:
 	std::shared_ptr<Options> _options;
 	ecore::Ptr<ecorecpp::resource::ResourceSet> _resourceSet;
+	QCryptographicHash _hash;
 
 	am2inc::Mappings_ptr _mappings;
 	ecore::Ptr<root::Root> _root;

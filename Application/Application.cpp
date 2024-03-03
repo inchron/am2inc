@@ -14,27 +14,26 @@
 #include <memory>
 #include <unistd.h>
 
+#include <QFile>
 #include <QString>
 
 #include <ecorecpp.hpp>
 #include <ecorecpp/resource/URIConverter.hpp>
 #include <ecorecpp/resource/XMLResource.hpp>
 
-#include <am120/model.hpp>
 #include <Amalthea/XMLResource.h>
-#include <root.hpp>
-#include <root/RootPackage.hpp>
 
 #include "Converter.h"
+#include "StableIntrinsicIds.h"
 
-namespace am = am120::model;
 namespace sm3 = root::model;
 namespace sm3m = root::model::memory;
 
 
 Application::Application( int& argc, char** argv )
 	: QCoreApplication( argc, argv ), _options( std::make_shared<Options>( *this ) ),
-	  _resourceSet( ecore::make<ecorecpp::resource::ResourceSet>() ) {
+	  _resourceSet( ecore::make<ecorecpp::resource::ResourceSet>() ),
+	  _hash( QCryptographicHash::Sha3_512 ) {
 	auto& map = _resourceSet->getResourceFactoryRegistry()->getProtocolToFactoryMap();
 	map["file"] = std::make_unique<ecorecpp::resource::XMLResourceFactory>();
 	map["inchron"] = std::make_unique<ecorecpp::resource::XMLResourceFactory>();
@@ -149,6 +148,15 @@ bool Application::readInput() {
 		return true;
 	}
 
+	/* When all files have been read without an error, they are added to a
+	 * hash sum, from which stable intrinsic IDs can be derived. */
+	if ( _options->isStableIntrinsicIdFromHash() )
+		for ( auto&& fileName : _options->getInputNames() ) {
+			QFile file( fileName );
+			if ( file.open( QIODevice::ReadOnly ) )
+				_hash.addData( &file );
+		}
+
 	return false;
 }
 
@@ -156,12 +164,9 @@ bool Application::convert() {
 	/* Actually there is only one Resource. */
 	for ( auto&& resource : _resourceSet->getResources() )
 		for ( auto&& content : *resource->getContents() ) {
-			auto amalthea = ecore::as<am::Amalthea>( content );
-			if ( amalthea ) {
-				if ( not _converter )
-					_converter = Converter::create( amalthea );
-				_converter->convert( amalthea );
-			}
+			if ( not _converter )
+				_converter = Converter::create( content );
+			_converter->convert( content );
 		}
 
 	_mappings = _converter->getMappings();
@@ -180,6 +185,17 @@ bool Application::writeOutput() {
 	if ( _options->noOutput() ) {
 		info( 1, QStringLiteral( "Writing no output as requested" ) );
 		return false;
+	}
+
+	if ( _options->isStableIntrinsicId() ) {
+		StableIntrinsicIds stabilizer;
+		if ( _options->isStableIntrinsicIdFromHash() ) {
+			stabilizer.resetBase( _hash.result() );
+		} else if ( _options->isStableIntrinsicIdFromValue() ) {
+			stabilizer.resetBase( _options->getStableIntrinsicIdValue() );
+		}
+
+		stabilizer.stabilize( _root->getModel() );
 	}
 
 	const std::string toplevelUri = "inchron://root";

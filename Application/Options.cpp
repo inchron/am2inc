@@ -67,6 +67,18 @@ Options::Options() {
 					  << "install",
 		"Install this model importer to be used with the Tool-Suite 3.x." ) );
 
+	_parser.addOption( QCommandLineOption(
+		QStringList() << "stable", "Generate stable intrinsic ID in the output." ) );
+	_parser.addOption(
+		QCommandLineOption( QStringList() << "stable-from-hash",
+							"Generate stable intrinsic ID in the output, which are "
+							"derived from a hash of the input file(s)." ) );
+	_parser.addOption(
+		QCommandLineOption( QStringList() << "stable-from-value",
+							"Generate stable intrinsic ID in the output, which are "
+							"derived from the given string.",
+							"value" ) );
+
 	// Add more options here.
 }
 
@@ -120,6 +132,20 @@ Options::Options( QCoreApplication& app ) : Options() {
 			exit( CommandLine );
 		}
 		_mappingName = _parser.value( "mapping" );
+	}
+
+	if ( _parser.isSet( "stable" ) ) {
+		_stable = true;
+
+	} else if ( _parser.isSet( "stable-from-hash" ) ) {
+		_stable = true;
+		_stableFromHash = true;
+
+	} else if ( _parser.isSet( "stable-from-value" ) ) {
+		_stable = true;
+		_stableFromValue = true;
+		const auto& value = _parser.value( "stable-from-value" );
+		_stableValue = value.toUtf8();
 	}
 
 	// Process more options

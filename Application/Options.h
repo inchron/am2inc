@@ -26,7 +26,7 @@ public:
 
 	/** Instantiating an Options object with a QCoreApplication will
 	 * immediately process the command-line. */
-	Options(QCoreApplication&);
+	Options( QCoreApplication& );
 
 	enum Status { Ok = 0, CommandLine, Trouble };
 
@@ -38,6 +38,11 @@ public:
 	enum Mode { Pedantic, Relaxed };
 	Mode getMode() const { return _mode; }
 
+	bool isStableIntrinsicId() const { return _stable; }
+	bool isStableIntrinsicIdFromHash() const { return _stableFromHash; }
+	bool isStableIntrinsicIdFromValue() const { return _stableFromValue; }
+	const QByteArray& getStableIntrinsicIdValue() { return _stableValue; }
+
 	using Verbosity = unsigned int;
 	Verbosity verbosity() const { return _verbosity; }
 
@@ -47,9 +52,7 @@ public:
 	 * if (options.verbose_if(1))
 	 *     std::cerr << "I'm doing something\n";
 	 */
-	bool verbose_if(Verbosity lvl) const {
-		return verbosity() >= lvl;
-	}
+	bool verbose_if( Verbosity lvl ) const { return verbosity() >= lvl; }
 
 	/** Call a function, even a lambda function, if the verbosity is high
 	 * enough.
@@ -60,24 +63,28 @@ public:
 	 * Use [&](){...} if your output uses variables of the current scope.
 	 */
 	template<typename Lambda>
-	void verbose_if(Verbosity lvl, Lambda&& lambda) const {
-		if (verbose_if(lvl))
-			std::forward<Lambda>(lambda)();
+	void verbose_if( Verbosity lvl, Lambda&& lambda ) const {
+		if ( verbose_if( lvl ) )
+			std::forward<Lambda>( lambda )();
 	}
 
 private:
 	QCommandLineParser _parser;
 
 	Q_NORETURN void showVersion();
-	Q_NORETURN void showHelp(int exitCode);
+	Q_NORETURN void showHelp( int exitCode );
 	Q_NORETURN void installImporter();
 
-	Verbosity _verbosity{1};
-	bool _noOutput{false};
-	QStringList _inputNames{"-"};
-	QString _outputName{"-"};
-	QString _mappingName{""};
-	Mode _mode{Relaxed};
+	Verbosity _verbosity{ 1 };
+	bool _noOutput{ false };
+	QStringList _inputNames{ "-" };
+	QString _outputName{ "-" };
+	QString _mappingName{ "" };
+	Mode _mode{ Relaxed };
+	bool _stable{ false };
+	bool _stableFromHash{ false };
+	bool _stableFromValue{ false };
+	QByteArray _stableValue{ "0" };
 };
 
 #endif
