@@ -95,6 +95,10 @@ HEADERS += \
     Converter200/Converter.h \
     Converter200/ResolveValues.h \
     Converter200/StimulusTraits.h \
+    \
+    Converter210/Converter.h \
+    Converter210/ResolveValues.h \
+    Converter210/StimulusTraits.h \
 
 SOURCES += \
     Application.cpp \
@@ -130,3 +134,14 @@ SOURCES += \
     Converter200/relax.cpp \
     Converter200/stimuliModel.cpp \
     Converter200/swModel.cpp \
+    \
+    Converter210/Converter.cpp \
+    Converter210/activityGraph.cpp \
+    Converter210/constraintsModel.cpp \
+    Converter210/eventModel.cpp \
+    Converter210/hwModel.cpp \
+    Converter210/mappingModel.cpp \
+    Converter210/osModel.cpp \
+    Converter210/relax.cpp \
+    Converter210/stimuliModel.cpp \
+    Converter210/swModel.cpp \
