@@ -22,6 +22,7 @@
 #include "Converter120/Converter.h"
 #include "Converter200/Converter.h"
 #include "Converter210/Converter.h"
+#include "Converter220/Converter.h"
 
 std::unique_ptr<Converter> Converter::create(
 	const ecore::EObject_ptr& potentialAmaltheaObject ) {
@@ -34,6 +35,8 @@ std::unique_ptr<Converter> Converter::create(
 		return std::make_unique<am200::Converter>();
 	if ( ePkg == am210::model::ModelPackage::_instance() )
 		return std::make_unique<am210::Converter>();
+	if ( ePkg == am220::model::ModelPackage::_instance() )
+		return std::make_unique<am220::Converter>();
 
 	throw std::invalid_argument( "This Amalthea version is not supported" );
 	return {};
@@ -43,7 +46,8 @@ const std::vector<std::string>& Converter::getNsURIs() {
 	static std::vector<std::string> s_nsURIs{
 		am120::model::ModelPackage::_instance()->getNsURI(),
 		am200::model::ModelPackage::_instance()->getNsURI(),
-		am210::model::ModelPackage::_instance()->getNsURI() };
+		am210::model::ModelPackage::_instance()->getNsURI(),
+		am220::model::ModelPackage::_instance()->getNsURI() };
 
 	return s_nsURIs;
 }
