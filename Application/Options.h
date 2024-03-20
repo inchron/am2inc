@@ -81,7 +81,7 @@ private:
 	QString _outputName{ "-" };
 	QString _mappingName{ "" };
 	Mode _mode{ Relaxed };
-	bool _stable{ false };
+	bool _stable{ true };
 	bool _stableFromHash{ false };
 	bool _stableFromValue{ false };
 	QByteArray _stableValue{ "0" };
