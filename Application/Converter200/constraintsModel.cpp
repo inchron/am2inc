@@ -20,7 +20,7 @@ namespace am200 {
 /** Retrive the sequence of am::Events from an am::EventChain definition.
  *
  * This method tries to extract a sequence of events from an amalthea EventChain
- * which then can be translated to a sm3::EventSequence.
+ * which then can be translated to a sm3::EventGraph.
  * If this is not possible e.g. if the am::EventChain forks, a corresponding
  * std::invalid_argument exception is thrown.
  */

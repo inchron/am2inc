@@ -33,7 +33,7 @@ QMAKE_EXTRA_TARGETS += Makefile
 # VERSION will trigger the creation of a windows .rc file
 VERSION = $$cat(RELEASE)
 QMAKE_TARGET_COMPANY = INCHRON AG
-QMAKE_TARGET_COPYRIGHT = 2020
+QMAKE_TARGET_COPYRIGHT = 2024
 # derived from TARGET: QMAKE_TARGET_PRODUCT
 # QMAKE_TARGET_DESCRIPTION and RC_ICONS must be filled in subprojects
 

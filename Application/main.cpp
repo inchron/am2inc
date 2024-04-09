@@ -24,6 +24,7 @@
 #include <am320/model/ModelPackage.hpp>
 #include <root/RootPackage.hpp>
 
+#include "AliasedMetaModelRepository.h"
 #include "Application.h"
 #include "EcoreModelChecker.h"
 
@@ -45,14 +46,23 @@ int main( int argc, char* argv[] ) {
 		QString( "%1/main" ).arg( QCoreApplication::applicationName() ) );
 	qSetMessagePattern( "%{file}:%{line} %{function}: %{message}" );  // SUITE3-314
 
-	auto mmr = ecorecpp::MetaModelRepository::_instance();
-	loadPackages( mmr, am120::model::ModelPackage::_instance() );
-	loadPackages( mmr, am200::model::ModelPackage::_instance() );
-	loadPackages( mmr, am210::model::ModelPackage::_instance() );
-	loadPackages( mmr, am220::model::ModelPackage::_instance() );
-	loadPackages( mmr, am320::model::ModelPackage::_instance() );
-	loadPackages( mmr, am2inc::Am2incPackage::_instance() );
-	loadPackages( mmr, root::RootPackage::_instance() );
+	{
+		auto mmr = std::make_unique<AliasedMetaModelRepository>();
+		ecorecpp::MetaModelRepository::_setInstance( std::move( mmr ) );
+	}
+	auto mmr = ecore::as<AliasedMetaModelRepository>(
+		ecorecpp::MetaModelRepository::_instance() );
+
+	mmr->loadPackage( am120::model::ModelPackage::_instance() );
+	mmr->loadPackage( am200::model::ModelPackage::_instance() );
+	mmr->loadPackage( am210::model::ModelPackage::_instance() );
+	mmr->loadPackage( am220::model::ModelPackage::_instance() );
+	mmr->loadPackage( am320::model::ModelPackage::_instance(),
+					  { "http://app4mc.eclipse.org/amalthea/3.1.0",
+						"http://app4mc.eclipse.org/amalthea/3.0.0" } );
+	mmr->loadPackage( am2inc::Am2incPackage::_instance() );
+	mmr->loadPackage( root::RootPackage::_instance() );
+
 	EcoreModelChecker::setToplevelPackage( root::RootPackage::_instance() );
 
 	/* Read commandline options after initializing all ecore packages, so that

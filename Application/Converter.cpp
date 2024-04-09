@@ -17,12 +17,15 @@
 #include <am120/model/ModelPackage.hpp>
 #include <am200/model/ModelPackage.hpp>
 #include <am210/model/ModelPackage.hpp>
+#include <am220/model/ModelPackage.hpp>
+#include <am320/model/ModelPackage.hpp>
 
 #include "AttributeCreator.h"
 #include "Converter120/Converter.h"
 #include "Converter200/Converter.h"
 #include "Converter210/Converter.h"
 #include "Converter220/Converter.h"
+#include "Converter320/Converter.h"
 
 std::unique_ptr<Converter> Converter::create(
 	const ecore::EObject_ptr& potentialAmaltheaObject ) {
@@ -37,6 +40,8 @@ std::unique_ptr<Converter> Converter::create(
 		return std::make_unique<am210::Converter>();
 	if ( ePkg == am220::model::ModelPackage::_instance() )
 		return std::make_unique<am220::Converter>();
+	if ( ePkg == am320::model::ModelPackage::_instance() )
+		return std::make_unique<am320::Converter>();
 
 	throw std::invalid_argument( "This Amalthea version is not supported" );
 	return {};
@@ -47,7 +52,11 @@ const std::vector<std::string>& Converter::getNsURIs() {
 		am120::model::ModelPackage::_instance()->getNsURI(),
 		am200::model::ModelPackage::_instance()->getNsURI(),
 		am210::model::ModelPackage::_instance()->getNsURI(),
-		am220::model::ModelPackage::_instance()->getNsURI() };
+		am220::model::ModelPackage::_instance()->getNsURI(),
+		/* These models are aliased to am320. */
+		"http://app4mc.eclipse.org/amalthea/3.0.0",
+		"http://app4mc.eclipse.org/amalthea/3.1.0",
+		am320::model::ModelPackage::_instance()->getNsURI() };
 
 	return s_nsURIs;
 }

@@ -13,10 +13,10 @@
 #include "../Diagnostic.h"
 #include "Converter.h"
 
-namespace am = am220::model;
+namespace am = am320::model;
 namespace sm3 = root::model;
 
-namespace am220 {
+namespace am320 {
 /** Retrive the sequence of am::Events from an am::EventChain definition.
  *
  * This method tries to extract a sequence of events from an amalthea EventChain
@@ -161,4 +161,4 @@ void Converter::work( const am::PhysicalSectionConstraint_ptr&,
 	static Diagnostic::NotImplemented<am::PhysicalSectionConstraint> message;
 }
 
-}  // namespace am220
+}  // namespace am320

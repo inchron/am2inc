@@ -76,6 +76,7 @@ unix:debian {
 
 # Input
 HEADERS += \
+    AliasedMetaModelRepository.h \
     Application.h \
     AttributeCreator.h \
     Converter.h \
@@ -103,8 +104,13 @@ HEADERS += \
     Converter220/Converter.h \
     Converter220/ResolveValues.h \
     Converter220/StimulusTraits.h \
+    \
+    Converter320/Converter.h \
+    Converter320/ResolveValues.h \
+    Converter320/StimulusTraits.h \
 
 SOURCES += \
+    AliasedMetaModelRepository.cpp \
     Application.cpp \
     AttributeCreator.cpp \
     Converter.cpp \
@@ -160,3 +166,14 @@ SOURCES += \
     Converter220/relax.cpp \
     Converter220/stimuliModel.cpp \
     Converter220/swModel.cpp \
+    \
+    Converter320/Converter.cpp \
+    Converter320/activityGraph.cpp \
+    Converter320/constraintsModel.cpp \
+    Converter320/eventModel.cpp \
+    Converter320/hwModel.cpp \
+    Converter320/mappingModel.cpp \
+    Converter320/osModel.cpp \
+    Converter320/relax.cpp \
+    Converter320/stimuliModel.cpp \
+    Converter320/swModel.cpp \
