@@ -365,8 +365,9 @@ void Converter::work( const am::EnumMode_ptr& am, am::EnumMode* ) { skipChildren
  */
 void Converter::work( const am::NumericMode_ptr&, am::NumericMode* ) { skipChildren(); }
 
-sm3::RelationalExpression_ptr Converter::createRelationalExpression(
-	ObjectCache& oc, const am::ModeCondition_ptr& am ) {
+template<class C>
+root::model::RelationalExpression_ptr Converter::createRelationalExpression(
+	ObjectCache& oc, const ecore::Ptr<C>& am ) {
 	sm3::RelationalExpression_ptr expression;
 
 	if ( auto mvc = ecore::as<am::ModeValueCondition>( am ) ) {
@@ -443,23 +444,24 @@ sm3::RelationalExpression_ptr Converter::createRelationalExpression(
 
 			expression = sm3;
 		}
-	}
 
-	auto relation = am->getRelation();
-	switch ( relation ) {
-	default:
-	case am::RelationalOperator::EQUAL:
-		expression->setRelationalOperator( sm3::RelationalOperator::eq );
-		break;
-	case am::RelationalOperator::NOT_EQUAL:
-		expression->setRelationalOperator( sm3::RelationalOperator::ne );
-		break;
-	case am::RelationalOperator::LESS_THAN:
-		expression->setRelationalOperator( sm3::RelationalOperator::lt );
-		break;
-	case am::RelationalOperator::GREATER_THAN:
-		expression->setRelationalOperator( sm3::RelationalOperator::gt );
-		break;
+	} else if ( auto mc = ecore::as<am::ModeCondition>( am ) ) {
+		auto relation = mc->getRelation();
+		switch ( relation ) {
+		default:
+		case am::RelationalOperator::EQUAL:
+			expression->setRelationalOperator( sm3::RelationalOperator::eq );
+			break;
+		case am::RelationalOperator::NOT_EQUAL:
+			expression->setRelationalOperator( sm3::RelationalOperator::ne );
+			break;
+		case am::RelationalOperator::LESS_THAN:
+			expression->setRelationalOperator( sm3::RelationalOperator::lt );
+			break;
+		case am::RelationalOperator::GREATER_THAN:
+			expression->setRelationalOperator( sm3::RelationalOperator::gt );
+			break;
+		}
 	}
 
 	// auto expression = sm3::create<sm3::CounterExpression>();
@@ -473,8 +475,8 @@ sm3::RelationalExpression_ptr Converter::createRelationalExpression(
  * am::WhileLoop::condition. In general, it is translated into a sm3::ModeCondition,
  * which is aggregated by the Model.
  */
-void Converter::work( const am::ModeConditionDisjunction_ptr& am,
-					  am::ModeConditionDisjunction* ) {
+template<class C>
+void Converter::workConditionDisjunction( const ecore::Ptr<C>& am ) {
 	if ( _mode == PreOrder ) {
 		auto condition = _oc.make<sm3::ModelFactory, sm3::Condition>( am );
 		setName( *condition );
@@ -510,6 +512,16 @@ void Converter::work( const am::ModeConditionDisjunction_ptr& am,
 	}
 
 	skipChildren();
+}
+
+void Converter::work( const am::ModeConditionDisjunction_ptr& am,
+					  am::ModeConditionDisjunction* ) {
+	workConditionDisjunction( am );
+}
+
+void Converter::work( const am::ConditionDisjunction_ptr& am,
+					  am::ConditionDisjunction* ) {
+	workConditionDisjunction( am );
 }
 
 void Converter::work( const am::LocalModeLabel_ptr&, am::LocalModeLabel* ) {

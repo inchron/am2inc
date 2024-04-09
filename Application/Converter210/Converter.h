@@ -86,6 +86,8 @@ public:
 	void work( const am210::model::NumericMode_ptr&, am210::model::NumericMode* );
 	void work( const am210::model::ModeConditionDisjunction_ptr&,
 			   am210::model::ModeConditionDisjunction* );
+	void work( const am210::model::ConditionDisjunction_ptr&,
+			   am210::model::ConditionDisjunction* );
 	void work( const am210::model::LocalModeLabel_ptr&, am210::model::LocalModeLabel* );
 
 	void addStimulus( const am210::model::Process_ptr&, const root::model::Process_ptr& );
@@ -108,6 +110,9 @@ public:
 	void work( const am210::model::InterProcessTrigger_ptr&,
 			   am210::model::InterProcessTrigger* );
 	void work( const am210::model::LabelAccess_ptr&, am210::model::LabelAccess* );
+	void work( const am210::model::Switch_ptr&, am210::model::Switch* );
+	void work( const am210::model::SwitchDefault_ptr&, am210::model::SwitchDefault* );
+	void work( const am210::model::SwitchEntry_ptr&, am210::model::SwitchEntry* );
 	void work( const am210::model::ModeLabelAccess_ptr&, am210::model::ModeLabelAccess* );
 	void work( const am210::model::ModeSwitch_ptr&, am210::model::ModeSwitch* );
 	void work( const am210::model::ModeSwitchDefault_ptr&,
@@ -200,8 +205,20 @@ public:
 		ObjectCache&, const am210::model::ModeLabel_ptr& );
 	static root::model::Counter_ptr createCounter( ObjectCache&,
 												   const am210::model::ModeLabel_ptr& );
+
+private:
+	template<class C>
+	void workSwitch( const ecore::Ptr<C>& );
+	template<class C>
+	void workSwitchDefault( const ecore::Ptr<C>& );
+	template<class C>
+	void workSwitchEntry( const ecore::Ptr<C>& );
+	template<class C>
+	void workConditionDisjunction( const ecore::Ptr<C>& );
+
+	template<class C>
 	static root::model::RelationalExpression_ptr createRelationalExpression(
-		ObjectCache& oc, const am210::model::ModeCondition_ptr& );
+		ObjectCache& oc, const ecore::Ptr<C>& );
 };
 
 }  // namespace am210

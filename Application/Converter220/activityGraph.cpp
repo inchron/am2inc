@@ -552,7 +552,8 @@ void Converter::work( const am::ModeLabelAccess_ptr& am, am::ModeLabelAccess* ) 
 	 * DataAccess for the memory subsystem. */
 }
 
-void Converter::work( const am::ModeSwitch_ptr& am, am::ModeSwitch* ) {
+template<class C>
+void Converter::workSwitch( const ecore::Ptr<C>& am ) {
 	if ( _mode == PreOrder ) {
 		auto modeSwitch = _oc.make<sm3::ModelFactory, sm3::Switch>( am );
 		setName( *modeSwitch );
@@ -581,7 +582,14 @@ void Converter::work( const am::ModeSwitch_ptr& am, am::ModeSwitch* ) {
 	}
 }
 
-void Converter::work( const am::ModeSwitchDefault_ptr& am, am::ModeSwitchDefault* ) {
+void Converter::work( const am::ModeSwitch_ptr& am, am::ModeSwitch* ) {
+	workSwitch( am );
+}
+
+void Converter::work( const am::Switch_ptr& am, am::Switch* ) { workSwitch( am ); }
+
+template<class C>
+void Converter::workSwitchDefault( const ecore::Ptr<C>& am ) {
 	if ( _mode == PreOrder ) {
 		auto msd = _oc.make<sm3::ModelFactory, sm3::SwitchDefault>( am );
 		auto modeSwitch = _oc.make<sm3::ModelFactory, sm3::Switch>( am->eContainer() );
@@ -600,7 +608,16 @@ void Converter::work( const am::ModeSwitchDefault_ptr& am, am::ModeSwitchDefault
 	}
 }
 
-void Converter::work( const am::ModeSwitchEntry_ptr& am, am::ModeSwitchEntry* ) {
+void Converter::work( const am::ModeSwitchDefault_ptr& am, am::ModeSwitchDefault* ) {
+	workSwitchDefault( am );
+}
+
+void Converter::work( const am::SwitchDefault_ptr& am, am::SwitchDefault* ) {
+	workSwitchDefault( am );
+}
+
+template<class C>
+void Converter::workSwitchEntry( const ecore::Ptr<C>& am ) {
 	if ( _mode == PreOrder ) {
 		auto mse = _oc.make<sm3::ModelFactory, sm3::SwitchEntry>( am );
 		setName( *mse );
@@ -623,6 +640,14 @@ void Converter::work( const am::ModeSwitchEntry_ptr& am, am::ModeSwitchEntry* ) 
 		_callSequence = sm3::CallSequence_ptr();
 		_graphEntries.pop_back();
 	}
+}
+
+void Converter::work( const am::ModeSwitchEntry_ptr& am, am::ModeSwitchEntry* ) {
+	workSwitchEntry( am );
+}
+
+void Converter::work( const am::SwitchEntry_ptr& am, am::SwitchEntry* ) {
+	workSwitchEntry( am );
 }
 
 void Converter::work( const am::ProbabilitySwitch_ptr& am, am::ProbabilitySwitch* ) {
