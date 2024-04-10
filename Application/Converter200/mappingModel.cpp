@@ -2,7 +2,7 @@
  *
  * Converter/mappingModel.cpp
  *
- * Copyright 2020 INCHRON AG <info@inchron.com>
+ * Copyright (c) 2020-2024 INCHRON AG <info@inchron.com>
  */
 /** @file mappingModel.cpp
  * Groups all code related to Amalthea's HwModel.

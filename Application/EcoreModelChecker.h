@@ -1,6 +1,6 @@
 /* -*- c++ -*-
  *
- * Copyright (c) 2020-2021 INCHRON AG <info@inchron.com>
+ * Copyright (c) 2020-2024 INCHRON AG <info@inchron.com>
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
@@ -35,14 +35,16 @@ public:
 	EcoreModelChecker() = default;
 	~EcoreModelChecker() = default;
 
-	void work(const ecore::EObject_ptr&);
+	void work( const ecore::EObject_ptr& );
 
-	static void setToplevelPackage(const ecore::EPackage_ptr& p) { s_toplevelPackage = p; }
+	static void setToplevelPackage( const ecore::EPackage_ptr& p ) {
+		s_toplevelPackage = p;
+	}
 
 protected:
-	virtual ecore::EObject_ptr createChildIfUnique(const ecore::EReference_ptr&);
-	virtual ecore::EString getUniqueName(const ecore::EObject_ptr&,
-										 const ecore::EStructuralFeature_ptr&);
+	virtual ecore::EObject_ptr createChildIfUnique( const ecore::EReference_ptr& );
+	virtual ecore::EString getUniqueName( const ecore::EObject_ptr&,
+										  const ecore::EStructuralFeature_ptr& );
 
 	static ecore::EPackage_ptr s_toplevelPackage;
 };

@@ -2,7 +2,7 @@
  *
  * Converter/swModel.cpp
  *
- * Copyright 2020 INCHRON AG <info@inchron.com>
+ * Copyright (c) 2020-2024 INCHRON AG <info@inchron.com>
  */
 /** @file swModel.cpp
  * Groups all code related to Amalthea's SwModel.

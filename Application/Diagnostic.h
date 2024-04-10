@@ -1,6 +1,6 @@
 /* -*- c++ -*-
  *
- * Copyright (c) 2020-2021 INCHRON AG <info@inchron.com>
+ * Copyright (c) 2020-2024 INCHRON AG <info@inchron.com>
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
@@ -46,30 +46,34 @@ namespace details {
 // THE SOFTWARE.
 template<typename T>
 struct GetNameHelper {
+#if defined( __GNUC__ )
+#	define FUNCTION __PRETTY_FUNCTION__
+	static constexpr unsigned int front =
+		sizeof(
+			"static const char* Diagnostic::details::GetNameHelper<T>::getTypeName() "
+			"[with T = " )
+		- 1u;
+	static constexpr unsigned int back = sizeof( "]" ) - 1u;
 
-#if defined(__GNUC__)
-#   define FUNCTION __PRETTY_FUNCTION__
-	static constexpr unsigned int front = sizeof("static const char* Diagnostic::details::GetNameHelper<T>::getTypeName() [with T = ") - 1u;
-	static constexpr unsigned int back = sizeof("]") - 1u;
-
-#else // if MSVC
-#   define FUNCTION __FUNCTION__
-	static constexpr unsigned int front = sizeof("Diagnostic::details::GetNameHelper<") - 1u;
-	static constexpr unsigned int back = sizeof(">::GetTypeName") - 1u;
+#else  // if MSVC
+#	define FUNCTION __FUNCTION__
+	static constexpr unsigned int front =
+		sizeof( "Diagnostic::details::GetNameHelper<" ) - 1u;
+	static constexpr unsigned int back = sizeof( ">::GetTypeName" ) - 1u;
 
 #endif
 
 	static const char* getTypeName() {
-		static constexpr size_t size = sizeof(FUNCTION) - front - back;
+		static constexpr size_t size = sizeof( FUNCTION ) - front - back;
 		static char typeName[size] = {};
-		if (typeName[0] == 0)
-			memcpy(typeName, FUNCTION + front, size - 1u);
+		if ( typeName[0] == 0 )
+			memcpy( typeName, FUNCTION + front, size - 1u );
 		return typeName;
 	}
 };
 /* End of the idiom. */
 
-} // namespace details
+}  // namespace details
 
 
 /** Emit a message about an unimplemented conversion regarding a certain
@@ -85,35 +89,31 @@ template<typename T>
 struct NotImplemented {
 	NotImplemented() {
 		std::cerr << "Conversion not implemented: "
-				  << details::GetNameHelper<T>::getTypeName()
-				  << "\n";
+				  << details::GetNameHelper<T>::getTypeName() << "\n";
 	}
 };
 
 
 struct ObjectRequired {
 	template<typename T>
-	static bool exists(const ecore::Ptr<T>& t) {
-		if (!t) {
+	static bool exists( const ecore::Ptr<T>& t ) {
+		if ( !t ) {
 			std::cerr << "Missing object of type "
-					  << details::GetNameHelper<T>::getTypeName()
-					  << "\n";
+					  << details::GetNameHelper<T>::getTypeName() << "\n";
 			return false;
 		}
 		return true;
 	}
 
 	template<typename T>
-	static bool notEmpty(const ecorecpp::mapping::EList< ecore::Ptr<T> >& list) {
-		if (list.size() == 0) {
+	static bool notEmpty( const ecorecpp::mapping::EList<ecore::Ptr<T>>& list ) {
+		if ( list.size() == 0 ) {
 			std::cerr << "Missing object(s) of type "
-					  << details::GetNameHelper<T>::getTypeName()
-					  << "\n";
+					  << details::GetNameHelper<T>::getTypeName() << "\n";
 			return false;
 		}
 		return true;
 	}
-
 };
 
-} // namespace Diagnostic
+}  // namespace Diagnostic

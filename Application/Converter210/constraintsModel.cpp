@@ -2,7 +2,7 @@
  *
  * Converter/constraintsModel.cpp
  *
- * Copyright 2022 INCHRON AG <info@inchron.com>
+ * Copyright (c) 2022-2024 INCHRON AG <info@inchron.com>
  */
 /** @file constraintsModel.cpp
  * Groups all code related to Amalthea's ConstraintsModel.

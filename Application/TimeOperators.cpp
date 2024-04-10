@@ -1,6 +1,6 @@
 /* -*- c++ -*-
  *
- * Copyright (c) 2020-2021 INCHRON AG <info@inchron.com>
+ * Copyright (c) 2020-2024 INCHRON AG <info@inchron.com>
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
@@ -11,27 +11,23 @@
 #include "TimeOperators.h"
 
 template<typename T>
-constexpr
-typename std::underlying_type<T>::type
-operator +(T val) {
-	return static_cast< typename std::underlying_type<T>::type >(val);
+constexpr typename std::underlying_type<T>::type operator+( T val ) {
+	return static_cast<typename std::underlying_type<T>::type>( val );
 }
 
 template<typename T>
-T&
-operator ++(T& val) {
-	return val = static_cast<T>( + val + 1 );
+T& operator++( T& val ) {
+	return val = static_cast<T>( +val + 1 );
 }
 
 
-void normalize(root::model::Time& t, root::model::TimeUnit u) {
-	if ( t.getUnit() >= root::model::TimeUnit::T
-		 || u >= root::model::TimeUnit::T )
+void normalize( root::model::Time& t, root::model::TimeUnit u ) {
+	if ( t.getUnit() >= root::model::TimeUnit::T || u >= root::model::TimeUnit::T )
 		return;
 
 	auto value = t.getValue();
-	for (auto unit = t.getUnit(); unit < u; ++unit)
+	for ( auto unit = t.getUnit(); unit < u; ++unit )
 		value *= 1000;
-	t.setValue(value);
-	t.setUnit(u);
+	t.setValue( value );
+	t.setUnit( u );
 }

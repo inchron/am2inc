@@ -1,6 +1,6 @@
 /* -*- c++ -*-
  *
- * Copyright (c) 2020-2021 INCHRON AG <info@inchron.com>
+ * Copyright (c) 2020-2024 INCHRON AG <info@inchron.com>
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
@@ -19,7 +19,7 @@
  */
 template<class C>
 struct ModelChecker {
-	void work(const ecore::Ptr<C>& o) { EcoreModelChecker().work(o); }
+	void work( const ecore::Ptr<C>& o ) { EcoreModelChecker().work( o ); }
 };
 
 
@@ -27,5 +27,5 @@ struct ModelChecker {
  */
 template<>
 struct ModelChecker<root::model::GenericSystem> {
-	void work(const ecore::Ptr<root::model::GenericSystem>& o);
+	void work( const ecore::Ptr<root::model::GenericSystem>& o );
 };

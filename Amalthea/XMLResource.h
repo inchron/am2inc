@@ -2,7 +2,7 @@
  *
  * Amalthea/AmaltheaXMLResource.h
  *
- * Copyright 2020 INCHRON AG <info@inchron.com>
+ * Copyright (c) 2020-2024 INCHRON AG <info@inchron.com>
  */
 #pragma once
 

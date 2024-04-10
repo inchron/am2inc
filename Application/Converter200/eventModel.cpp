@@ -1,12 +1,12 @@
 /* -*- c++ -*-
-*
-* Converter/eventModel.cpp
-*
-* Copyright 2022 INCHRON AG <info@inchron.com>
+ *
+ * Converter/eventModel.cpp
+ *
+ * Copyright (c) 2022-2024 INCHRON AG <info@inchron.com>
 */
 /** @file eventModel.cpp
-* Groups all code related to Amalthea's EventModel.
-*/
+ * Groups all code related to Amalthea's EventModel.
+ */
 #include "../AttributeCreator.h"
 #include "../Diagnostic.h"
 #include "Converter.h"
