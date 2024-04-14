@@ -1,7 +1,7 @@
 #
 # Amalthea/Application/Application.pro
 #
-# Copyright (c) 2020-2021 INCHRON AG <info@inchron.com>
+# Copyright (c) 2020-2024 INCHRON AG <info@inchron.com>
 #
 # This program and the accompanying materials are made available under the
 # terms of the Eclipse Public License 2.0 which is available at
@@ -53,6 +53,7 @@ LIBS += -L../Amalthea/am320/$${DESTDIR} -lam320
 LIBS += -L../Root/$${DESTDIR} -lRoot
 LIBS += -L../Mapping/$${DESTDIR} -lMapping
 
+include(../quazip.pri)
 
 ! isEmpty(EMF4CPP): LIBS += -L$${EMF4CPP}/lib
 LIBS += -lemf4cpp-ecore -lemf4cpp-ecorecpp

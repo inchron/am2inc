@@ -22,6 +22,7 @@
 #include <ecorecpp/resource/XMLResource.hpp>
 
 #include <Amalthea/XMLResource.h>
+#include <Root/XMLResourceFactory.h>
 
 #include "Converter.h"
 #include "StableIntrinsicIds.h"
@@ -35,8 +36,8 @@ Application::Application( int& argc, char** argv )
 	  _resourceSet( ecore::make<ecorecpp::resource::ResourceSet>() ),
 	  _hash( QCryptographicHash::Sha3_512 ) {
 	auto& map = _resourceSet->getResourceFactoryRegistry()->getProtocolToFactoryMap();
-	map["file"] = std::make_unique<ecorecpp::resource::XMLResourceFactory>();
-	map["inchron"] = std::make_unique<ecorecpp::resource::XMLResourceFactory>();
+	map["file"] = std::make_unique<root::XMLResourceFactory>();
+	map["inchron"] = std::make_unique<root::XMLResourceFactory>();
 
 	/* Disable required minimum number of CpuCores in this application. */
 	auto sm3Pkg = sm3::ModelPackage::_instance();
@@ -211,7 +212,10 @@ bool Application::writeOutput() {
 	rootXmi->getContents()->push_back( _root );
 
 	if ( !_options->getOutputName().isEmpty() && _options->getOutputName() != "-" ) {
-		rootXmi->save();
+		ecorecpp::resource::Resource::OptionMap options;
+		options.insert( { ecorecpp::resource::Resource::OPTION_ZIP, "false" } );
+		rootXmi->save( options );
+
 	} else {
 		std::ostringstream stream;
 		rootXmi->save( stream );

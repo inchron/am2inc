@@ -52,6 +52,13 @@ QMAKE_CXXFLAGS += -Wno-error=cpp -Wall -Wextra
 CROSSBUILD = $$(WINCROSSBUILD)
 ! isEmpty(CROSSBUILD): CONFIG += crossbuild
 
+TOOLCHAIN = $$(TOOLCHAIN)
+! isEmpty(TOOLCHAIN): {
+    contains(TOOLCHAIN, llvm-mingw) {
+        CONFIG += llvm_mingw
+    }
+}
+
 DEBIAN = $$(DEBIAN)
 ! isEmpty(DEBIAN): {
 #  message(building debian package)
@@ -119,7 +126,12 @@ unset(DESTDIR_SUFFIX)
 crossbuild {
     i686: DESTDIR_SUFFIX = -win32
     else: DESTDIR_SUFFIX = -win64
+    llvm_mingw {
+        INCLUDEPATH += $${INCHRONLIBS}/zlib/include
+        QMAKE_CXXFLAGS += -Wno-error=overloaded-virtual -Wno-error=inconsistent-missing-override
+    }
 }
+
 OBJECTS_DIR = $$DESTDIR/.obj$${DESTDIR_SUFFIX}
 MOC_DIR = $$DESTDIR/.moc$${DESTDIR_SUFFIX}
 UI_DIR = $$DESTDIR/.uic$${DESTDIR_SUFFIX}

@@ -1,6 +1,6 @@
 /* -*- c++ -*-
  *
- * Amalthea/AmaltheaXMLResource.h
+ * Amalthea/XMLResource.h
  *
  * Copyright (c) 2020-2024 INCHRON AG <info@inchron.com>
  */
@@ -58,6 +58,9 @@ protected:
 	void doLoad( ecorecpp::parser::XMLHandler*,
 				 const std::vector<::ecorecpp::mapping::type_definitions::char_t>&,
 				 const Resource::OptionMap& );
+
+	Buffer doCompress( const Buffer& ) override;
+	Buffer doUncompress( const Buffer& ) override;
 
 	URIList _uriList;
 };

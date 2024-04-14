@@ -7,6 +7,7 @@
 #include "XMLResource.h"
 
 #include <ecorecpp/parser/simple_xml_parser.hpp>
+#include <ecorecpp/resource/Compression.hpp>
 #include <ecorecpp/resource/URIConverter.hpp>
 
 namespace amalthea {
@@ -46,6 +47,15 @@ void XMLResource::doLoad( const Resource::OptionMap& options ) {
 		// file size calculated by seekg().
 		length = is->gcount();
 		buffer.resize( length );
+
+		/* Decompression is done automatically by checking magic numbers.
+		 * https://en.wikipedia.org/wiki/List_of_file_signatures -> "50 4B" */
+		if ( buffer[0] == 0x50 and buffer[1] == 0x4b ) {
+			/* There are two more variants, but we only support non-empty, contiguous archives. */
+			if ( buffer[2] == 0x03 and buffer[3] == 0x04 ) {
+				buffer = doUncompress( buffer );
+			}
+		}
 
 		auto handler = new ecorecpp::parser::XMLHandler;
 		_allHandlers.push_back(
@@ -102,6 +112,14 @@ void XMLResource::doLoad(
 	const auto& xmiIds = handler->getXmiIds();
 	for ( auto&& entry : xmiIds )
 		setID( entry.second, entry.first );
+}
+
+ecorecpp::resource::XMLResource::Buffer XMLResource::doCompress( const Buffer& input ) {
+	return ecorecpp::resource::Compression::doCompress( input );
+}
+
+ecorecpp::resource::XMLResource::Buffer XMLResource::doUncompress( const Buffer& input ) {
+	return ecorecpp::resource::Compression::doUncompress( input );
 }
 
 }  // namespace amalthea

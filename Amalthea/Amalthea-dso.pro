@@ -1,7 +1,7 @@
 #
 # qmake configuration for libAmalthea.so / Amalthea.dll
 #
-# Copyright (c) 2020-2021 INCHRON AG <info@inchron.com>
+# Copyright (c) 2020-2024 INCHRON AG <info@inchron.com>
 #
 # This program and the accompanying materials are made available under the
 # terms of the Eclipse Public License 2.0 which is available at
@@ -31,6 +31,7 @@ QMAKE_CXXFLAGS += -Wno-unused-parameter
 
 INCLUDEPATH += .. ../Amalthea
 
+include(../quazip.pri)
 
 !isEmpty(EMF4CPP): LIBS += -L$${EMF4CPP}/lib
 LIBS += -lemf4cpp-ecore -lemf4cpp-ecorecpp
@@ -51,7 +52,14 @@ unix {
         libemf4cpp.extra = cp --preserve --no-dereference \
                 $${EMF4CPP}/lib/libemf4cpp-ecore*.so* $(INSTALL_ROOT)$${PREFIX}/lib
         libemf4cpp.path = $${PREFIX}/lib
-#        INSTALLS += libemf4cpp
+        INSTALLS += libemf4cpp
+    }
+
+    ! isEmpty(QUAZIP) {
+        libquazip.extra = cp --preserve --no-dereference \
+                $${QUAZIP}/lib/libquazip.so* $(INSTALL_ROOT)$${PREFIX}/lib
+        libquazip.path = $${PREFIX}/lib
+        INSTALLS += libquazip
     }
 }
 
@@ -76,6 +84,10 @@ win32 {
       deploy.depends = $${MANGLED_INSTALLS}
 
       INSTALLS += deploy
+
+      libquazip.path = $${PREFIX}/bin
+      libquazip.files = $${QUAZIP}/bin/quazip.dll
+      INSTALLS += libquazip
 }
 
 QMAKE_EXTRA_TARGETS += version.cpp

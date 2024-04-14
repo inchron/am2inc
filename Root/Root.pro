@@ -1,7 +1,7 @@
 #
 # qmake configuration for libroot.so / root.dll
 #
-# Copyright (c) 2020-2021 INCHRON AG <info@inchron.com>
+# Copyright (c) 2020-2024 INCHRON AG <info@inchron.com>
 #
 # This program and the accompanying materials are made available under the
 # terms of the Eclipse Public License 2.0 which is available at
@@ -35,6 +35,7 @@ SRCGEN = model
 VPATH = $${SRCGEN}
 INCLUDEPATH += $${SRCGEN}
 
+include(../quazip.pri)
 
 ROOT_ECORE = $${PWD}/../EcoreModels/root.ecore
 
@@ -63,6 +64,13 @@ unix {
         libemf4cpp.path = $${PREFIX}/lib
         INSTALLS += libemf4cpp
     }
+
+    ! isEmpty(QUAZIP) {
+        libquazip.extra = cp --preserve --no-dereference \
+                $${QUAZIP}/lib/libquazip.so* $(INSTALL_ROOT)$${PREFIX}/lib
+        libquazip.path = $${PREFIX}/lib
+        INSTALLS += libquazip
+    }
 }
 
 win32 {
@@ -86,11 +94,19 @@ win32 {
       deploy.depends = $${MANGLED_INSTALLS}
 
       INSTALLS += deploy
+
+      libquazip.path = $${PREFIX}/bin
+      libquazip.files = $${QUAZIP}/bin/quazip.dll
+      INSTALLS += libquazip
 }
 
 
 HEADERS += \
+    XMLResource.h \
+    XMLResourceFactory.h \
 
 SOURCES += \
+    XMLResource.cpp \
+    XMLResourceFactory.cpp \
 
 RESOURCES += \
