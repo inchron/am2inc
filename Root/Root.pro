@@ -97,6 +97,25 @@ win32 {
 
       libquazip.path = $${PREFIX}/bin
       libquazip.files = $${QUAZIP}/bin/quazip.dll
+
+      crossbuild {
+          i686 {
+              libquazip.files += /usr/i686-w64-mingw32/lib/zlib1.dll
+              libquazip.files += /usr/i686-w64-mingw32/lib/libwinpthread-1.dll
+          } else {
+              llvm_mingw {
+                  libquazip.files += $${INCHRONLIBS}/zlib/bin/zlib1.dll
+                  libquazip.files += /usr/local/bin/libz.dll
+              } else {
+                  libquazip.files += /usr/x86_64-w64-mingw32/lib/zlib1.dll
+                  libquazip.files += /usr/x86_64-w64-mingw32/lib/libwinpthread-1.dll
+              }
+          }
+      } else {
+          libquazip.files += \
+              c:/TDM-GCC-64/x86_64-w64-mingw32/lib/zlib1.dll
+      }
+
       INSTALLS += libquazip
 }
 
