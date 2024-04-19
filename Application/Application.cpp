@@ -165,8 +165,10 @@ bool Application::convert() {
 	/* Actually there is only one Resource. */
 	for ( auto&& resource : _resourceSet->getResources() )
 		for ( auto&& content : *resource->getContents() ) {
-			if ( not _converter )
+			if ( not _converter ) {
 				_converter = Converter::create( content );
+				_converter->setOptions( *_options );
+			}
 			_converter->convert( content );
 		}
 

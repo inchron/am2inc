@@ -36,35 +36,32 @@ Options::Options() {
 		"are specified, all of them are read as unified model." );
 
 	_parser.addOption(
-		QCommandLineOption( QStringList() << "o"
-										  << "output",
+		QCommandLineOption( QStringList() << "o" << "output",
 							"Write the new INCHRON project to file FILE. If FILE is '-' "
 							"or this option is not specified, write to stdout.",
 							"-" ) );
 	_parser.addOption( QCommandLineOption(
-		QStringList() << "m"
-					  << "mapping",
+		QStringList() << "m" << "mapping",
 		"When given, a translation map is written to the named FILE.", "mapping.xmi" ) );
-	_parser.addOption( QCommandLineOption( QStringList() << "Q"
-														 << "no-output",
+	_parser.addOption( QCommandLineOption( QStringList() << "Q" << "no-output",
 										   "Do not write any output." ) );
-	_parser.addOption( QCommandLineOption( QStringList() << "v"
-														 << "verbose",
+	_parser.addOption( QCommandLineOption( QStringList() << "v" << "verbose",
 										   "Increase verbosity level." ) );
-	_parser.addOption( QCommandLineOption( QStringList() << "V"
-														 << "version",
+	_parser.addOption( QCommandLineOption( QStringList() << "V" << "version",
 										   "Show version information and exit." ) );
 	_parser.addOption( QCommandLineOption(
 		QStringList() << "pedantic",
 		"Adhere strictly to the model constraints. Generates a broken output model, if "
 		"the input model is not compliant." ) );
+	_parser.addOption(
+		QCommandLineOption( QStringList() << "no-memory-accesses",
+							"Do not generate memory accesses for LabelAccesses." ) );
 	_parser.addOption( QCommandLineOption(
 		QStringList() << "relax",
 		"Accept input models, which do not strictly adhere to the model constraints. A "
 		"post processing step tries to repair as much as possible." ) );
 	_parser.addOption( QCommandLineOption(
-		QStringList() << "i"
-					  << "install",
+		QStringList() << "i" << "install",
 		"Install this model importer to be used with the Tool-Suite 3.x." ) );
 
 	QCommandLineOption stable( QStringList() << "stable",
@@ -125,6 +122,9 @@ Options::Options( QCoreApplication& app ) : Options() {
 	if ( _parser.isSet( "no-output" ) ) {
 		_noOutput = true;
 	}
+
+	if ( _parser.isSet( "no-memory-accesses" ) )
+		_withMemory = false;
 
 	if ( _parser.isSet( "output" ) ) {
 		_outputName = _parser.value( "output" );

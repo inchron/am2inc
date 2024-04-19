@@ -31,6 +31,7 @@ public:
 	enum Status { Ok = 0, CommandLine, Trouble };
 
 	bool noOutput() const { return _noOutput; }
+	bool withMemory() const { return _withMemory; }
 	QStringList getInputNames() const { return _inputNames; }
 	QString getOutputName() const { return _outputName; }
 	QString getMappingName() const { return _mappingName; }
@@ -85,6 +86,7 @@ private:
 	bool _stableFromHash{ false };
 	bool _stableFromValue{ false };
 	QByteArray _stableValue{ "0" };
+	bool _withMemory{ true };
 };
 
 #endif

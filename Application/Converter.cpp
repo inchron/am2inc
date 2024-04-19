@@ -26,6 +26,7 @@
 #include "Converter210/Converter.h"
 #include "Converter220/Converter.h"
 #include "Converter320/Converter.h"
+#include "Options.h"
 
 std::unique_ptr<Converter> Converter::create(
 	const ecore::EObject_ptr& potentialAmaltheaObject ) {
@@ -59,6 +60,10 @@ const std::vector<std::string>& Converter::getNsURIs() {
 		am320::model::ModelPackage::_instance()->getNsURI() };
 
 	return s_nsURIs;
+}
+
+void Converter::setOptions( const Options& options ) {
+	_withMemory = options.withMemory();
 }
 
 /** Clear the internal state.

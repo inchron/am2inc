@@ -20,6 +20,8 @@
 
 #include "ObjectCache.h"
 
+class Options;
+
 /** This is the base class of all Converters.
  */
 class Converter {
@@ -31,6 +33,7 @@ public:
 	static const std::vector<std::string>& getNsURIs();
 
 	virtual ~Converter() = default;
+	virtual void setOptions( const Options& );
 
 	virtual void clear();
 	virtual void convert( const ecore::EObject_ptr& ) = 0;
@@ -92,4 +95,9 @@ protected:
 
 	enum Mode { PreOrder, PostOrder } _mode{ PreOrder };
 	Status _status{ Status::Continue };
+
+	bool withMemory() const { return _withMemory; }
+
+private:
+	bool _withMemory{ true };
 };
