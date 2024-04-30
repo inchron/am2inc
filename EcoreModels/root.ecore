@@ -5,13 +5,13 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
     name="root"
-    nsURI="http://inchron.com/realtime/root/3.4.0"
+    nsURI="http://inchron.com/realtime/root/3.4.2"
     nsPrefix="root">
   <eAnnotations
       source="http://www.eclipse.org/emf/2002/GenModel">
     <details
         key="copyrightText"
-        value="Copyright (c) 2017-2023 INCHRON AG&#xA;&#xA;This program and the accompanying materials are made&#xA;available under the terms of the Eclipse Public License 2.0&#xA;which is available at https://www.eclipse.org/legal/epl-2.0/&#xA;&#xA;SPDX-License-Identifier: EPL-2.0&#xA;&#xA;Contributors:&#xA;  INCHRON AG - Metamodel design and implementation"/>
+        value="Copyright (c) 2017-2024 INCHRON AG&#xA;&#xA;This program and the accompanying materials are made&#xA;available under the terms of the Eclipse Public License 2.0&#xA;which is available at https://www.eclipse.org/legal/epl-2.0/&#xA;&#xA;SPDX-License-Identifier: EPL-2.0&#xA;&#xA;Contributors:&#xA;  INCHRON AG - Metamodel design and implementation"/>
   </eAnnotations>
   <eClassifiers
       xsi:type="ecore:EClass"
@@ -68,7 +68,7 @@
       instanceClassName="java.lang.String"/>
   <eSubpackages
       name="model"
-      nsURI="http://inchron.com/realtime/root/3.4.0/model"
+      nsURI="http://inchron.com/realtime/root/3.4.2/model"
       nsPrefix="model">
     <eClassifiers
         xsi:type="ecore:EClass"
@@ -236,6 +236,40 @@
         xsi:type="ecore:EClass"
         name="ArincSystem"
         eSuperTypes="#//model/System"/>
+    <eClassifiers
+        xsi:type="ecore:EClass"
+        name="AsynchronousServerCall"
+        eSuperTypes="#//model/ServerCall">
+      <eAnnotations
+          source="http://www.eclipse.org/emf/2002/GenModel">
+        <details
+            key="documentation"
+            value="An asynchronous server call with an optional callback function that is called when the service request completes."/>
+      </eAnnotations>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="resultFunction"
+          eType="#//model/Function">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="A reference to a Function that is called when the service request completes."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers
+        xsi:type="ecore:EEnum"
+        name="BlockingType">
+      <eLiterals
+          name="ActiveWait"/>
+      <eLiterals
+          name="PassiveWait"
+          value="1"/>
+      <eLiterals
+          name="NonBlocking"
+          value="2"/>
+    </eClassifiers>
     <eClassifiers
         xsi:type="ecore:EEnum"
         name="BufferStrategy">
@@ -508,6 +542,31 @@
           <details
               key="documentation"
               value="The list of CallSequenceItems to be executed in this CallSequence."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures
+          xsi:type="ecore:EAttribute"
+          name="dispatchingPolicy"
+          eType="#//model/DispatchingPolicyType"
+          defaultValueLiteral="FIFO">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Defines the dispatching policy, e.g. FIFO, for processing service requests."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures
+          xsi:type="ecore:EAttribute"
+          name="serviceContainer"
+          lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+          defaultValueLiteral="false">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="When set, this CallSequence acts as a mere container for services and callbacks, which when activated are executed according to the dispatching policy."/>
         </eAnnotations>
       </eStructuralFeatures>
       <eStructuralFeatures
@@ -1366,6 +1425,23 @@
           <details
               key="documentation"
               value="A prescaler in combination with the clock frequency of the Cpu determines the effective clock frequency of this CpuCore."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="effectiveFrequency"
+          lowerBound="1"
+          eType="#//model/Frequency"
+          changeable="false"
+          volatile="true"
+          transient="true"
+          derived="true"
+          containment="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The effective clock frequency of the CpuCore is derived by dividing the Cpu frequency by the CpuCore prescaler."/>
         </eAnnotations>
       </eStructuralFeatures>
       <eStructuralFeatures
@@ -2845,6 +2921,30 @@
               value="A CallGraph that defines the simulation behavior and is executed when the Function is called."/>
         </eAnnotations>
       </eStructuralFeatures>
+      <eStructuralFeatures
+          xsi:type="ecore:EAttribute"
+          name="callback"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+          defaultValueLiteral="false">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Defines if this Function is used as a callback."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures
+          xsi:type="ecore:EAttribute"
+          name="service"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+          defaultValueLiteral="false">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Defines if this Function is used as a service."/>
+        </eAnnotations>
+      </eStructuralFeatures>
     </eClassifiers>
     <eClassifiers
         xsi:type="ecore:EClass"
@@ -3038,6 +3138,30 @@
           <details
               key="documentation"
               value="The RtosConfig of this system."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers
+        xsi:type="ecore:EClass"
+        name="GetResultServerCall"
+        eSuperTypes="#//model/ServerCall">
+      <eAnnotations
+          source="http://www.eclipse.org/emf/2002/GenModel">
+        <details
+            key="documentation"
+            value="Get the result of a previous AsynchronousServerCall, and use the given blocking behavior if the server call did not provide a result yet."/>
+      </eAnnotations>
+      <eStructuralFeatures
+          xsi:type="ecore:EAttribute"
+          name="blockingType"
+          lowerBound="1"
+          eType="#//model/BlockingType"
+          defaultValueLiteral="ActiveWait">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Defines the blocking behavior when requesting the result of a previous AsynchronousServerCall."/>
         </eAnnotations>
       </eStructuralFeatures>
     </eClassifiers>
@@ -3691,6 +3815,19 @@
               value="The list of TraceEvents that have global scope."/>
         </eAnnotations>
       </eStructuralFeatures>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="typeDefinitions"
+          upperBound="-1"
+          eType="#//model/type/TypeDefinition"
+          containment="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The list of TypeDefinitions."/>
+        </eAnnotations>
+      </eStructuralFeatures>
     </eClassifiers>
     <eClassifiers
         xsi:type="ecore:EClass"
@@ -4084,16 +4221,16 @@
         </eAnnotations>
       </eStructuralFeatures>
       <eStructuralFeatures
-          xsi:type="ecore:EReference"
-          name="traceEvents"
-          upperBound="-1"
-          eType="#//model/TraceEvent"
-          containment="true">
+          xsi:type="ecore:EAttribute"
+          name="extendedTask"
+          lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+          defaultValueLiteral="false">
         <eAnnotations
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="documentation"
-              value="The TraceEvents of this Process."/>
+              value="If this is set to true, process execution metrics are calculated according to the state machine of non-terminating AUTOSAR OS ECC tasks."/>
         </eAnnotations>
       </eStructuralFeatures>
       <eStructuralFeatures
@@ -4123,6 +4260,18 @@
       </eStructuralFeatures>
       <eStructuralFeatures
           xsi:type="ecore:EAttribute"
+          name="maxThreads"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+          defaultValueLiteral="0">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The maximum number of pending Threads that can be created by this Process."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures
+          xsi:type="ecore:EAttribute"
           name="preemptable"
           lowerBound="1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
@@ -4135,6 +4284,12 @@
         </eAnnotations>
       </eStructuralFeatures>
       <eStructuralFeatures
+          xsi:type="ecore:EAttribute"
+          name="server"
+          lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+          defaultValueLiteral="false"/>
+      <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="stackLimit"
           lowerBound="1"
@@ -4145,18 +4300,6 @@
           <details
               key="documentation"
               value="The amount of stack memory reserved for this Process."/>
-        </eAnnotations>
-      </eStructuralFeatures>
-      <eStructuralFeatures
-          xsi:type="ecore:EAttribute"
-          name="maxThreads"
-          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
-          defaultValueLiteral="0">
-        <eAnnotations
-            source="http://www.eclipse.org/emf/2002/GenModel">
-          <details
-              key="documentation"
-              value="The maximum number of pending Threads that can be created by this Process."/>
         </eAnnotations>
       </eStructuralFeatures>
       <eStructuralFeatures
@@ -4174,6 +4317,19 @@
       </eStructuralFeatures>
       <eStructuralFeatures
           xsi:type="ecore:EReference"
+          name="traceEvents"
+          upperBound="-1"
+          eType="#//model/TraceEvent"
+          containment="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The TraceEvents of this Process."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
           name="triggeringPort"
           ordered="false"
           upperBound="-1"
@@ -4184,19 +4340,6 @@
           <details
               key="documentation"
               value="The reference to an InterruptPort, if this Process is triggered by an Interrupt."/>
-        </eAnnotations>
-      </eStructuralFeatures>
-      <eStructuralFeatures
-          xsi:type="ecore:EAttribute"
-          name="extendedTask"
-          lowerBound="1"
-          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
-          defaultValueLiteral="false">
-        <eAnnotations
-            source="http://www.eclipse.org/emf/2002/GenModel">
-          <details
-              key="documentation"
-              value="If this is set to true, process execution metrics are calculated according to the state machine of non-terminating AUTOSAR OS ECC tasks."/>
         </eAnnotations>
       </eStructuralFeatures>
     </eClassifiers>
@@ -5137,6 +5280,40 @@
     </eClassifiers>
     <eClassifiers
         xsi:type="ecore:EClass"
+        name="ServerCall"
+        abstract="true"
+        eSuperTypes="#//model/CallSequenceItem">
+      <eAnnotations
+          source="http://www.eclipse.org/emf/2002/GenModel">
+        <details
+            key="documentation"
+            value="The abstract base class for synchronous and asynchronous client-server communication."/>
+      </eAnnotations>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="serverFunction"
+          lowerBound="1"
+          eType="#//model/Function">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="A reference to a Function that specifies the called server operation."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers
+        xsi:type="ecore:EEnum"
+        name="DispatchingPolicyType">
+      <eLiterals
+          name="FIFO"/>
+      <eLiterals
+          name="LIFO"/>
+      <eLiterals
+          name="Priority"/>
+    </eClassifiers>
+    <eClassifiers
+        xsi:type="ecore:EClass"
         name="SetCoreAffinity"
         eSuperTypes="#//model/CallSequenceItem">
       <eAnnotations
@@ -5529,6 +5706,30 @@
           <details
               key="documentation"
               value="If this is set to true, a negative condition check will trigger the execution."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers
+        xsi:type="ecore:EClass"
+        name="SynchronousServerCall"
+        eSuperTypes="#//model/ServerCall">
+      <eAnnotations
+          source="http://www.eclipse.org/emf/2002/GenModel">
+        <details
+            key="documentation"
+            value="A synchronous call of a remote runnable with defined waiting behavior."/>
+      </eAnnotations>
+      <eStructuralFeatures
+          xsi:type="ecore:EAttribute"
+          name="waitingBehavior"
+          lowerBound="1"
+          eType="#//model/WaitingBehavior"
+          defaultValueLiteral="Active">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Determines whether the client of the SynchronousServerCall waits actively or passively."/>
         </eAnnotations>
       </eStructuralFeatures>
     </eClassifiers>
@@ -6805,6 +7006,18 @@
         </eAnnotations>
       </eStructuralFeatures>
       <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="notifiedFunctions"
+          upperBound="-1"
+          eType="#//model/Function">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="A list of Functions that will be notified when this VariableWriteAccess completes."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures
           xsi:type="ecore:EAttribute"
           name="policy"
           lowerBound="1"
@@ -7017,6 +7230,16 @@
       </eStructuralFeatures>
     </eClassifiers>
     <eClassifiers
+        xsi:type="ecore:EEnum"
+        name="WaitingBehavior">
+      <eLiterals
+          name="Active"/>
+      <eLiterals
+          name="Passive"
+          value="1"
+          literal="Passive"/>
+    </eClassifiers>
+    <eClassifiers
         xsi:type="ecore:EClass"
         name="WhileLoop"
         eSuperTypes="#//model/GraphEntryBase">
@@ -7078,7 +7301,7 @@
     </eClassifiers>
     <eSubpackages
         name="autosar"
-        nsURI="http://inchron.com/realtime/root/3.4.0/model/autosar"
+        nsURI="http://inchron.com/realtime/root/3.4.2/model/autosar"
         nsPrefix="autosar">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -7629,7 +7852,7 @@
     </eSubpackages>
     <eSubpackages
         name="fmi"
-        nsURI="http://inchron.com/realtime/root/3.4.0/model/fmi"
+        nsURI="http://inchron.com/realtime/root/3.4.2/model/fmi"
         nsPrefix="fmi">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -7813,7 +8036,7 @@
       </eClassifiers>
       <eSubpackages
           name="type"
-          nsURI="http://inchron.com/realtime/root/3.4.0/model/fmi/type"
+          nsURI="http://inchron.com/realtime/root/3.4.2/model/fmi/type"
           nsPrefix="type">
         <eClassifiers
             xsi:type="ecore:EClass"
@@ -7910,7 +8133,7 @@
       </eSubpackages>
       <eSubpackages
           name="unit"
-          nsURI="http://inchron.com/realtime/root/3.4.0/model/fmi/unit"
+          nsURI="http://inchron.com/realtime/root/3.4.2/model/fmi/unit"
           nsPrefix="unit">
         <eClassifiers
             xsi:type="ecore:EClass"
@@ -8105,7 +8328,7 @@
       </eSubpackages>
       <eSubpackages
           name="variable"
-          nsURI="http://inchron.com/realtime/root/3.4.0/model/fmi/variable"
+          nsURI="http://inchron.com/realtime/root/3.4.2/model/fmi/variable"
           nsPrefix="variable">
         <eClassifiers
             xsi:type="ecore:EClass"
@@ -8507,7 +8730,7 @@
     </eSubpackages>
     <eSubpackages
         name="memory"
-        nsURI="http://inchron.com/realtime/root/3.4.0/model/memory"
+        nsURI="http://inchron.com/realtime/root/3.4.2/model/memory"
         nsPrefix="memory">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -9201,7 +9424,7 @@
     </eSubpackages>
     <eSubpackages
         name="metric"
-        nsURI="http://inchron.com/realtime/root/3.4.0/model/metric"
+        nsURI="http://inchron.com/realtime/root/3.4.2/model/metric"
         nsPrefix="metric">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -9270,12 +9493,52 @@
             xsi:type="ecore:EReference"
             name="start"
             lowerBound="1"
-            eType="#//model/EventChainStep"/>
+            upperBound="-1"
+            eType="#//model/EventChainStep">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="A selection of event chain steps that determine the start time for event chain latency measurement. Depending on the semantics, the occurrence of all events (orSemanticsStart == false) or just one event (orSemanticsStart == true) starts the measurement."/>
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures
+            xsi:type="ecore:EAttribute"
+            name="orSemanticsStart"
+            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+            defaultValueLiteral="false">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="If set to false (default), AND semantics are applied and measurement begins when all start events have occurred. If set to true, OR semantics are applied and measurement begins when the first start event occurs."/>
+          </eAnnotations>
+        </eStructuralFeatures>
         <eStructuralFeatures
             xsi:type="ecore:EReference"
             name="end"
             lowerBound="1"
-            eType="#//model/EventChainStep"/>
+            upperBound="-1"
+            eType="#//model/EventChainStep">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="A selection of event chain steps that determine the end time for event chain latency measurement. Depending on the semantics, the occurrence of all events (orSemanticsEnd == false) or just one event (orSemanticsEnd == true) ends the measurement."/>
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures
+            xsi:type="ecore:EAttribute"
+            name="orSemanticsEnd"
+            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+            defaultValueLiteral="false">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="If set to false (default), AND semantics are applied and measurement ends when all end events have occurred. If set to true, OR semantics are applied and measurement ends when the first end event occurs."/>
+          </eAnnotations>
+        </eStructuralFeatures>
         <eStructuralFeatures
             xsi:type="ecore:EAttribute"
             name="instanceOffset"
@@ -10755,7 +11018,7 @@
     </eSubpackages>
     <eSubpackages
         name="peripheral"
-        nsURI="http://inchron.com/realtime/root/3.4.0/model/peripheral"
+        nsURI="http://inchron.com/realtime/root/3.4.2/model/peripheral"
         nsPrefix="peripheral">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -11417,7 +11680,7 @@
     </eSubpackages>
     <eSubpackages
         name="requirement"
-        nsURI="http://inchron.com/realtime/root/3.4.0/model/requirement"
+        nsURI="http://inchron.com/realtime/root/3.4.2/model/requirement"
         nsPrefix="requirement">
       <eAnnotations
           source="http://www.eclipse.org/emf/2002/GenModel">
@@ -11653,12 +11916,50 @@
             xsi:type="ecore:EReference"
             name="start"
             lowerBound="1"
+            upperBound="-1"
             eType="#//model/EventChainStep">
           <eAnnotations
               source="http://www.eclipse.org/emf/2002/GenModel">
             <details
                 key="documentation"
-                value="The event chain step where the measurement of the latency starts."/>
+                value="A selection of event chain steps that determine the start time for event chain latency measurement. Depending on the semantics, the occurrence of all events (orSemanticsStart == false) or just one event (orSemanticsStart == true) starts the measurement."/>
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures
+            xsi:type="ecore:EAttribute"
+            name="orSemanticsStart"
+            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+            defaultValueLiteral="false">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="If set to false (default), AND semantics are applied and measurement begins when all start events have occurred. If set to true, OR semantics are applied and measurement begins when the first start event occurs."/>
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures
+            xsi:type="ecore:EReference"
+            name="end"
+            lowerBound="1"
+            upperBound="-1"
+            eType="#//model/EventChainStep">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="A selection of event chain steps that determine the end time for event chain latency measurement. Depending on the semantics, the occurrence of all events (orSemanticsEnd == false) or just one event (orSemanticsEnd == true) ends the measurement."/>
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures
+            xsi:type="ecore:EAttribute"
+            name="orSemanticsEnd"
+            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+            defaultValueLiteral="false">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="If set to false (default), AND semantics are applied and measurement ends when all end events have occurred. If set to true, OR semantics are applied and measurement ends when the first end event occurs."/>
           </eAnnotations>
         </eStructuralFeatures>
         <eStructuralFeatures
@@ -11683,18 +11984,6 @@
             <details
                 key="documentation"
                 value="The strategy that determines how steps are matched."/>
-          </eAnnotations>
-        </eStructuralFeatures>
-        <eStructuralFeatures
-            xsi:type="ecore:EReference"
-            name="end"
-            lowerBound="1"
-            eType="#//model/EventChainStep">
-          <eAnnotations
-              source="http://www.eclipse.org/emf/2002/GenModel">
-            <details
-                key="documentation"
-                value="The event chain step where the latency measurement will end."/>
           </eAnnotations>
         </eStructuralFeatures>
       </eClassifiers>
@@ -12417,7 +12706,7 @@
     </eSubpackages>
     <eSubpackages
         name="stimulation"
-        nsURI="http://inchron.com/realtime/root/3.4.0/model/stimulation"
+        nsURI="http://inchron.com/realtime/root/3.4.2/model/stimulation"
         nsPrefix="stimulation">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -12876,7 +13165,390 @@
               source="http://www.eclipse.org/emf/2002/GenModel">
             <details
                 key="documentation"
-                value="The CallGraph is executed whenever the StimuliGenerator fires. Only a reduced subset of GraphEntries and CallSequenceItems is allowed. Allowed GraphEntries: CallSequence, Switch, and ProbabilitySwitch. Allowed CallSequenceItems: ActivationItem, ActivateProcess, ConditionEvaluation, CounterModification, ModeSwitchPoint, SetEvent, SetGuard, and SemaphoreAccess."/>
+                value="The CallGraph is executed whenever the StimuliGenerator fires. Only a reduced subset of CallSequenceItems is allowed, e.g. ActivationActions."/>
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+    </eSubpackages>
+    <eSubpackages
+        name="type"
+        nsURI="http://inchron.com/realtime/root/3.4.2/model/type"
+        nsPrefix="type">
+      <eClassifiers
+          xsi:type="ecore:EClass"
+          name="Alias">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Describes the mapping of a base type for different languages. For example, the base type Boolean maps to the type bool (alias) in the language C (target)."/>
+        </eAnnotations>
+        <eStructuralFeatures
+            xsi:type="ecore:EAttribute"
+            name="alias"
+            unique="false"
+            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="The name of the type in the target environment."/>
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures
+            xsi:type="ecore:EAttribute"
+            name="target"
+            unique="false"
+            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="The name of the target environment."/>
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers
+          xsi:type="ecore:EClass"
+          name="Array"
+          eSuperTypes="#//model/type/CompoundType">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="Describes an Array with length numberElements, each of type DataType."/>
+        </eAnnotations>
+        <eStructuralFeatures
+            xsi:type="ecore:EReference"
+            name="dataType"
+            eType="#//model/type/DataType"
+            containment="true">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="The DataType that all elements in this Array have."/>
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures
+            xsi:type="ecore:EAttribute"
+            name="numberElements"
+            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="The number of elements in this Array."/>
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers
+          xsi:type="ecore:EClass"
+          name="BaseTypeDefinition"
+          eSuperTypes="#//model/type/TypeDefinition">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The definition of a base data type and its representation in target environments using Aliases."/>
+        </eAnnotations>
+        <eStructuralFeatures
+            xsi:type="ecore:EReference"
+            name="aliases"
+            upperBound="-1"
+            eType="#//model/type/Alias"
+            containment="true">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="Defines the representation of a BaseTypeDefinition in a specific target environment."/>
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers
+          xsi:type="ecore:EClass"
+          name="CompoundType"
+          abstract="true"
+          eSuperTypes="#//model/type/DataType">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The abstract base class of compound data types."/>
+        </eAnnotations>
+      </eClassifiers>
+      <eClassifiers
+          xsi:type="ecore:EClass"
+          name="DataType"
+          abstract="true">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The abstract base class of data types."/>
+        </eAnnotations>
+      </eClassifiers>
+      <eClassifiers
+          xsi:type="ecore:EClass"
+          name="DataTypeDefinition"
+          eSuperTypes="#//model/type/TypeDefinition">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The definition of a data type."/>
+        </eAnnotations>
+        <eStructuralFeatures
+            xsi:type="ecore:EReference"
+            name="dataType"
+            eType="#//model/type/DataType"
+            containment="true">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="The DataType of this definition."/>
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers
+          xsi:type="ecore:EClass"
+          name="FunctionType">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="A function type."/>
+        </eAnnotations>
+        <eStructuralFeatures
+            xsi:type="ecore:EReference"
+            name="argumentTypes"
+            unique="false"
+            upperBound="-1"
+            eType="#//model/type/TypeDefinition">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="The list of TypeDefinitions of this FunctionType's arguments."/>
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures
+            xsi:type="ecore:EReference"
+            name="returnType"
+            eType="#//model/type/TypeDefinition">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="The type this function returns. If no return type is specified, this function returns nothing."/>
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers
+          xsi:type="ecore:EClass"
+          name="FunctionTypeDefinition"
+          eSuperTypes="#//model/type/TypeDefinition">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The definition of a FunctionType."/>
+        </eAnnotations>
+        <eStructuralFeatures
+            xsi:type="ecore:EReference"
+            name="functionType"
+            eType="#//model/type/FunctionType"
+            containment="true">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="The FunctionType defined by this FunctionTypeDefinition."/>
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers
+          xsi:type="ecore:EClass"
+          name="Pointer"
+          eSuperTypes="#//model/type/CompoundType">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="A pointer to a DataType."/>
+        </eAnnotations>
+        <eStructuralFeatures
+            xsi:type="ecore:EReference"
+            name="dataType"
+            eType="#//model/type/DataType"
+            containment="true">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="The DataType this is a pointer to."/>
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers
+          xsi:type="ecore:EClass"
+          name="Struct"
+          eSuperTypes="#//model/type/CompoundType">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="A specific DataType that allows the grouping of variables of different types into a single unit under one name."/>
+        </eAnnotations>
+        <eStructuralFeatures
+            xsi:type="ecore:EReference"
+            name="members"
+            upperBound="-1"
+            eType="#//model/type/StructMember"
+            containment="true">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="The list of members of this Struct."/>
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers
+          xsi:type="ecore:EClass"
+          name="StructMember">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="A member of a Struct."/>
+        </eAnnotations>
+        <eStructuralFeatures
+            xsi:type="ecore:EReference"
+            name="dataType"
+            eType="#//model/type/DataType"
+            containment="true">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="The DataType of the member."/>
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures
+            xsi:type="ecore:EAttribute"
+            name="name"
+            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="The name of the member."/>
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers
+          xsi:type="ecore:EClass"
+          name="TypeDefinition"
+          abstract="true"
+          eSuperTypes="#//model/ModelObject">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="The abstract base class for the definition of types."/>
+        </eAnnotations>
+        <eStructuralFeatures
+            xsi:type="ecore:EReference"
+            name="size"
+            eType="#//model/DataSize"
+            containment="true">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="The amount of memory used by an instance of an object of this type."/>
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers
+          xsi:type="ecore:EClass"
+          name="TypeRef"
+          eSuperTypes="#//model/type/DataType">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="A reference to a TypeDefinition."/>
+        </eAnnotations>
+        <eStructuralFeatures
+            xsi:type="ecore:EReference"
+            name="typeDef"
+            eType="#//model/type/TypeDefinition">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="The TypeDefinition being referenced."/>
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers
+          xsi:type="ecore:EClass"
+          name="Union"
+          eSuperTypes="#//model/type/CompoundType">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="A CompoundType where the the members of the Union share the same memory location."/>
+        </eAnnotations>
+        <eStructuralFeatures
+            xsi:type="ecore:EReference"
+            name="members"
+            upperBound="-1"
+            eType="#//model/type/UnionMember"
+            containment="true">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="The list of members of this Union."/>
+          </eAnnotations>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers
+          xsi:type="ecore:EClass"
+          name="UnionMember">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="documentation"
+              value="A member of a Union."/>
+        </eAnnotations>
+        <eStructuralFeatures
+            xsi:type="ecore:EReference"
+            name="dataType"
+            eType="#//model/type/DataType"
+            containment="true">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="The DataType of the member."/>
+          </eAnnotations>
+        </eStructuralFeatures>
+        <eStructuralFeatures
+            xsi:type="ecore:EAttribute"
+            name="name"
+            eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+          <eAnnotations
+              source="http://www.eclipse.org/emf/2002/GenModel">
+            <details
+                key="documentation"
+                value="The name of the member."/>
           </eAnnotations>
         </eStructuralFeatures>
       </eClassifiers>
