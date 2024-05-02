@@ -32,6 +32,7 @@ public:
 
 	bool noOutput() const { return _noOutput; }
 	bool withMemory() const { return _withMemory; }
+	bool withDataFlowConnections() const { return _withDataFlowConnections; }
 	QStringList getInputNames() const { return _inputNames; }
 	QString getOutputName() const { return _outputName; }
 	QString getMappingName() const { return _mappingName; }
@@ -87,6 +88,8 @@ private:
 	bool _stableFromValue{ false };
 	QByteArray _stableValue{ "0" };
 	bool _withMemory{ true };
+	/* @todo [AM2INC-129] */
+	bool _withDataFlowConnections{ false };
 };
 
 #endif

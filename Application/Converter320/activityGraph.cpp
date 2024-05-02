@@ -32,6 +32,7 @@
 #include "../Diagnostic.h"
 #include "../TimeOperators.h"
 #include "Converter.h"
+#include "ResolveValues.h"
 #include "StimulusTraits.h"
 
 namespace am = am320::model;
@@ -83,6 +84,29 @@ void addAsSibling( const ecore::Ptr<T>& older, const ecore::Ptr<U>& younger ) {
 	list->push_back_unsafe( younger );
 }
 
+am::IExecutable_ptr getContainingExecutable( const am::ActivityGraphItem_ptr& am ) {
+	if ( not am )
+		return {};
+
+	auto parent = am->eContainer();
+	while ( parent ) {
+		if ( auto obj = ::ecore::as<am::IExecutable>( parent ) )
+			return obj;
+		parent = parent->eContainer();
+	}
+
+	return {};
+}
+
+std::string getExecutableName( const am::ActivityGraphItem_ptr& am ) {
+	const auto& executable = getContainingExecutable( am );
+	if ( auto task = ecore::as<am::Task>( executable ) )
+		return task->getName();
+	else if ( auto runnable = ecore::as<am::Runnable>( executable ) )
+		return runnable->getName();
+	return {};
+}
+
 }  // namespace details
 
 
@@ -131,7 +155,38 @@ void Converter::work( const am::ActivityGraph_ptr& am, am::ActivityGraph* ) {
 	}
 }
 
+void Converter::work( const am320::model::AsynchronousServerCall_ptr& am,
+					  am320::model::AsynchronousServerCall* ) {
+	if ( _mode == PreOrder ) {
+		auto serverCall = _oc.make<sm3::ModelFactory, sm3::AsynchronousServerCall>( am );
+		_callSequence->getCalls().push_back_unsafe( serverCall );
+
+		const auto& serverRunnable = am->getServerRunnable();
+		if ( Diagnostic::ObjectRequired::exists( this, serverRunnable ) ) {
+			setName( *serverCall, "AsyncServerCall_" + serverRunnable->getName() );
+			serverCall->setServerFunction(
+				_oc.make<sm3::ModelFactory, sm3::Function>( serverRunnable ) );
+		} else {
+			error(
+				QStringLiteral(
+					"AsyncServerCall in IExecutable '%1' requires a server runnable." )
+					.arg( QString::fromStdString( details::getExecutableName( am ) ) ) );
+		}
+
+		const auto& resultRunnable = am->getResultRunnable();
+		if ( resultRunnable ) {
+			serverCall->setResultFunction(
+				_oc.make<sm3::ModelFactory, sm3::Function>( resultRunnable ) );
+		}
+
+		/* AsynchronousServerCall does not contain a Counter. */
+	}
+}
+
 void Converter::work( const am::Group_ptr& am, am::Group* ) {
+	auto process = ecore::as<sm3::Process>( _callGraph->eContainer() );
+	const bool processIsServer = process and process->isServer();
+
 	if ( _mode == PreOrder ) {
 		auto cs = _callSequence;
 		if ( details::isUnused( cs, _oc ) ) {
@@ -146,16 +201,44 @@ void Converter::work( const am::Group_ptr& am, am::Group* ) {
 		}
 
 		cs->setName( am->getName() );
-		if ( !am->isOrdered() ) {
-			std::cerr << "Unsupported attribute: Group '" << am->getName()
-					  << "' uses random execution order\n";
+		if ( not processIsServer ) {
+			if ( not am->isOrdered() ) {
+				warning( QStringLiteral( "Unsupported attribute: Group '%1' in "
+										 "IExecutable '%2' uses random execution order." )
+							 .arg( QString::fromStdString( am->getName() ),
+								   QString::fromStdString(
+									   details::getExecutableName( am ) ) ) );
+			}
+		} else {
+			cs->setServiceContainer( true );
+			static const ecore::EString dispatchingPolicy( "dispatchingPolicy" );
+			for ( const auto& property : am->getCustomProperties() ) {
+				if ( equals( property->getKey(), dispatchingPolicy ) ) {
+					auto policy =
+						ResolveValue::resolve<ecore::EString>( property->getValue() );
+					if ( equals( policy, "FIFO" ) )
+						cs->setDispatchingPolicy( sm3::DispatchingPolicyType::FIFO );
+					else if ( equals( policy, "LIFO" ) )
+						cs->setDispatchingPolicy( sm3::DispatchingPolicyType::LIFO );
+					else if ( equals( policy, "Priority" ) )
+						cs->setDispatchingPolicy( sm3::DispatchingPolicyType::Priority );
+					else {
+						error( QStringLiteral(
+								   "Unknown dispatchingPolicy for Group '%1': %2." )
+								   .arg( QString::fromStdString( am->getName() ),
+										 QString::fromStdString( policy ) ) );
+					}
+
+					break;
+				}
+			}
 		}
 
 		/* A non-interruptible Group is emulated by added a
 		 * SuspendAllInterrupts at the beginning and a ResumeAllInterrupts at
 		 * the end [AM2INC-74]. Suspend- and ResumeAllInterrupts already
 		 * handle nested interrupt locking. */
-		if ( !am->isInterruptible() ) {
+		if ( not processIsServer and not am->isInterruptible() ) {
 			auto suspend = sm3::create<sm3::SuspendAllInterrupts>();
 			suspend->setName( "ImplicitSuspend_" + am->getName() );
 			_callSequence->getCalls().push_back_unsafe( suspend );
@@ -165,7 +248,7 @@ void Converter::work( const am::Group_ptr& am, am::Group* ) {
 		/* A non-interruptible Group executes a ResumeAllInterrupts at the end
 		 * [AM2INC-74]. Depending on the nesting of the interrupt locks, this
 		 * might lead to immediate preemption. */
-		if ( !am->isInterruptible() ) {
+		if ( not processIsServer and not am->isInterruptible() ) {
 			auto resume = sm3::create<sm3::ResumeAllInterrupts>();
 			resume->setName( "ImplicitResume_" + am->getName() );
 			_callSequence->getCalls().push_back_unsafe( resume );
@@ -209,12 +292,15 @@ void Converter::work( const am::RunnableCall_ptr& am, am::RunnableCall* ) {
 		auto call = _oc.make<sm3::ModelFactory, sm3::FunctionCall>( am );
 		_callSequence->getCalls().push_back_unsafe( call );
 
-		call->setFunction(
-			_oc.make<sm3::ModelFactory, sm3::Function>( am->getRunnable() ) );
-		setName( *call, "Call_" + am->getRunnable()->getName() );
-		if ( auto&& counter = am->getCounter() ) {
-			call->setPeriod( counter->getPrescaler() );
-			call->setOffset( counter->getOffset() );
+		auto runnable = am->getRunnable();
+		if ( Diagnostic::ObjectRequired::exists( this, runnable ) ) {
+			call->setFunction( _oc.make<sm3::ModelFactory, sm3::Function>( runnable ) );
+			setName( *call, "Call_" + runnable->getName() );
+			if ( auto&& counter = am->getCounter() ) {
+				call->setPeriod( counter->getPrescaler() );
+				call->setOffset( counter->getOffset() );
+			}
+			/* Do not check or modify Runnable.service or .callback. */
 		}
 	}
 }
@@ -286,8 +372,6 @@ void Converter::work( const am::ClearEvent_ptr& am, am::ClearEvent* ) {
 	}
 }
 
-namespace details {
-
 /* IDiscreteValueDeviation is an interface class, which is implemented by
  * DiscreteValueConstant, DiscreteValueHistogram,
  *
@@ -297,7 +381,8 @@ namespace details {
  *
  * and TruncatedDiscreteValueDistribution (ie. DiscreteValueGaussDistribution)
  */
-sm3::TimeDistribution_ptr createTimeDistribution( am::IDiscreteValueDeviation_ptr am ) {
+sm3::TimeDistribution_ptr Converter::createTimeDistribution(
+	const am::IDiscreteValueDeviation_ptr& am ) {
 	auto td = sm3::create<sm3::TimeDistribution>();
 
 	switch ( am->eClass()->getClassifierID() ) {
@@ -367,12 +452,13 @@ sm3::TimeDistribution_ptr createTimeDistribution( am::IDiscreteValueDeviation_pt
 			td->setType( sm3::TimeDistributionType::Uniform );
 			break;
 		default:
-			std::cerr << "Unsupported DiscreteValueBoundaries::samplingType "
-					  << am::ModelPackage::_instance()
-							 ->getSamplingType()
-							 ->getEEnumLiteral( (int)bound->getSamplingType() )
-							 ->getName()
-					  << "\n";
+			warning( QStringLiteral(
+						 "Unsupported DiscreteValueBoundaries::samplingType '%1'." )
+						 .arg( QString::fromStdString(
+							 am::ModelPackage::_instance()
+								 ->getSamplingType()
+								 ->getEEnumLiteral( (int)bound->getSamplingType() )
+								 ->getName() ) ) );
 		}
 	} break;
 
@@ -458,8 +544,6 @@ sm3::TimeDistribution_ptr createTimeDistribution( am::IDiscreteValueDeviation_pt
 	return td;
 }
 
-}  // namespace details
-
 void Converter::work( const am::Ticks_ptr& am, am::Ticks* ) {
 	if ( _mode == PreOrder ) {
 		auto consumption = _oc.make<sm3::ModelFactory, sm3::ResourceConsumption>( am );
@@ -473,7 +557,7 @@ void Converter::work( const am::Ticks_ptr& am, am::Ticks* ) {
 		}
 
 		if ( Diagnostic::ObjectRequired::exists( this, value ) )
-			consumption->setTimeDistribution( details::createTimeDistribution( value ) );
+			consumption->setTimeDistribution( createTimeDistribution( value ) );
 	}
 }
 
@@ -497,8 +581,40 @@ void Converter::work( const am::ExecutionNeed_ptr&, am::ExecutionNeed* ) {
 	static Diagnostic::NotImplemented<am::ExecutionNeed> message( this );
 }
 
-void Converter::work( const am::GetResultServerCall_ptr&, am::GetResultServerCall* ) {
-	static Diagnostic::NotImplemented<am::GetResultServerCall> message( this );
+void Converter::work( const am::GetResultServerCall_ptr& am, am::GetResultServerCall* ) {
+	if ( _mode == PreOrder ) {
+		auto serverCall = _oc.make<sm3::ModelFactory, sm3::GetResultServerCall>( am );
+		_callSequence->getCalls().push_back_unsafe( serverCall );
+
+		const auto& serverRunnable = am->getServerRunnable();
+		if ( Diagnostic::ObjectRequired::exists( this, serverRunnable ) ) {
+			setName( *serverCall, "GetResultServerCall_" + serverRunnable->getName() );
+			serverCall->setServerFunction(
+				_oc.make<sm3::ModelFactory, sm3::Function>( serverRunnable ) );
+		} else {
+			error(
+				QStringLiteral( "GetResultServerCall in IExecutable '%1' requires a "
+								"server runnable." )
+					.arg( QString::fromStdString( details::getExecutableName( am ) ) ) );
+		}
+
+		auto blockingType = sm3::BlockingType::ActiveWait;
+		switch ( am->getBlockingType() ) {
+		case am::BlockingType::_undefined_:
+		case am::BlockingType::active_wait:
+			blockingType = sm3::BlockingType::ActiveWait;
+			break;
+		case am::BlockingType::passive_wait:
+			blockingType = sm3::BlockingType::PassiveWait;
+			break;
+		case am::BlockingType::non_blocking:
+			blockingType = sm3::BlockingType::NonBlocking;
+			break;
+		}
+		serverCall->setBlockingType( blockingType );
+
+		/* GetResultServerCall does not contain a Counter. */
+	}
 }
 
 void Converter::work( const am::ModeLabelAccess_ptr& am, am::ModeLabelAccess* ) {
@@ -764,16 +880,106 @@ void Converter::work( const am::SemaphoreAccess_ptr& am, am::SemaphoreAccess* ) 
 	}
 }
 
-void Converter::work( const am::SenderReceiverRead_ptr&, am::SenderReceiverRead* ) {
-	static Diagnostic::NotImplemented<am::SenderReceiverRead> message( this );
+void Converter::work( const am::SenderReceiverRead_ptr& am, am::SenderReceiverRead* ) {
+	if ( _mode == PreOrder ) {
+		auto vra = _oc.make<sm3::ModelFactory, sm3::VariableReadAccess>( am );
+		_callSequence->getCalls().push_back_unsafe( vra );
+
+		const auto& label = am->getLabel();
+		if ( Diagnostic::ObjectRequired::exists( this, label ) ) {
+			setName( *vra, "VariableReadAccess_" + label->getName() );
+
+			if ( withDataFlowConnections() ) {
+				/* The DataFlowConnection might exist already. */
+				auto dataFlow =
+					_oc.find<sm3::DataFlowConnection>( label, ObjectCache::Sub1 );
+				if ( not dataFlow ) {
+					dataFlow = _oc.make<sm3::ModelFactory, sm3::DataFlowConnection>(
+						label, ObjectCache::Sub1 );
+					setName( *dataFlow, "SenderReceiverConnection_" + label->getName() );
+					_model->getConnections().push_back( dataFlow );
+				}
+				vra->setConnection( dataFlow );
+			}
+		} else {
+			error(
+				QStringLiteral(
+					"SenderReceiverRead in IExecutable '%1' requires a label." )
+					.arg( QString::fromStdString( details::getExecutableName( am ) ) ) );
+		}
+
+		/* SenderReceiverRead does not contain a Counter. */
+	}
 }
 
-void Converter::work( const am::SenderReceiverWrite_ptr&, am::SenderReceiverWrite* ) {
-	static Diagnostic::NotImplemented<am::SenderReceiverWrite> message( this );
+void Converter::work( const am::SenderReceiverWrite_ptr& am, am::SenderReceiverWrite* ) {
+	if ( _mode == PreOrder ) {
+		auto vwa = _oc.make<sm3::ModelFactory, sm3::VariableWriteAccess>( am );
+		_callSequence->getCalls().push_back_unsafe( vwa );
+
+		const auto& label = am->getLabel();
+		if ( Diagnostic::ObjectRequired::exists( this, label ) ) {
+			setName( *vwa, "VariableWriteAccess_" + label->getName() );
+
+			if ( withDataFlowConnections() ) {
+				/* The DataFlowConnection might exist already. */
+				auto dataFlow =
+					_oc.find<sm3::DataFlowConnection>( label, ObjectCache::Sub1 );
+				if ( not dataFlow ) {
+					dataFlow = _oc.make<sm3::ModelFactory, sm3::DataFlowConnection>(
+						label, ObjectCache::Sub1 );
+					setName( *dataFlow, "SenderReceiverConnection_" + label->getName() );
+					_model->getConnections().push_back( dataFlow );
+				}
+				vwa->setConnection( dataFlow );
+			}
+		} else {
+			error(
+				QStringLiteral(
+					"SenderReceiverWrite in IExecutable '%1' requires a label." )
+					.arg( QString::fromStdString( details::getExecutableName( am ) ) ) );
+		}
+
+		for ( const auto& runnable : am->getNotifiedRunnables() )
+			vwa->getNotifiedFunctions().push_back_unsafe(
+				_oc.make<sm3::ModelFactory, sm3::Function>( runnable ) );
+
+		/* SenderReceiverWrite does not contain a Counter. */
+	}
 }
 
-void Converter::work( const am::SynchronousServerCall_ptr&, am::SynchronousServerCall* ) {
-	static Diagnostic::NotImplemented<am::SynchronousServerCall> message( this );
+void Converter::work( const am::SynchronousServerCall_ptr& am,
+					  am::SynchronousServerCall* ) {
+	if ( _mode == PreOrder ) {
+		auto serverCall = _oc.make<sm3::ModelFactory, sm3::SynchronousServerCall>( am );
+		_callSequence->getCalls().push_back_unsafe( serverCall );
+
+		const auto& serverRunnable = am->getServerRunnable();
+		if ( Diagnostic::ObjectRequired::exists( this, serverRunnable ) ) {
+			setName( *serverCall, "SyncServerCall_" + serverRunnable->getName() );
+			serverCall->setServerFunction(
+				_oc.make<sm3::ModelFactory, sm3::Function>( serverRunnable ) );
+		} else {
+			error(
+				QStringLiteral( "SynchronousServerCall in IExecutable '%1' requires a "
+								"server runnable." )
+					.arg( QString::fromStdString( details::getExecutableName( am ) ) ) );
+		}
+
+		auto waitingBehavior = sm3::WaitingBehavior::Active;
+		switch ( am->getWaitingBehaviour() ) {
+		case am::WaitingBehaviour::_undefined_:
+		case am::WaitingBehaviour::active:
+			waitingBehavior = sm3::WaitingBehavior::Active;
+			break;
+		case am::WaitingBehaviour::passive:
+			waitingBehavior = sm3::WaitingBehavior::Passive;
+			break;
+		}
+		serverCall->setWaitingBehavior( waitingBehavior );
+
+		/* SynchronousServerCall does not contain a Counter. */
+	}
 }
 
 void Converter::work( const am::TerminateProcess_ptr&, am::TerminateProcess* ) {

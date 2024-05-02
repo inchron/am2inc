@@ -65,6 +65,7 @@ const std::vector<std::string>& Converter::getNsURIs() {
 
 void Converter::setOptions( const Options& options ) {
 	_withMemory = options.withMemory();
+	_withDataFlowConnections = options.withDataFlowConnections();
 }
 
 void Converter::warning( const QString& msg ) {

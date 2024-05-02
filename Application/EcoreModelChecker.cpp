@@ -51,6 +51,9 @@ void EcoreModelChecker::work( const ecore::EObject_ptr& eobj ) {
 
 	auto eClass = eobj->eClass();
 	for ( const auto& reference : eClass->getEAllReferences() ) {
+		if ( not reference->isChangeable() or reference->isDerived() )
+			continue;
+
 		auto any = eobj->eGet( reference );
 		if ( reference->getUpperBound() != 1 ) {  //Multiplicity many reference
 			auto eList = ::ecorecpp::mapping::any::any_cast<

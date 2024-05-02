@@ -22,30 +22,31 @@ namespace am320::ResolveValue {
  * See https://eclipse.dev/app4mc/help/latest/index.html#section3.2.1 for reference.
  */
 template<typename T>
-T resolve( const am320::model::Value_ptr& ) {
+inline T resolve( const am320::model::Value_ptr& ) {
 	return {};
 }
 
 template<>
-ecore::EString resolve<ecore::EString>( const am320::model::Value_ptr& abstract ) {
+inline ecore::EString resolve<ecore::EString>( const am320::model::Value_ptr& abstract ) {
 	auto concrete = ecore::as<am320::model::StringObject>( abstract );
 	return concrete->getValue();
 }
 
 template<>
-ecore::EBoolean resolve<ecore::EBoolean>( const am320::model::Value_ptr& abstract ) {
+inline ecore::EBoolean resolve<ecore::EBoolean>(
+	const am320::model::Value_ptr& abstract ) {
 	auto concrete = ecore::as<am320::model::BooleanObject>( abstract );
 	return concrete->isValue();
 }
 
 template<>
-ecore::EInt resolve<ecore::EInt>( const am320::model::Value_ptr& abstract ) {
+inline ecore::EInt resolve<ecore::EInt>( const am320::model::Value_ptr& abstract ) {
 	auto concrete = ecore::as<am320::model::IntegerObject>( abstract );
 	return concrete->getValue();
 }
 
 template<>
-ecore::ELong resolve<ecore::ELong>( const am320::model::Value_ptr& abstract ) {
+inline ecore::ELong resolve<ecore::ELong>( const am320::model::Value_ptr& abstract ) {
 	auto concrete = ecore::as<am320::model::LongObject>( abstract );
 	return concrete->getValue();
 }
@@ -63,19 +64,19 @@ ecore::EBigInteger resolve<ecore::EBigInteger>(
 #endif
 
 template<>
-ecore::EFloat resolve<ecore::EFloat>( const am320::model::Value_ptr& abstract ) {
+inline ecore::EFloat resolve<ecore::EFloat>( const am320::model::Value_ptr& abstract ) {
 	auto concrete = ecore::as<am320::model::FloatObject>( abstract );
 	return concrete->getValue();
 }
 
 template<>
-ecore::EDouble resolve<ecore::EDouble>( const am320::model::Value_ptr& abstract ) {
+inline ecore::EDouble resolve<ecore::EDouble>( const am320::model::Value_ptr& abstract ) {
 	auto concrete = ecore::as<am320::model::DoubleObject>( abstract );
 	return concrete->getValue();
 }
 
 template<>
-sm3::Time_ptr resolve<sm3::Time_ptr>( const am320::model::Value_ptr& abstract ) {
+inline sm3::Time_ptr resolve<sm3::Time_ptr>( const am320::model::Value_ptr& abstract ) {
 	auto concrete = ecore::as<am320::model::Time>( abstract );
 	return AttributeCreator<sm3::Time, am320::model::ModelPackage>()( concrete );
 }

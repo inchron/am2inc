@@ -94,6 +94,8 @@ public:
 
 	/* Amalthea ActivityGraph and ActivityGraphItems */
 	void work( const am320::model::ActivityGraph_ptr&, am320::model::ActivityGraph* );
+	void work( const am320::model::AsynchronousServerCall_ptr&,
+			   am320::model::AsynchronousServerCall* );
 	void work( const am320::model::ChannelReceive_ptr&, am320::model::ChannelReceive* );
 	void work( const am320::model::ChannelSend_ptr&, am320::model::ChannelSend* );
 	void work( const am320::model::ClearEvent_ptr&, am320::model::ClearEvent* );
@@ -211,6 +213,8 @@ private:
 	template<class C>
 	root::model::RelationalExpression_ptr createRelationalExpression(
 		const ecore::Ptr<C>& );
+	root::model::TimeDistribution_ptr createTimeDistribution(
+		const am320::model::IDiscreteValueDeviation_ptr& );
 };
 
 }  // namespace am320

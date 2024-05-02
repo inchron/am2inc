@@ -36,6 +36,9 @@ public:
 	static const std::vector<std::string>& getNsURIs();
 
 	virtual ~Converter() = default;
+	/* The relevant CLI options are cached so not every derived class needs to
+	 * know about the Options class.
+	 */
 	virtual void setOptions( const Options& );
 
 	enum ResultStatus { Ok, Warning, Error };
@@ -74,6 +77,7 @@ protected:
 		return std::tolower( static_cast<unsigned char>( a ) )
 			== std::tolower( static_cast<unsigned char>( b ) );
 	}
+
 	static bool equals( const std::string& lhs, const std::string& rhs ) {
 		return std::equal( lhs.begin(), lhs.end(), rhs.begin(), rhs.end(), ucharEquals );
 	}
@@ -119,7 +123,9 @@ protected:
 	Status _status{ Status::Continue };
 
 	bool withMemory() const { return _withMemory; }
+	bool withDataFlowConnections() const { return _withDataFlowConnections; }
 
 private:
 	bool _withMemory{ true };
+	bool _withDataFlowConnections{ false };
 };

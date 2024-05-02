@@ -9,6 +9,7 @@ CONFIG -= debug_and_release
 # As a developer the first step to do is to override this
 # with a file local.pri containing the line CONFIG += debug
 CONFIG += release
+CONFIG += ccache
 
 # Suppress output of compiler command lines.
 CONFIG += silent
