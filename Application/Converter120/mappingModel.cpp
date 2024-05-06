@@ -87,7 +87,7 @@ void Converter::work( const am::MemoryMapping_ptr& am, am::MemoryMapping* ) {
 
 void Converter::work( const am::PhysicalSectionMapping_ptr&,
 					  am::PhysicalSectionMapping* ) {
-	static Diagnostic::NotImplemented<am::PhysicalSectionMapping> message;
+	static Diagnostic::NotImplemented<am::PhysicalSectionMapping> message( this );
 }
 
 /** A SchedulerAllocation maps InterruptControllers and TaskSchedulers to ProcessingUnits.
@@ -112,7 +112,7 @@ void Converter::work( const am::SchedulerAllocation_ptr& am, am::SchedulerAlloca
  * Runnables, are in sync. Otherwise there will be undefined behaviour.
  */
 void Converter::work( const am::RunnableAllocation_ptr&, am::RunnableAllocation* ) {
-	static Diagnostic::NotImplemented<am::RunnableAllocation> message;
+	static Diagnostic::NotImplemented<am::RunnableAllocation> message( this );
 }
 
 /** An IsrAllocation maps an Isr to an InterruptController.

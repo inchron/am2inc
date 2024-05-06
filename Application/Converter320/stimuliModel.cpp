@@ -18,15 +18,15 @@ namespace sm3s = root::model::stimulation;
 namespace am320 {
 
 void Converter::work( const am::ArrivalCurveStimulus_ptr&, am::ArrivalCurveStimulus* ) {
-	static Diagnostic::NotImplemented<am::ArrivalCurveStimulus> message;
+	static Diagnostic::NotImplemented<am::ArrivalCurveStimulus> message( this );
 }
 
 void Converter::work( const am::CustomStimulus_ptr&, am::CustomStimulus* ) {
-	static Diagnostic::NotImplemented<am::CustomStimulus> message;
+	static Diagnostic::NotImplemented<am::CustomStimulus> message( this );
 }
 
 void Converter::work( const am::EventStimulus_ptr&, am::EventStimulus* ) {
-	static Diagnostic::NotImplemented<am::EventStimulus> message;
+	static Diagnostic::NotImplemented<am::EventStimulus> message( this );
 }
 
 /** An am::InterProcessStimulus is mapped to a sm3::ActivationConnection.
@@ -153,9 +153,11 @@ void Converter::work( const am::PeriodicStimulus_ptr& am, am::PeriodicStimulus* 
 					ecore::as<am::TimeGaussDistribution>( jitter )->getSd() ) );
 
 			} else {
-				std::cerr << "PeriodicStimulus \"" << gen->getName()
-						  << "\": Jitter with unsupported ITimeDeviation "
-						  << jitter->eClass()->getName() << "\n";
+				warning(
+					QStringLiteral( "PeriodicStimulus '%1': Jitter with unsupported "
+									"ITimeDeviation '%2'" )
+						.arg( QString::fromStdString( gen->getName() ),
+							  QString::fromStdString( jitter->eClass()->getName() ) ) );
 			}
 		}
 
@@ -304,8 +306,9 @@ void Converter::work( const am::RelativePeriodicStimulus_ptr& am,
 				variation->setType( sm3::PeriodVariationType::Uniform );
 
 			} else {
-				std::cerr << "Unsupported ITimeDeviation " << jitter->eClass()->getName()
-						  << "\n";
+				error(
+					QStringLiteral( "Unsupported ITimeDeviation '%1'" )
+						.arg( QString::fromStdString( jitter->eClass()->getName() ) ) );
 				throw "Unsupported ITimeDeviation";
 			}
 		}
@@ -333,7 +336,7 @@ void Converter::work( const am::SingleStimulus_ptr& am, am::SingleStimulus* ) {
 }
 
 void Converter::work( const am::VariableRateStimulus_ptr&, am::VariableRateStimulus* ) {
-	static Diagnostic::NotImplemented<am::VariableRateStimulus> message;
+	static Diagnostic::NotImplemented<am::VariableRateStimulus> message( this );
 }
 
 }  // namespace am320

@@ -24,7 +24,7 @@ namespace am210 {
 class Converter : public ::Converter,
 				  public am210::model::ModelItemDispatcher<Converter> {
 public:
-	Converter() : ::Converter() {}
+	Converter( Application& application ) : ::Converter( application ) {}
 
 	void convert( const ecore::EObject_ptr& ) override;
 	void relax() override;
@@ -201,10 +201,8 @@ public:
 	void relaxFreeObjects();
 
 	/* Helper functions used by multiple modules. */
-	static root::model::ModeGroup_ptr createModeGroup(
-		ObjectCache&, const am210::model::ModeLabel_ptr& );
-	static root::model::Counter_ptr createCounter( ObjectCache&,
-												   const am210::model::ModeLabel_ptr& );
+	root::model::ModeGroup_ptr createModeGroup( const am210::model::ModeLabel_ptr& );
+	root::model::Counter_ptr createCounter( const am210::model::ModeLabel_ptr& );
 
 private:
 	template<class C>
@@ -217,8 +215,10 @@ private:
 	void workConditionDisjunction( const ecore::Ptr<C>& );
 
 	template<class C>
-	static root::model::RelationalExpression_ptr createRelationalExpression(
-		ObjectCache& oc, const ecore::Ptr<C>& );
+	root::model::RelationalExpression_ptr createRelationalExpression(
+		const ecore::Ptr<C>& );
+	root::model::TimeDistribution_ptr createTimeDistribution(
+		const am210::model::IDiscreteValueDeviation_ptr& );
 };
 
 }  // namespace am210

@@ -7,6 +7,8 @@
 /** @file swModel.cpp
  * Groups all code related to Amalthea's SwModel.
  */
+#include <QString>
+
 #include "../AttributeCreator.h"
 #include "../Diagnostic.h"
 #include "Converter.h"
@@ -208,7 +210,15 @@ void Converter::work( const am::Runnable_ptr& am, am::Runnable* ) {
 	if ( _mode == PreOrder ) {
 		auto run = _oc.make<sm3::ModelFactory, sm3::Function>( am );
 		run->setName( am->getName() );
+		run->setCallback( am->isCallback() );
+		run->setService( am->isService() );
 		addEvents( run );
+
+		if ( not am->getActivityGraph() ) {
+			warning( QStringLiteral( "Runnable '%1' does not have an ActivityGraph." )
+						 .arg( QString::fromStdString( am->getName() ) ) );
+			run->setCallGraph( sm3::create<sm3::CallGraph>() );
+		}
 	}
 }
 
@@ -262,15 +272,14 @@ void Converter::work( const am::Task_ptr& am, am::Task* ) {
  * created and initialized if it does not exist, hence the order does not
  * matter.
  */
-sm3::ModeGroup_ptr Converter::createModeGroup( ObjectCache& oc,
-											   const am::ModeLabel_ptr& label ) {
-	if ( auto ptr = oc.find<sm3::ModeGroup>( label, ObjectCache::Default ) )
+sm3::ModeGroup_ptr Converter::createModeGroup( const am::ModeLabel_ptr& label ) {
+	if ( auto ptr = _oc.find<sm3::ModeGroup>( label, ObjectCache::Default ) )
 		return ptr;
 
 	auto modeDefinition = label->getMode();
 	auto enumMode = ecore::as<am::EnumMode>( modeDefinition );
 
-	auto modeGroup = oc.make<sm3::ModelFactory, sm3::ModeGroup>( label );
+	auto modeGroup = _oc.make<sm3::ModelFactory, sm3::ModeGroup>( label );
 	modeGroup->setName( label->getName() );
 
 	sm3::Mode_ptr initialMode;
@@ -294,15 +303,14 @@ sm3::ModeGroup_ptr Converter::createModeGroup( ObjectCache& oc,
  * and details::createRelationalExpression(). The new Counter is only created
  * and initialized if it does not exist, hence the order does not matter.
  */
-sm3::Counter_ptr Converter::createCounter( ObjectCache& oc,
-										   const am::ModeLabel_ptr& label ) {
-	if ( auto ptr = oc.find<sm3::Counter>( label, ObjectCache::Default ) )
+sm3::Counter_ptr Converter::createCounter( const am::ModeLabel_ptr& label ) {
+	if ( auto ptr = _oc.find<sm3::Counter>( label, ObjectCache::Default ) )
 		return ptr;
 
 	auto modeDefinition = label->getMode();
 	auto numericMode = ecore::as<am::NumericMode>( modeDefinition );
 
-	auto counter = oc.make<sm3::ModelFactory, sm3::Counter>( label );
+	auto counter = _oc.make<sm3::ModelFactory, sm3::Counter>( label );
 	counter->setName( label->getName() );
 
 	auto initialValue = 0;
@@ -310,8 +318,9 @@ sm3::Counter_ptr Converter::createCounter( ObjectCache& oc,
 		try {
 			initialValue = std::stoi( label->getInitialValue() );
 		} catch ( ... ) {
-			std::cerr << "Warning: Cannot convert initial value of NumericMode-Label '"
-					  << label->getName() << "' to an integer value.\n";
+			warning( QStringLiteral( "Cannot convert initial value of NumericMode-Label "
+									 "'%1' to an integer value." )
+						 .arg( QString::fromStdString( label->getName() ) ) );
 		}
 	}
 	counter->setInitialValue( initialValue );
@@ -332,20 +341,21 @@ void Converter::work( const am::ModeLabel_ptr& label, am::ModeLabel* ) {
 	if ( _mode == PreOrder ) {
 		auto modeDefinition = label->getMode();
 		if ( !modeDefinition ) {
-			std::cerr << "Ignoring ModeLabel '" << label->getName()
-					  << "' without reference to a Mode\n";
+			warning(
+				QStringLiteral( "Ignoring ModeLabel '%1' without reference to a Mode." )
+					.arg( QString::fromStdString( label->getName() ) ) );
 			return;
 		}
 
 		if ( auto enumMode = ecore::as<am::EnumMode>( modeDefinition ) ) {
-			auto modeGroup = createModeGroup( _oc, label );
+			auto modeGroup = createModeGroup( label );
 			_model->getGlobalModeGroups().push_back_unsafe( modeGroup );
 
 		} else if ( modeDefinition->eClass()
 					== am::ModelPackage::_instance()->getNumericMode() ) {
 			/* The am::NumericMode does not have any additional parameters, so
 			 * the default values of a sm3::Counter are used. */
-			auto counter = createCounter( _oc, label );
+			auto counter = createCounter( label );
 			_model->getGlobalCounters().push_back_unsafe( counter );
 		}
 	}
@@ -367,7 +377,7 @@ void Converter::work( const am::NumericMode_ptr&, am::NumericMode* ) { skipChild
 
 template<class C>
 root::model::RelationalExpression_ptr Converter::createRelationalExpression(
-	ObjectCache& oc, const ecore::Ptr<C>& am ) {
+	const ecore::Ptr<C>& am ) {
 	sm3::RelationalExpression_ptr expression;
 
 	if ( auto mvc = ecore::as<am::ModeValueCondition>( am ) ) {
@@ -377,7 +387,7 @@ root::model::RelationalExpression_ptr Converter::createRelationalExpression(
 		if ( ecore::as<am::EnumMode>( label->getMode() ) ) {
 			/* EnumMode */
 			auto sm3 = sm3::create<sm3::ModeGroupExpression>();
-			auto modeGroup = createModeGroup( oc, label );
+			auto modeGroup = createModeGroup( label );
 			sm3->setModeGroup( modeGroup );
 
 			std::string value = mvc->getValue();
@@ -390,16 +400,17 @@ root::model::RelationalExpression_ptr Converter::createRelationalExpression(
 		} else {
 			/* NumericMode */
 			auto sm3 = sm3::create<sm3::ValueExpression>();
-			auto counter = createCounter( oc, label );
+			auto counter = createCounter( label );
 			sm3->setValue( counter );
 
 			auto value = 0;
 			try {
 				value = std::stoi( mvc->getValue() );
 			} catch ( ... ) {
-				std::cerr << "Warning: Cannot convert value of ModeValueCondition with a "
-							 "NumericMode-Label '"
-						  << label->getName() << "' to an integer value.\n";
+				warning(
+					QStringLiteral( "Cannot convert value of ModeValueCondition with a "
+									"NumericMode-Label '%1' to an integer value." )
+						.arg( QString::fromStdString( label->getName() ) ) );
 			}
 			sm3->setConstant( value );
 
@@ -413,16 +424,17 @@ root::model::RelationalExpression_ptr Converter::createRelationalExpression(
 		if ( ecore::as<am::EnumMode>( label1->getMode() ) ) {
 			/* EnumMode */
 			auto sm3 = sm3::create<sm3::ModeGroupComparison>();
-			auto modeGroup1 = createModeGroup( oc, label1 );
+			auto modeGroup1 = createModeGroup( label1 );
 			sm3->setModeGroup1( modeGroup1 );
 
 			auto label2 = mlc->getLabel2();
 			if ( ecore::as<am::EnumMode>( label2->getMode() ) ) {
-				auto modeGroup2 = createModeGroup( oc, label2 );
+				auto modeGroup2 = createModeGroup( label2 );
 				sm3->setModeGroup2( modeGroup2 );
 			} else {
-				std::cerr << "Cannot compare ModeGroup and Counter: Ignoring '"
-						  << label2->getName() << "' used as label2.\n";
+				warning( QStringLiteral( "Cannot compare ModeGroup and Counter: Ignoring "
+										 "'%1' used as label2." )
+							 .arg( QString::fromStdString( label2->getName() ) ) );
 			}
 
 			expression = sm3;
@@ -430,16 +442,17 @@ root::model::RelationalExpression_ptr Converter::createRelationalExpression(
 		} else {
 			/* NumericMode */
 			auto sm3 = sm3::create<sm3::ValueComparison>();
-			auto counter1 = createCounter( oc, label1 );
+			auto counter1 = createCounter( label1 );
 			sm3->setValue1( counter1 );
 
 			auto label2 = mlc->getLabel2();
 			if ( ecore::as<am::NumericMode>( label2->getMode() ) ) {
-				auto counter2 = createCounter( oc, label2 );
+				auto counter2 = createCounter( label2 );
 				sm3->setValue2( counter2 );
 			} else {
-				std::cerr << "Cannot compare ModeGroup and Counter: Ignoring '"
-						  << label2->getName() << "' used as label2.\n";
+				warning( QStringLiteral( "Cannot compare ModeGroup and Counter: Ignoring "
+										 "'%1' used as label2." )
+							 .arg( QString::fromStdString( label2->getName() ) ) );
 			}
 
 			expression = sm3;
@@ -488,7 +501,7 @@ void Converter::workConditionDisjunction( const ecore::Ptr<C>& am ) {
 				 * and a sm3::ModeConjunction, then add it to the
 				 * sm3::ModeCondition. */
 				auto conjunction = sm3::create<sm3::Conjunction>();
-				auto expression = createRelationalExpression( _oc, amModeCondition );
+				auto expression = createRelationalExpression( amModeCondition );
 				conjunction->getExpressions().push_back_unsafe( expression );
 				condition->getConjunctions().push_back_unsafe( conjunction );
 
@@ -498,7 +511,7 @@ void Converter::workConditionDisjunction( const ecore::Ptr<C>& am ) {
 				 * am::ModeConditions as sm3::RelationalExpressions to it. */
 				auto conjunction = sm3::create<sm3::Conjunction>();
 				for ( auto&& amModeCondition : amMcConjunction->getEntries() ) {
-					auto expression = createRelationalExpression( _oc, amModeCondition );
+					auto expression = createRelationalExpression( amModeCondition );
 					conjunction->getExpressions().push_back_unsafe( expression );
 				}
 				condition->getConjunctions().push_back_unsafe( conjunction );
@@ -517,7 +530,7 @@ void Converter::work( const am::ConditionDisjunction_ptr& am,
 }
 
 void Converter::work( const am::LocalModeLabel_ptr&, am::LocalModeLabel* ) {
-	static Diagnostic::NotImplemented<am::LocalModeLabel> message;
+	static Diagnostic::NotImplemented<am::LocalModeLabel> message( this );
 }
 
 }  // namespace am320

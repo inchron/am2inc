@@ -29,6 +29,7 @@ class Application : public QCoreApplication {
 public:
 	Application( int& argc, char** argv );
 	~Application() override;
+	void info( unsigned int verbosity, const QString& msg );
 
 public slots:
 	void start();
@@ -41,8 +42,6 @@ protected slots:
 
 protected:
 	void error( Options::Status, const QString& );
-	void warning( const QString& );
-	void info( unsigned int verbosity, const QString& msg );
 
 	std::string readStdIn();
 

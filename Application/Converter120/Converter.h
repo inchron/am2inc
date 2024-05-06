@@ -24,7 +24,7 @@ namespace am120 {
 class Converter : public ::Converter,
 				  public am120::model::ModelItemDispatcher<Converter> {
 public:
-	Converter() : ::Converter() {}
+	Converter( Application& application ) : ::Converter( application ) {}
 
 	void convert( const ecore::EObject_ptr& ) override;
 	void relax() override;
@@ -195,12 +195,12 @@ public:
 	void relaxFreeObjects();
 
 	/* Helper functions used by multiple modules. */
-	static root::model::ModeGroup_ptr createModeGroup(
-		ObjectCache&, const am120::model::ModeLabel_ptr& );
-	static root::model::Counter_ptr createCounter( ObjectCache&,
-												   const am120::model::ModeLabel_ptr& );
-	static root::model::RelationalExpression_ptr createRelationalExpression(
-		ObjectCache& oc, const am120::model::ModeCondition_ptr& );
+	root::model::ModeGroup_ptr createModeGroup( const am120::model::ModeLabel_ptr& );
+	root::model::Counter_ptr createCounter( const am120::model::ModeLabel_ptr& );
+	root::model::RelationalExpression_ptr createRelationalExpression(
+		const am120::model::ModeCondition_ptr& );
+	root::model::TimeDistribution_ptr createTimeDistribution(
+		const am120::model::IDiscreteValueDeviation_ptr& );
 };
 
 }  // namespace am120

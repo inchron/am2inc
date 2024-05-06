@@ -93,10 +93,6 @@ void Application::error( Options::Status error, const QString& msg ) {
 	QCoreApplication::exit( error );
 }
 
-void Application::warning( const QString& msg ) {
-	info( 1, QStringLiteral( "Warning: %1" ).arg( msg ) );
-}
-
 /** Emit an informational message depending on the verbosity level.
  *
  * A verbosity of 1 is the default. If option -q/--quiet is used, only
@@ -166,7 +162,7 @@ bool Application::convert() {
 	for ( auto&& resource : _resourceSet->getResources() )
 		for ( auto&& content : *resource->getContents() ) {
 			if ( not _converter ) {
-				_converter = Converter::create( content );
+				_converter = Converter::create( *this, content );
 				_converter->setOptions( *_options );
 			}
 			_converter->convert( content );

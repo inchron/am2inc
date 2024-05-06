@@ -147,8 +147,10 @@ void Converter::work( const am::Group_ptr& am, am::Group* ) {
 
 		cs->setName( am->getName() );
 		if ( !am->isOrdered() ) {
-			std::cerr << "Unsupported attribute: Group '" << am->getName()
-					  << "' uses random execution order\n";
+			warning(
+				QStringLiteral(
+					"Unsupported attribute: Group '%1' uses random execution order." )
+					.arg( QString::fromStdString( am->getName() ) ) );
 		}
 
 		/* A non-interruptible Group is emulated by added a
@@ -286,8 +288,6 @@ void Converter::work( const am::ClearEvent_ptr& am, am::ClearEvent* ) {
 	}
 }
 
-namespace details {
-
 /* IDiscreteValueDeviation is an interface class, which is implemented by
  * DiscreteValueConstant, DiscreteValueHistogram,
  *
@@ -297,7 +297,8 @@ namespace details {
  *
  * and TruncatedDiscreteValueDistribution (ie. DiscreteValueGaussDistribution)
  */
-sm3::TimeDistribution_ptr createTimeDistribution( am::IDiscreteValueDeviation_ptr am ) {
+sm3::TimeDistribution_ptr Converter::createTimeDistribution(
+	const am::IDiscreteValueDeviation_ptr& am ) {
 	auto td = sm3::create<sm3::TimeDistribution>();
 
 	switch ( am->eClass()->getClassifierID() ) {
@@ -367,12 +368,13 @@ sm3::TimeDistribution_ptr createTimeDistribution( am::IDiscreteValueDeviation_pt
 			td->setType( sm3::TimeDistributionType::Uniform );
 			break;
 		default:
-			std::cerr << "Unsupported DiscreteValueBoundaries::samplingType "
-					  << am::ModelPackage::_instance()
-							 ->getSamplingType()
-							 ->getEEnumLiteral( (int)bound->getSamplingType() )
-							 ->getName()
-					  << "\n";
+			warning( QStringLiteral(
+						 "Unsupported DiscreteValueBoundaries::samplingType '%1'." )
+						 .arg( QString::fromStdString(
+							 am::ModelPackage::_instance()
+								 ->getSamplingType()
+								 ->getEEnumLiteral( (int)bound->getSamplingType() )
+								 ->getName() ) ) );
 		}
 	} break;
 
@@ -458,8 +460,6 @@ sm3::TimeDistribution_ptr createTimeDistribution( am::IDiscreteValueDeviation_pt
 	return td;
 }
 
-}  // namespace details
-
 void Converter::work( const am::Ticks_ptr& am, am::Ticks* ) {
 	if ( _mode == PreOrder ) {
 		auto consumption = _oc.make<sm3::ModelFactory, sm3::ResourceConsumption>( am );
@@ -468,37 +468,37 @@ void Converter::work( const am::Ticks_ptr& am, am::Ticks* ) {
 
 		auto value = am->getDefault();
 		if ( !value ) {
-			if ( Diagnostic::ObjectRequired::notEmpty( am->getExtended() ) )
+			if ( Diagnostic::ObjectRequired::notEmpty( this, am->getExtended() ) )
 				value = am->getExtended().get( 0 )->getValue();
 		}
 
-		if ( Diagnostic::ObjectRequired::exists( value ) )
-			consumption->setTimeDistribution( details::createTimeDistribution( value ) );
+		if ( Diagnostic::ObjectRequired::exists( this, value ) )
+			consumption->setTimeDistribution( createTimeDistribution( value ) );
 	}
 }
 
 void Converter::work( const am::ChannelReceive_ptr&, am::ChannelReceive* ) {
-	static Diagnostic::NotImplemented<am::ChannelReceive> message;
+	static Diagnostic::NotImplemented<am::ChannelReceive> message( this );
 }
 
 void Converter::work( const am::ChannelSend_ptr&, am::ChannelSend* ) {
-	static Diagnostic::NotImplemented<am::ChannelSend> message;
+	static Diagnostic::NotImplemented<am::ChannelSend> message( this );
 }
 
 void Converter::work( const am::CustomEventTrigger_ptr&, am::CustomEventTrigger* ) {
-	static Diagnostic::NotImplemented<am::CustomEventTrigger> message;
+	static Diagnostic::NotImplemented<am::CustomEventTrigger> message( this );
 }
 
 void Converter::work( const am::EnforcedMigration_ptr&, am::EnforcedMigration* ) {
-	static Diagnostic::NotImplemented<am::EnforcedMigration> message;
+	static Diagnostic::NotImplemented<am::EnforcedMigration> message( this );
 }
 
 void Converter::work( const am::ExecutionNeed_ptr&, am::ExecutionNeed* ) {
-	static Diagnostic::NotImplemented<am::ExecutionNeed> message;
+	static Diagnostic::NotImplemented<am::ExecutionNeed> message( this );
 }
 
 void Converter::work( const am::GetResultServerCall_ptr&, am::GetResultServerCall* ) {
-	static Diagnostic::NotImplemented<am::GetResultServerCall> message;
+	static Diagnostic::NotImplemented<am::GetResultServerCall> message( this );
 }
 
 void Converter::work( const am::ModeLabelAccess_ptr& am, am::ModeLabelAccess* ) {
@@ -506,7 +506,7 @@ void Converter::work( const am::ModeLabelAccess_ptr& am, am::ModeLabelAccess* ) 
 		if ( auto&& enumMode = ecore::as<am::EnumMode>( am->getData()->getMode() ) ) {
 			/* A ModeLabelAccess for an EnumMode is translated to a ModeSwitchPoint. */
 			if ( am->getAccess() == am::ModeLabelAccessEnum::set ) {
-				auto modeGroup = createModeGroup( _oc, am->getData() );
+				auto modeGroup = createModeGroup( am->getData() );
 				for ( auto&& literal : enumMode->getLiterals() ) {
 					if ( am->getValue() == literal->getName() ) {
 						for ( const auto&& mode : modeGroup->getModes() ) {
@@ -532,7 +532,7 @@ void Converter::work( const am::ModeLabelAccess_ptr& am, am::ModeLabelAccess* ) 
 			if ( am->getAccess() == am::ModeLabelAccessEnum::increment
 				 or am->getAccess() == am::ModeLabelAccessEnum::decrement
 				 or am->getAccess() == am::ModeLabelAccessEnum::set ) {
-				auto counter = createCounter( _oc, am->getData() );
+				auto counter = createCounter( am->getData() );
 				auto counterModification =
 					_oc.make<sm3::ModelFactory, sm3::CounterModification>( am );
 				setName( *counterModification, "NumericModeLabelAccess" );
@@ -777,19 +777,19 @@ void Converter::work( const am::SemaphoreAccess_ptr& am, am::SemaphoreAccess* ) 
 }
 
 void Converter::work( const am::SenderReceiverRead_ptr&, am::SenderReceiverRead* ) {
-	static Diagnostic::NotImplemented<am::SenderReceiverRead> message;
+	static Diagnostic::NotImplemented<am::SenderReceiverRead> message( this );
 }
 
 void Converter::work( const am::SenderReceiverWrite_ptr&, am::SenderReceiverWrite* ) {
-	static Diagnostic::NotImplemented<am::SenderReceiverWrite> message;
+	static Diagnostic::NotImplemented<am::SenderReceiverWrite> message( this );
 }
 
 void Converter::work( const am::SynchronousServerCall_ptr&, am::SynchronousServerCall* ) {
-	static Diagnostic::NotImplemented<am::SynchronousServerCall> message;
+	static Diagnostic::NotImplemented<am::SynchronousServerCall> message( this );
 }
 
 void Converter::work( const am::TerminateProcess_ptr&, am::TerminateProcess* ) {
-	static Diagnostic::NotImplemented<am::TerminateProcess> message;
+	static Diagnostic::NotImplemented<am::TerminateProcess> message( this );
 }
 
 }  // namespace am220

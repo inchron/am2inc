@@ -12,6 +12,10 @@
 
 #include <string.h>
 
+#include <QString>
+
+#include "Converter.h"
+
 /** The classes and methods in this namespace help to emit certain messages to
  * the user. Per default, everything is sent to std::cerr.
  */
@@ -80,36 +84,40 @@ struct GetNameHelper {
  * class.
  *
  * Usage:
- * static Diagnostic::NotImplemented<am::RunnableAllocation> message;
+ * static Diagnostic::NotImplemented<am::RunnableAllocation> message(this);
  *
  * The compiler will take care that the constructor of this object is executed
  * only once, hence the message will appear only once.
  */
 template<typename T>
 struct NotImplemented {
-	NotImplemented() {
-		std::cerr << "Conversion not implemented: "
-				  << details::GetNameHelper<T>::getTypeName() << "\n";
+	NotImplemented( Converter* c ) {
+		c->warning( QStringLiteral( "Conversion not implemented: %1." )
+						.arg( QString::fromStdString(
+							details::GetNameHelper<T>::getTypeName() ) ) );
 	}
 };
 
 
 struct ObjectRequired {
 	template<typename T>
-	static bool exists( const ecore::Ptr<T>& t ) {
+	static bool exists( Converter* c, const ecore::Ptr<T>& t ) {
 		if ( !t ) {
-			std::cerr << "Missing object of type "
-					  << details::GetNameHelper<T>::getTypeName() << "\n";
+			c->warning( QStringLiteral( "Missing object of type '%1'." )
+							.arg( QString::fromStdString(
+								details::GetNameHelper<T>::getTypeName() ) ) );
 			return false;
 		}
 		return true;
 	}
 
 	template<typename T>
-	static bool notEmpty( const ecorecpp::mapping::EList<ecore::Ptr<T>>& list ) {
+	static bool notEmpty( Converter* c,
+						  const ecorecpp::mapping::EList<ecore::Ptr<T>>& list ) {
 		if ( list.size() == 0 ) {
-			std::cerr << "Missing object(s) of type "
-					  << details::GetNameHelper<T>::getTypeName() << "\n";
+			c->warning( QStringLiteral( "Missing object(s) of type '%1'." )
+							.arg( QString::fromStdString(
+								details::GetNameHelper<T>::getTypeName() ) ) );
 			return false;
 		}
 		return true;

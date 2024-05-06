@@ -47,6 +47,8 @@ Options::Options() {
 										   "Do not write any output." ) );
 	_parser.addOption( QCommandLineOption( QStringList() << "v" << "verbose",
 										   "Increase verbosity level." ) );
+	_parser.addOption( QCommandLineOption( QStringList() << "q" << "quiet",
+										   "Set verbosity level to 0." ) );
 	_parser.addOption( QCommandLineOption( QStringList() << "V" << "version",
 										   "Show version information and exit." ) );
 	_parser.addOption( QCommandLineOption(
@@ -108,6 +110,8 @@ Options::Options( QCoreApplication& app ) : Options() {
 	for ( const auto& optionName : allGivenOptions ) {
 		if ( optionName == "v" )
 			_verbosity++;
+		else if ( optionName == "q" )
+			_verbosity = 0;
 		else if ( optionName == "pedantic" )
 			_mode = Pedantic;
 		else if ( optionName == "relax" )
@@ -129,7 +133,7 @@ Options::Options( QCoreApplication& app ) : Options() {
 	if ( _parser.isSet( "output" ) ) {
 		_outputName = _parser.value( "output" );
 	}
-	/* Verbose messages go to stderr, hence no need to switch if off if the
+	/* Verbose messages go to stderr, hence no need to switch them off if the
 	 * output file is '-'. */
 
 	if ( _parser.isSet( "mapping" ) ) {

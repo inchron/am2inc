@@ -20,20 +20,32 @@
 
 #include "ObjectCache.h"
 
+/* Requires Application::info(). */
+class Application;
 class Options;
+class QString;
 
 /** This is the base class of all Converters.
  */
 class Converter {
 protected:
-	Converter();
+	Converter( Application& );
 
 public:
-	static std::unique_ptr<Converter> create( const ecore::EObject_ptr& );
+	static std::unique_ptr<Converter> create( Application&, const ecore::EObject_ptr& );
 	static const std::vector<std::string>& getNsURIs();
 
 	virtual ~Converter() = default;
 	virtual void setOptions( const Options& );
+
+	enum ResultStatus { Ok, Warning, Error };
+	ResultStatus getResultStatus() const { return _resultStatus; }
+	/* Emit a warning message and increase the status to Warning. */
+	void warning( const QString& );
+	/* Emit an error message and increase the status to Error. */
+	void error( const QString& );
+	/* Like error(), but additionally terminate the tree traversal as soon as possible. */
+	void abort( const QString& );
 
 	virtual void clear();
 	virtual void convert( const ecore::EObject_ptr& ) = 0;
@@ -58,6 +70,16 @@ protected:
 	void addMapping( const std::vector<ecore::EObject_ptr>&,
 					 const std::vector<root::Referable_ptr>& );
 
+	static bool ucharEquals( char a, char b ) {
+		return std::tolower( static_cast<unsigned char>( a ) )
+			== std::tolower( static_cast<unsigned char>( b ) );
+	}
+	static bool equals( const std::string& lhs, const std::string& rhs ) {
+		return std::equal( lhs.begin(), lhs.end(), rhs.begin(), rhs.end(), ucharEquals );
+	}
+
+	Application& _application;
+	ResultStatus _resultStatus{ ResultStatus::Ok };
 	ObjectCache _oc;
 
 	ecore::Ptr<am2inc::Mappings> _mappings;

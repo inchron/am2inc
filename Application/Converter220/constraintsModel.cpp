@@ -119,8 +119,9 @@ void Converter::work( const am::EventChain_ptr& am, am::EventChain* ) {
 			_model->getEventChains().push_back_unsafe( eventGraph );
 
 		} catch ( const std::invalid_argument& err ) {
-			std::cerr << "Ignoring EventChain '" << am->getName() << "': " << err.what()
-					  << "\n";
+			warning( QStringLiteral( "Ignoring EventChain '%1': %2" )
+						 .arg( QString::fromStdString( am->getName() ),
+							   QString::fromStdString( err.what() ) ) );
 		}
 	}
 
@@ -128,37 +129,37 @@ void Converter::work( const am::EventChain_ptr& am, am::EventChain* ) {
 }
 
 void Converter::work( const am::TimingConstraint_ptr&, am::TimingConstraint* ) {
-	static Diagnostic::NotImplemented<am::TimingConstraint> message;
+	static Diagnostic::NotImplemented<am::TimingConstraint> message( this );
 }
 
 void Converter::work( const am::AffinityConstraint_ptr&, am::AffinityConstraint* ) {
-	static Diagnostic::NotImplemented<am::AffinityConstraint> message;
+	static Diagnostic::NotImplemented<am::AffinityConstraint> message( this );
 }
 
 void Converter::work( const am::RunnableSequencingConstraint_ptr&,
 					  am::RunnableSequencingConstraint* ) {
-	static Diagnostic::NotImplemented<am::RunnableSequencingConstraint> message;
+	static Diagnostic::NotImplemented<am::RunnableSequencingConstraint> message( this );
 }
 
 void Converter::work( const am::DataAgeConstraint_ptr&, am::DataAgeConstraint* ) {
-	static Diagnostic::NotImplemented<am::DataAgeConstraint> message;
+	static Diagnostic::NotImplemented<am::DataAgeConstraint> message( this );
 }
 
 void Converter::work( const am::Requirement_ptr&, am::Requirement* ) {
-	static Diagnostic::NotImplemented<am::Requirement> message;
+	static Diagnostic::NotImplemented<am::Requirement> message( this );
 }
 
 void Converter::work( const am::DataCoherencyGroup_ptr&, am::DataCoherencyGroup* ) {
-	static Diagnostic::NotImplemented<am::DataCoherencyGroup> message;
+	static Diagnostic::NotImplemented<am::DataCoherencyGroup> message( this );
 }
 
 void Converter::work( const am::DataStabilityGroup_ptr&, am::DataStabilityGroup* ) {
-	static Diagnostic::NotImplemented<am::DataStabilityGroup> message;
+	static Diagnostic::NotImplemented<am::DataStabilityGroup> message( this );
 }
 
 void Converter::work( const am::PhysicalSectionConstraint_ptr&,
 					  am::PhysicalSectionConstraint* ) {
-	static Diagnostic::NotImplemented<am::PhysicalSectionConstraint> message;
+	static Diagnostic::NotImplemented<am::PhysicalSectionConstraint> message( this );
 }
 
 }  // namespace am220

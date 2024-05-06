@@ -20,6 +20,7 @@
 #include <am220/model/ModelPackage.hpp>
 #include <am320/model/ModelPackage.hpp>
 
+#include "Application.h"
 #include "AttributeCreator.h"
 #include "Converter120/Converter.h"
 #include "Converter200/Converter.h"
@@ -29,20 +30,20 @@
 #include "Options.h"
 
 std::unique_ptr<Converter> Converter::create(
-	const ecore::EObject_ptr& potentialAmaltheaObject ) {
+	Application& application, const ecore::EObject_ptr& potentialAmaltheaObject ) {
 	const auto eClass = potentialAmaltheaObject->eClass();
 	const auto ePkg = eClass->getEPackage();
 
 	if ( ePkg == am120::model::ModelPackage::_instance() )
-		return std::make_unique<am120::Converter>();
+		return std::make_unique<am120::Converter>( application );
 	if ( ePkg == am200::model::ModelPackage::_instance() )
-		return std::make_unique<am200::Converter>();
+		return std::make_unique<am200::Converter>( application );
 	if ( ePkg == am210::model::ModelPackage::_instance() )
-		return std::make_unique<am210::Converter>();
+		return std::make_unique<am210::Converter>( application );
 	if ( ePkg == am220::model::ModelPackage::_instance() )
-		return std::make_unique<am220::Converter>();
+		return std::make_unique<am220::Converter>( application );
 	if ( ePkg == am320::model::ModelPackage::_instance() )
-		return std::make_unique<am320::Converter>();
+		return std::make_unique<am320::Converter>( application );
 
 	throw std::invalid_argument( "This Amalthea version is not supported" );
 	return {};
@@ -66,6 +67,28 @@ void Converter::setOptions( const Options& options ) {
 	_withMemory = options.withMemory();
 }
 
+void Converter::warning( const QString& msg ) {
+	if ( _resultStatus < Warning )
+		_resultStatus = Warning;
+	_application.info( 1, QStringLiteral( "Warning: " ) + msg );
+}
+
+void Converter::error( const QString& msg ) {
+	if ( _resultStatus < Error )
+		_resultStatus = Error;
+	_application.info( 0, QStringLiteral( "Error: " ) + msg );
+}
+
+void Converter::abort( const QString& msg ) {
+	/* Abort tree traversal. */
+	_status = Status::Stop;
+
+	if ( _resultStatus < Error )
+		_resultStatus = Error;
+	_application.info( 0, msg );
+}
+
+
 /** Clear the internal state.
  *
  * For an unknown reason the ObjectCache blocks the serialization of the
@@ -75,7 +98,7 @@ void Converter::clear() { _oc.clear(); }
 
 void Converter::relax() {}
 
-Converter::Converter() {
+Converter::Converter( Application& application ) : _application( application ) {
 	_mappings = am2inc::create<am2inc::Mappings>();
 
 	_root = root::create<root::Root>();

@@ -4,6 +4,8 @@
  *
  * Copyright (c) 2020-2024 INCHRON AG <info@inchron.com>
  */
+#include <QString>
+
 #include "../AttributeCreator.h"
 #include "Converter.h"
 
@@ -325,11 +327,14 @@ void Converter::relaxFreeObjects() {
 					globalProcessScheduler->getSchedulables().push_back( process );
 
 			} else {
-				std::cerr << "Ignoring object w/o container of type "
-						  << object->eClass()->getName();
+				const QString msg =
+					QStringLiteral( "Ignoring object w/o container of type %1%2%3%4%5." )
+						.arg( QString::fromStdString( object->eClass()->getName() ) );
 				if ( auto mo = ecore::as<sm3::ModelObject>( object ) )
-					std::cerr << ": " << mo->getName();
-				std::cerr << "\n";
+					warning( msg.arg( QStringLiteral( " named " ), "'",
+									  QString::fromStdString( mo->getName() ), "'" ) );
+				else
+					warning( msg.arg( QString(), QString(), QString(), QString() ) );
 			}
 		}
 	}

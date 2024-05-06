@@ -16,11 +16,11 @@ namespace sm3 = root::model;
 
 namespace am220 {
 void Converter::work( const am::EventSet_ptr&, am::EventSet* ) {
-	static Diagnostic::NotImplemented<am::EventSet> message;
+	static Diagnostic::NotImplemented<am::EventSet> message( this );
 }
 
 void Converter::work( const am::ComponentEvent_ptr&, am::ComponentEvent* ) {
-	static Diagnostic::NotImplemented<am::ComponentEvent> message;
+	static Diagnostic::NotImplemented<am::ComponentEvent> message( this );
 }
 
 void Converter::work( const am::ProcessEvent_ptr& am, am::ProcessEvent* ) {
@@ -56,27 +56,27 @@ void Converter::work( const am::ProcessEvent_ptr& am, am::ProcessEvent* ) {
 }
 
 void Converter::work( const am::ProcessChainEvent_ptr&, am::ProcessChainEvent* ) {
-	static Diagnostic::NotImplemented<am::ProcessChainEvent> message;
+	static Diagnostic::NotImplemented<am::ProcessChainEvent> message( this );
 }
 
 void Converter::work( const am::SemaphoreEvent_ptr&, am::SemaphoreEvent* ) {
-	static Diagnostic::NotImplemented<am::SemaphoreEvent> message;
+	static Diagnostic::NotImplemented<am::SemaphoreEvent> message( this );
 }
 
 void Converter::work( const am::StimulusEvent_ptr&, am::StimulusEvent* ) {
-	static Diagnostic::NotImplemented<am::StimulusEvent> message;
+	static Diagnostic::NotImplemented<am::StimulusEvent> message( this );
 }
 
 void Converter::work( const am::ChannelEvent_ptr&, am::ChannelEvent* ) {
-	static Diagnostic::NotImplemented<am::ChannelEvent> message;
+	static Diagnostic::NotImplemented<am::ChannelEvent> message( this );
 }
 
 void Converter::work( const am::CustomEvent_ptr&, am::CustomEvent* ) {
-	static Diagnostic::NotImplemented<am::CustomEvent> message;
+	static Diagnostic::NotImplemented<am::CustomEvent> message( this );
 }
 
 void Converter::work( const am::LabelEvent_ptr&, am::LabelEvent* ) {
-	static Diagnostic::NotImplemented<am::LabelEvent> message;
+	static Diagnostic::NotImplemented<am::LabelEvent> message( this );
 }
 
 void Converter::work( const am::RunnableEvent_ptr& am, am::RunnableEvent* ) {
