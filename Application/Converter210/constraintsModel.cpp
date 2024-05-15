@@ -76,6 +76,9 @@ std::list<am::Event_ptr> Converter::getAmaltheaEventSequence(
 		}
 	}
 
+	if ( am->getResponse() and am->getResponse() != result.back() )
+		result.push_back( am->getResponse() );
+
 	return result;
 }
 
@@ -97,14 +100,17 @@ void Converter::work( const am::EventChain_ptr& am, am::EventChain* ) {
 				auto cte = sm3::create<sm3::ConditionalTraceEvent>();
 				cte->setTraceEvent( traceEvent );
 				if ( auto runnEvent = ::ecore::as<am::RunnableEvent>( amEvent ) ) {
-					/* For RunnableEvents an additional restiction to a Process
+					/* For RunnableEvents an additional restriction to a Process
 					 * may be given. */
 					if ( auto process = _oc.find<sm3::Process>( runnEvent->getProcess(),
 																ObjectCache::Default ) )
 						cte->setProcess( process );
 				}
 				auto egte = sm3::create<sm3::EventGraphTraceEvent>();
+				egte->setName( amEvent->getName() );
 				egte->setFirst( cte );
+				if ( not egteList.empty() )
+					egteList.back()->getSuccessors().push_back( egte );
 				egteList.push_back( egte );
 			}
 
