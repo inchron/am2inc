@@ -73,6 +73,12 @@ void Converter::relaxHardware() {
 					cpu->getCores().get( i )->getInitiator() );
 			}
 
+			if ( ic->getInitiators().empty() ) {
+				auto initiatorPort = sm3m::create<sm3m::InitiatorPort>();
+				initiatorPort->setName( "InitiatorPort" );
+				ic->getInitiators().push_back_unsafe( initiatorPort );
+			}
+
 			sm3m::CacheMemory* theCache{ nullptr };
 
 			for ( auto&& memory : cpu->getMemories() ) {

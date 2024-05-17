@@ -15,6 +15,7 @@
 
 namespace am = am210::model;
 namespace sm3 = root::model;
+namespace sm3r = root::model::requirement;
 
 namespace am210 {
 /** Retrive the sequence of am::Events from an am::EventChain definition.
@@ -132,6 +133,69 @@ void Converter::work( const am::EventChain_ptr& am, am::EventChain* ) {
 	}
 
 	skipChildren();
+}
+
+void Converter::work( const am::EventChainLatencyConstraint_ptr& am,
+					  am::EventChainLatencyConstraint* ) {
+	/* Since the EventChainLatencyConstrains are on the same hierarchy level as the
+	 * EventChains we can not be sure, if we have seen (and translated) the EventChain
+	 * already. Therefore, we just memorize the LatencyConstraint here and translate
+	 * it in a separate step. */
+
+	if ( _mode == PreOrder )
+		_latencyConstraints.emplace_back( am );
+
+	skipChildren();
+}
+
+void Converter::convertEventChainLatencyConstraints() {
+	for ( const auto& am : _latencyConstraints ) {
+		if ( not am->getScope() ) {
+			warning( QStringLiteral( "Ignoring EventChainLatencyConstraint '%1' "
+									 "without EventChain reference. " )
+						 .arg( QString::fromStdString( am->getName() ) ) );
+			continue;
+		}
+
+		auto amEventChain = am->getScope();
+		auto eventChain = _oc.find<sm3::EventGraph>( amEventChain, ObjectCache::Default );
+		if ( not eventChain ) {
+			warning( QStringLiteral( "Ignoring EventChainLatencyConstraint '%1' without "
+									 "mapped EventChain '%2'." )
+						 .arg( QString::fromStdString( am->getName() ),
+							   QString::fromStdString( amEventChain->getName() ) ) );
+			continue;
+		}
+
+		auto startStep =
+			::ecore::as<sm3::EventGraphTraceEvent>( eventChain->getInitialNode() )
+				->getFirst();
+		auto& terminalNodes = eventChain->getTerminalNodes();
+		auto endStep =
+			terminalNodes.empty()
+				? sm3::ConditionalTraceEvent_ptr()
+				: ::ecore::as<sm3::EventGraphTraceEvent>( terminalNodes[0] )->getFirst();
+
+		auto lowerBound =
+			AttributeCreator<sm3::Time, am::ModelPackage>()( am->getMinimum() );
+
+		auto upperBound =
+			AttributeCreator<sm3::Time, am::ModelPackage>()( am->getMaximum() );
+
+		auto ectRequirement =
+			_oc.make<sm3r::RequirementFactory, sm3r::EventChainTimingRequirement>( am );
+		ectRequirement->setName( am->getName() );
+		ectRequirement->setEventChain( eventChain );
+		if ( startStep )
+			ectRequirement->getStart().push_back_unsafe( startStep );
+		if ( endStep )
+			ectRequirement->getEnd().push_back_unsafe( endStep );
+		ectRequirement->setInterval( sm3::create<sm3::TimeInterval>() );
+		ectRequirement->getInterval()->setLowerLimit( lowerBound );
+		ectRequirement->getInterval()->setUpperLimit( upperBound );
+
+		_model->getRequirements().push_back_unsafe( ectRequirement );
+	}
 }
 
 void Converter::work( const am::TimingConstraint_ptr&, am::TimingConstraint* ) {

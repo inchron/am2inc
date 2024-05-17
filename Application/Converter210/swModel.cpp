@@ -164,15 +164,16 @@ void Converter::addEvents( const root::model::Process_ptr& process ) {
  */
 void Converter::addEvents( const root::model::Function_ptr& function ) {
 	static const std::vector<std::pair<sm3::TraceEventType, std::string>> s_events = {
+		{ sm3::TraceEventType::Activate, "Activate" },
 		{ sm3::TraceEventType::Entry, "Entry" },
 		{ sm3::TraceEventType::Exit, "Exit" },
 	};
 
-	const auto count = 2;
-	for ( auto i = 0u; i < count; ++i ) {
+	/* Runnables now have an Activate event [SUITE3-4813]. */
+	for ( const auto& entry : s_events ) {
 		auto event = sm3::create<sm3::TraceEvent>();
-		event->setType( s_events[i].first );
-		event->setName( s_events[i].second );
+		event->setType( entry.first );
+		event->setName( entry.second );
 		function->getTraceEvents().push_back_unsafe( event );
 	}
 }

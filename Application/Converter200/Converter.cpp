@@ -23,6 +23,8 @@ void Converter::convert( const ecore::EObject_ptr& topLevelAmalthea ) {
 		[this]( const auto& eObject ) { return preOrder( eObject ); },
 		[this]( const auto& eObject ) { return postOrder( eObject ); } );
 	walker.traverse( topLevelAmalthea );
+
+	convertEventChainLatencyConstraints();
 }
 
 ecorecpp::util::TreeWalker::Status Converter::preOrder( const ecore::EObject_ptr& obj ) {

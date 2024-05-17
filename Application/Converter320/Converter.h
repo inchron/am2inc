@@ -189,6 +189,8 @@ public:
 			   am320::model::DataStabilityGroup* );
 	void work( const am320::model::PhysicalSectionConstraint_ptr&,
 			   am320::model::PhysicalSectionConstraint* );
+	void work( const am320::model::EventChainLatencyConstraint_ptr&,
+			   am320::model::EventChainLatencyConstraint* );
 
 	/* All relaxations, split according to structure. */
 	void relaxHardware();
@@ -215,6 +217,9 @@ private:
 		const ecore::Ptr<C>& );
 	root::model::TimeDistribution_ptr createTimeDistribution(
 		const am320::model::IDiscreteValueDeviation_ptr& );
+
+	void convertEventChainLatencyConstraints();
+	std::vector<am320::model::EventChainLatencyConstraint_ptr> _latencyConstraints;
 };
 
 }  // namespace am320

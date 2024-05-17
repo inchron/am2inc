@@ -193,6 +193,8 @@ public:
 			   am210::model::DataStabilityGroup* );
 	void work( const am210::model::PhysicalSectionConstraint_ptr&,
 			   am210::model::PhysicalSectionConstraint* );
+	void work( const am210::model::EventChainLatencyConstraint_ptr&,
+			   am210::model::EventChainLatencyConstraint* );
 
 	/* All relaxations, split according to structure. */
 	void relaxHardware();
@@ -219,6 +221,9 @@ private:
 		const ecore::Ptr<C>& );
 	root::model::TimeDistribution_ptr createTimeDistribution(
 		const am210::model::IDiscreteValueDeviation_ptr& );
+
+	void convertEventChainLatencyConstraints();
+	std::vector<am210::model::EventChainLatencyConstraint_ptr> _latencyConstraints;
 };
 
 }  // namespace am210
