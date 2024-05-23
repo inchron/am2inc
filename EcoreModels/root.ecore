@@ -2225,6 +2225,16 @@
       </eStructuralFeatures>
     </eClassifiers>
     <eClassifiers
+        xsi:type="ecore:EEnum"
+        name="DispatchingPolicyType">
+      <eLiterals
+          name="FIFO"/>
+      <eLiterals
+          name="LIFO"/>
+      <eLiterals
+          name="Priority"/>
+    </eClassifiers>
+    <eClassifiers
         xsi:type="ecore:EClass"
         name="EstimatorSettings">
       <eAnnotations
@@ -5301,16 +5311,6 @@
               value="A reference to a Function that specifies the called server operation."/>
         </eAnnotations>
       </eStructuralFeatures>
-    </eClassifiers>
-    <eClassifiers
-        xsi:type="ecore:EEnum"
-        name="DispatchingPolicyType">
-      <eLiterals
-          name="FIFO"/>
-      <eLiterals
-          name="LIFO"/>
-      <eLiterals
-          name="Priority"/>
     </eClassifiers>
     <eClassifiers
         xsi:type="ecore:EClass"
