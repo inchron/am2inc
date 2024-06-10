@@ -5,7 +5,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
     name="root"
-    nsURI="http://inchron.com/realtime/root/3.4.2"
+    nsURI="http://inchron.com/realtime/root/3.4.3"
     nsPrefix="root">
   <eAnnotations
       source="http://www.eclipse.org/emf/2002/GenModel">
@@ -68,7 +68,7 @@
       instanceClassName="java.lang.String"/>
   <eSubpackages
       name="model"
-      nsURI="http://inchron.com/realtime/root/3.4.2/model"
+      nsURI="http://inchron.com/realtime/root/3.4.3/model"
       nsPrefix="model">
     <eClassifiers
         xsi:type="ecore:EClass"
@@ -1646,7 +1646,7 @@
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="documentation"
-              value="The TraceEvents of this DataFlowConnection. QueueOverflow, QueueUnderrun and QueueLevelChange."/>
+              value="The TraceEvents of this DataFlowConnection. QueueOverflow, QueueUnderrun, QueueLevelChange, Read, and Write."/>
         </eAnnotations>
       </eStructuralFeatures>
     </eClassifiers>
@@ -2628,18 +2628,19 @@
           source="http://www.eclipse.org/emf/2002/GenModel">
         <details
             key="documentation"
-            value="A node of type EventGraphSynchronizationBarrier is used to constrain the progress of an EventChain instance depending on the completion of preceding EventChainSteps. In AND mode (or == false) the EventChain instance is only allowed to proceed to the next step after all preceding steps have been reached, while in OR mode it is sufficient if any of these steps is reached."/>
+            value="A node of type EventGraphSynchronizationBarrier is used to constrain the progress of an EventChain instance depending on the completion of preceding EventChainSteps."/>
       </eAnnotations>
       <eStructuralFeatures
           xsi:type="ecore:EAttribute"
-          name="orSemantics"
-          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
-          defaultValueLiteral="false">
+          name="minItems"
+          lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+          defaultValueLiteral="0">
         <eAnnotations
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="documentation"
-              value="If this flag is set to true, OR mode is enabled, otherwise AND mode (default)."/>
+              value="An integer value that specifies the number of preceding EventChainSteps (predecessors) at the EventGraphSynchronizationBarrier that must be reached before the EventChain instance can continue. The special value 0 (default) is used to indicate that all preceding steps must be reached."/>
         </eAnnotations>
       </eStructuralFeatures>
     </eClassifiers>
@@ -6524,6 +6525,14 @@
       <eLiterals
           name="QueueLevelChange"
           value="32"/>
+      <eLiterals
+          name="Read"
+          value="33"
+          literal="Read"/>
+      <eLiterals
+          name="Write"
+          value="34"
+          literal="Write"/>
     </eClassifiers>
     <eClassifiers
         xsi:type="ecore:EClass"
@@ -7301,7 +7310,7 @@
     </eClassifiers>
     <eSubpackages
         name="autosar"
-        nsURI="http://inchron.com/realtime/root/3.4.2/model/autosar"
+        nsURI="http://inchron.com/realtime/root/3.4.3/model/autosar"
         nsPrefix="autosar">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -7852,7 +7861,7 @@
     </eSubpackages>
     <eSubpackages
         name="fmi"
-        nsURI="http://inchron.com/realtime/root/3.4.2/model/fmi"
+        nsURI="http://inchron.com/realtime/root/3.4.3/model/fmi"
         nsPrefix="fmi">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -8036,7 +8045,7 @@
       </eClassifiers>
       <eSubpackages
           name="type"
-          nsURI="http://inchron.com/realtime/root/3.4.2/model/fmi/type"
+          nsURI="http://inchron.com/realtime/root/3.4.3/model/fmi/type"
           nsPrefix="type">
         <eClassifiers
             xsi:type="ecore:EClass"
@@ -8133,7 +8142,7 @@
       </eSubpackages>
       <eSubpackages
           name="unit"
-          nsURI="http://inchron.com/realtime/root/3.4.2/model/fmi/unit"
+          nsURI="http://inchron.com/realtime/root/3.4.3/model/fmi/unit"
           nsPrefix="unit">
         <eClassifiers
             xsi:type="ecore:EClass"
@@ -8328,7 +8337,7 @@
       </eSubpackages>
       <eSubpackages
           name="variable"
-          nsURI="http://inchron.com/realtime/root/3.4.2/model/fmi/variable"
+          nsURI="http://inchron.com/realtime/root/3.4.3/model/fmi/variable"
           nsPrefix="variable">
         <eClassifiers
             xsi:type="ecore:EClass"
@@ -8730,7 +8739,7 @@
     </eSubpackages>
     <eSubpackages
         name="memory"
-        nsURI="http://inchron.com/realtime/root/3.4.2/model/memory"
+        nsURI="http://inchron.com/realtime/root/3.4.3/model/memory"
         nsPrefix="memory">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -9002,6 +9011,12 @@
                 value="If this is set to false, instances of the DataObject will not be cached by CacheMemories."/>
           </eAnnotations>
         </eStructuralFeatures>
+        <eStructuralFeatures
+            xsi:type="ecore:EReference"
+            name="traceEvents"
+            upperBound="-1"
+            eType="#//model/TraceEvent"
+            containment="true"/>
       </eClassifiers>
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -9424,7 +9439,7 @@
     </eSubpackages>
     <eSubpackages
         name="metric"
-        nsURI="http://inchron.com/realtime/root/3.4.2/model/metric"
+        nsURI="http://inchron.com/realtime/root/3.4.3/model/metric"
         nsPrefix="metric">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -11018,7 +11033,7 @@
     </eSubpackages>
     <eSubpackages
         name="peripheral"
-        nsURI="http://inchron.com/realtime/root/3.4.2/model/peripheral"
+        nsURI="http://inchron.com/realtime/root/3.4.3/model/peripheral"
         nsPrefix="peripheral">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -11680,7 +11695,7 @@
     </eSubpackages>
     <eSubpackages
         name="requirement"
-        nsURI="http://inchron.com/realtime/root/3.4.2/model/requirement"
+        nsURI="http://inchron.com/realtime/root/3.4.3/model/requirement"
         nsPrefix="requirement">
       <eAnnotations
           source="http://www.eclipse.org/emf/2002/GenModel">
@@ -12706,7 +12721,7 @@
     </eSubpackages>
     <eSubpackages
         name="stimulation"
-        nsURI="http://inchron.com/realtime/root/3.4.2/model/stimulation"
+        nsURI="http://inchron.com/realtime/root/3.4.3/model/stimulation"
         nsPrefix="stimulation">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -13165,14 +13180,14 @@
               source="http://www.eclipse.org/emf/2002/GenModel">
             <details
                 key="documentation"
-                value="The CallGraph is executed whenever the StimuliGenerator fires. Only a reduced subset of CallSequenceItems is allowed, e.g. ActivationActions."/>
+                value="The CallGraph is executed whenever the StimuliGenerator fires. Only a reduced subset of GraphEntries and CallSequenceItems is allowed. Allowed GraphEntries: CallSequence, Switch, and ProbabilitySwitch. Allowed CallSequenceItems: ActivationItem, ActivateProcess, ConditionEvaluation, CounterModification, ModeSwitchPoint, SetEvent, SetGuard, and SemaphoreAccess."/>
           </eAnnotations>
         </eStructuralFeatures>
       </eClassifiers>
     </eSubpackages>
     <eSubpackages
         name="type"
-        nsURI="http://inchron.com/realtime/root/3.4.2/model/type"
+        nsURI="http://inchron.com/realtime/root/3.4.3/model/type"
         nsPrefix="type">
       <eClassifiers
           xsi:type="ecore:EClass"
