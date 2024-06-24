@@ -10,8 +10,8 @@
  */
 #pragma once
 
-#include <list>
 #include <stack>
+#include <vector>
 
 #include <am220/model/ModelItemDispatcher.hpp>
 #include <root/model/Model.hpp>
@@ -175,8 +175,10 @@ public:
 	void work( const am220::model::RunnableEvent_ptr&, am220::model::RunnableEvent* );
 
 	/* Amalthea constraintsModel */
-	std::list<am220::model::Event_ptr> getAmaltheaEventSequence(
-		const am220::model::AbstractEventChain_ptr& am );
+	std::tuple<std::vector<root::model::EventGraphNode_ptr> /*stimuliSuccessors*/,
+			   root::model::EventGraphNode_ptr /*responsePredecessor*/>
+		fillEventGraph( const am220::model::AbstractEventChain_ptr& am,
+						const root::model::EventGraph_ptr& eg );
 	void work( const am220::model::EventChain_ptr&, am220::model::EventChain* );
 	void work( const am220::model::TimingConstraint_ptr&,
 			   am220::model::TimingConstraint* );

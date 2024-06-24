@@ -98,6 +98,15 @@ public:
 		return ecore::as<T>( it->second );
 	}
 
+	void remove( const ecore::EObject_ptr& am, SubKey k = Default ) {
+		if ( auto it = _content.find( am ); it != _content.end() ) {
+			if ( auto oldInc = it->second[k] ) {
+				reverseRemove( oldInc );
+				it->second[k] = {};
+			}
+		}
+	}
+
 	void clear() {
 		_content.clear();
 		_reverseContent.clear();
