@@ -142,46 +142,6 @@ void Converter::addStimulus( const am::Process_ptr& am,
 	}
 }
 
-/** Add TraceEvents to a Process.
- */
-void Converter::addEvents( const root::model::Process_ptr& process ) {
-	static const std::vector<std::pair<sm3::TraceEventType, std::string>> s_events = {
-		{ sm3::TraceEventType::Activate, "Activate" },
-		{ sm3::TraceEventType::Start, "Start" },
-		{ sm3::TraceEventType::Terminate, "Terminate" },
-		{ sm3::TraceEventType::Block, "Block" },
-		{ sm3::TraceEventType::Release, "Release" },
-		{ sm3::TraceEventType::Restart, "Restart" },
-	};
-
-	const auto count = process->isIsr() ? 3u : 6u;
-	for ( auto i = 0u; i < count; ++i ) {
-		auto event = sm3::create<sm3::TraceEvent>();
-		event->setType( s_events[i].first );
-		event->setName( s_events[i].second );
-		process->getTraceEvents().push_back_unsafe( event );
-	}
-}
-
-/** Add TraceEvents to a Function.
- */
-void Converter::addEvents( const root::model::Function_ptr& function ) {
-	static const std::vector<std::pair<sm3::TraceEventType, std::string>> s_events = {
-		{ sm3::TraceEventType::Activate, "Activate" },
-		{ sm3::TraceEventType::Entry, "Entry" },
-		{ sm3::TraceEventType::Exit, "Exit" },
-	};
-
-	/* Runnables now have an Activate event [SUITE3-4813]. */
-	for ( const auto& entry : s_events ) {
-		auto event = sm3::create<sm3::TraceEvent>();
-		event->setType( entry.first );
-		event->setName( entry.second );
-		function->getTraceEvents().push_back_unsafe( event );
-	}
-}
-
-
 void Converter::work( const am::ISR_ptr& am, am::ISR* ) {
 	if ( _mode == PreOrder ) {
 		auto process = _oc.make<sm3::ModelFactory, sm3::Process>( am );
@@ -205,6 +165,7 @@ void Converter::work( const am::Label_ptr& am, am::Label* ) {
 		dataObject->setName( am->getName() );
 		dataObject->setSize(
 			AttributeCreator<sm3::DataSize, am::ModelPackage>()( am->getSize() ) );
+		addEvents( dataObject );
 	}
 }
 

@@ -90,8 +90,6 @@ public:
 			   am200::model::ConditionDisjunction* );
 
 	void addStimulus( const am200::model::Process_ptr&, const root::model::Process_ptr& );
-	void addEvents( const root::model::Process_ptr& );
-	void addEvents( const root::model::Function_ptr& );
 
 	/* Amalthea ActivityGraph and ActivityGraphItems */
 	void work( const am200::model::ActivityGraph_ptr&, am200::model::ActivityGraph* );

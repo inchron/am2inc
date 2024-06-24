@@ -89,8 +89,6 @@ public:
 	void work( const am320::model::LocalModeLabel_ptr&, am320::model::LocalModeLabel* );
 
 	void addStimulus( const am320::model::Process_ptr&, const root::model::Process_ptr& );
-	void addEvents( const root::model::Process_ptr& );
-	void addEvents( const root::model::Function_ptr& );
 
 	/* Amalthea ActivityGraph and ActivityGraphItems */
 	void work( const am320::model::ActivityGraph_ptr&, am320::model::ActivityGraph* );

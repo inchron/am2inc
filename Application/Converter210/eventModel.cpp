@@ -75,8 +75,32 @@ void Converter::work( const am::CustomEvent_ptr&, am::CustomEvent* ) {
 	static Diagnostic::NotImplemented<am::CustomEvent> message( this );
 }
 
-void Converter::work( const am::LabelEvent_ptr&, am::LabelEvent* ) {
-	static Diagnostic::NotImplemented<am::LabelEvent> message( this );
+void Converter::work( const am::LabelEvent_ptr& am, am::LabelEvent* ) {
+	if ( _mode == PreOrder ) {
+		auto amLabel = am->getEntity();
+		if ( not amLabel ) {
+			return;
+		}
+
+		auto dataObject = _oc.find<sm3m::DataObject>( amLabel, ObjectCache::Default );
+		if ( not dataObject ) {
+			return;
+		}
+
+		static const std::map<am::LabelEventType, sm3::TraceEventType> labelEventMap{
+			{ am::LabelEventType::read, sm3::TraceEventType::Read },
+			{ am::LabelEventType::write, sm3::TraceEventType::Write } };
+
+		auto it = labelEventMap.find( am->getEventType() );
+		if ( it != labelEventMap.end() ) {
+			for ( const auto& event : dataObject->getTraceEvents() ) {
+				if ( event->getType() == it->second ) {
+					_oc.add( am, ObjectCache::SubKey::Default, event );
+					return;
+				}
+			}
+		}
+	}
 }
 
 void Converter::work( const am::RunnableEvent_ptr& am, am::RunnableEvent* ) {

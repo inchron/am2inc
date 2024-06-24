@@ -88,8 +88,6 @@ public:
 			   am120::model::ModeConditionDisjunction* );
 
 	void addStimulus( const am120::model::Process_ptr&, const root::model::Process_ptr& );
-	void addEvents( const root::model::Process_ptr& );
-	void addEvents( const root::model::Function_ptr& );
 
 	/* Amalthea ActivityGraph and ActivityGraphItems */
 	void work( const am120::model::ActivityGraph_ptr&, am120::model::ActivityGraph* );

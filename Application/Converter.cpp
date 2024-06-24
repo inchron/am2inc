@@ -189,3 +189,58 @@ void Converter::addMapping( const std::vector<ecore::EObject_ptr>& am,
 		mapping->getInchron().push_back_unsafe( i );
 	_mappings->getMappings().push_back_unsafe( mapping );
 }
+
+/** Add TraceEvents to a Process.
+ */
+void Converter::addEvents( const root::model::Process_ptr& process ) {
+	static const std::vector<std::pair<sm3::TraceEventType, std::string>> s_events = {
+		{ sm3::TraceEventType::Activate, "Activate" },
+		{ sm3::TraceEventType::Start, "Start" },
+		{ sm3::TraceEventType::Terminate, "Terminate" },
+		{ sm3::TraceEventType::Block, "Block" },
+		{ sm3::TraceEventType::Release, "Release" },
+		{ sm3::TraceEventType::Restart, "Restart" },
+	};
+
+	const auto count = process->isIsr() ? 3u : 6u;
+	for ( auto i = 0u; i < count; ++i ) {
+		auto event = sm3::create<sm3::TraceEvent>();
+		event->setType( s_events[i].first );
+		event->setName( s_events[i].second );
+		process->getTraceEvents().push_back_unsafe( event );
+	}
+}
+
+/** Add TraceEvents to a Function.
+ */
+void Converter::addEvents( const root::model::Function_ptr& function ) {
+	static const std::vector<std::pair<sm3::TraceEventType, std::string>> s_events = {
+		{ sm3::TraceEventType::Activate, "Activate" },
+		{ sm3::TraceEventType::Entry, "Entry" },
+		{ sm3::TraceEventType::Exit, "Exit" },
+	};
+
+	/* Runnables now have an Activate event [SUITE3-4813]. */
+	for ( const auto& entry : s_events ) {
+		auto event = sm3::create<sm3::TraceEvent>();
+		event->setType( entry.first );
+		event->setName( entry.second );
+		function->getTraceEvents().push_back_unsafe( event );
+	}
+}
+
+/** Add TraceEvents to a DataObject.
+ */
+void Converter::addEvents( const root::model::memory::DataObject_ptr& dataObject ) {
+	static const std::vector<std::pair<sm3::TraceEventType, std::string>> s_events = {
+		{ sm3::TraceEventType::Read, "read" },
+		{ sm3::TraceEventType::Write, "write" },
+	};
+
+	for ( const auto& entry : s_events ) {
+		auto event = sm3::create<sm3::TraceEvent>();
+		event->setType( entry.first );
+		event->setName( entry.second );
+		dataObject->getTraceEvents().push_back_unsafe( event );
+	}
+}

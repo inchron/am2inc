@@ -73,6 +73,10 @@ protected:
 	void addMapping( const std::vector<ecore::EObject_ptr>&,
 					 const std::vector<root::Referable_ptr>& );
 
+	void addEvents( const root::model::Process_ptr& );
+	void addEvents( const root::model::Function_ptr& );
+	void addEvents( const root::model::memory::DataObject_ptr& );
+
 	static bool ucharEquals( char a, char b ) {
 		return std::tolower( static_cast<unsigned char>( a ) )
 			== std::tolower( static_cast<unsigned char>( b ) );

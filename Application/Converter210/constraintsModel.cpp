@@ -35,12 +35,22 @@ std::vector<sm3::EventGraphNode_ptr> getTraceEvents( const am::Event_ptr& amEven
 		cte->setTraceEvent( traceEvent );
 		if ( auto runnEvent = ::ecore::as<am::RunnableEvent>( entityEvent ) ) {
 			/* For RunnableEvents an additional restriction to a Process
-				   * may be given. */
+			 * may be given. */
 			if ( auto amProcess = runnEvent->getProcess() ) {
 				auto process = oc.make<sm3::ModelFactory, sm3::Process>( amProcess );
 				cte->setProcess( process );
 			}
+
+		} else if ( auto labelEvent = ::ecore::as<am::LabelEvent>( entityEvent ) ) {
+			/* For LabelEvents an additional restriction to a Process
+             * or Runnable may be given. We can treat here the Process
+             * case. */
+			if ( auto amProcess = labelEvent->getProcess() ) {
+				auto process = oc.make<sm3::ModelFactory, sm3::Process>( amProcess );
+				cte->setProcess( process );
+			}
 		}
+
 		auto egte = sm3::create<sm3::EventGraphTraceEvent>();
 		egte->setName( entityEvent->getName() );
 		egte->setFirst( cte );
