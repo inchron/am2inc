@@ -889,6 +889,14 @@ void Converter::work( const am::SenderReceiverRead_ptr& am, am::SenderReceiverRe
 		if ( Diagnostic::ObjectRequired::exists( this, label ) ) {
 			setName( *vra, "VariableReadAccess_" + label->getName() );
 
+			auto access = _oc.make<sm3m::MemoryFactory, sm3m::ExplicitDataAccess>(
+				am, ObjectCache::Sub1 );
+			vra->setDataAccess( access );
+			access->setAccessType( sm3m::DataAccessType::Read );
+			access->setDataObject(
+				_oc.make<sm3m::MemoryFactory, sm3m::DataObject>( label ) );
+			access->getBandwidth()->setValue( 0 );
+
 			if ( withDataFlowConnections() ) {
 				/* The DataFlowConnection might exist already. */
 				auto dataFlow =
@@ -920,6 +928,14 @@ void Converter::work( const am::SenderReceiverWrite_ptr& am, am::SenderReceiverW
 		const auto& label = am->getLabel();
 		if ( Diagnostic::ObjectRequired::exists( this, label ) ) {
 			setName( *vwa, "VariableWriteAccess_" + label->getName() );
+
+			auto access = _oc.make<sm3m::MemoryFactory, sm3m::ExplicitDataAccess>(
+				am, ObjectCache::Sub1 );
+			vwa->setDataAccess( access );
+			access->setAccessType( sm3m::DataAccessType::Write );
+			access->setDataObject(
+				_oc.make<sm3m::MemoryFactory, sm3m::DataObject>( label ) );
+			access->getBandwidth()->setValue( 0 );
 
 			if ( withDataFlowConnections() ) {
 				/* The DataFlowConnection might exist already. */
