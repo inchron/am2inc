@@ -11,6 +11,7 @@
 #pragma once
 
 #include <memory>
+#include <set>
 
 #include <ecore_forward.hpp>
 #include <ecorecpp/util/TreeWalker.hpp>
@@ -84,6 +85,23 @@ protected:
 
 	static bool equals( const std::string& lhs, const std::string& rhs ) {
 		return std::equal( lhs.begin(), lhs.end(), rhs.begin(), rhs.end(), ucharEquals );
+	}
+
+	/* Ensure unique names for objects in a container. */
+	template<class Container>
+	static void uniqueNames( const Container& cont ) {
+		std::set<std::string> seenNames;
+		for ( const auto& namedObject : cont ) {
+			const auto oldName = namedObject->getName();
+			auto uniqueName = oldName;
+			for ( int count = 0; seenNames.count( uniqueName ) != 0; ++count ) {
+				uniqueName = oldName + '_' + std::to_string( count );
+			}
+			seenNames.insert( uniqueName );
+			if ( uniqueName != oldName ) {
+				namedObject->setName( uniqueName );
+			}
+		}
 	}
 
 	Application& _application;

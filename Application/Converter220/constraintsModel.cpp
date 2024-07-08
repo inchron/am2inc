@@ -276,6 +276,11 @@ void Converter::work( const am::EventChain_ptr& am, am::EventChain* ) {
 				}
 			}
 
+			/* The derived names of the sm3::ConditionalTraceEvents might not be unique
+			 * because the am event chain can have multiple steps referring to the same
+			 * EntityEvent. Therefore, we check (and ensure) uniqueness here. */
+			uniqueNames( eventGraph->getNodes() );
+
 			_model->getEventChains().push_back_unsafe( eventGraph );
 
 		} catch ( const std::invalid_argument& err ) {
