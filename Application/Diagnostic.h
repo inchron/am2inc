@@ -12,6 +12,7 @@
 
 #include <string.h>
 
+#include <QRegularExpression>
 #include <QString>
 
 #include "Converter.h"
@@ -21,10 +22,13 @@
  */
 namespace Diagnostic {
 
+/* We need this to be a named namespace, because we use it in __PRETTY_FUNCTION__. */
 namespace details {
 
-/** The idiom of converting a type's name into a string was taken from
+/** The idiom of converting a type's name into a string was originally taken from
  * https://blog.molecular-matters.com/2015/12/11/getting-the-type-of-a-template-argument-as-string-without-rtti/
+ * However, since the change to clang, even for the Windows build, the typename
+ * is contained twice in __PRETTY_FUNCITON__, making a regexp necessary.
  * It is covered by the following license:
  */
 // The MIT License(MIT)
@@ -52,20 +56,29 @@ template<typename T>
 struct GetNameHelper {
 #if defined( __GNUC__ )
 #	define FUNCTION __PRETTY_FUNCTION__
-	static constexpr unsigned int front =
-		sizeof(
-			"static const char* Diagnostic::details::GetNameHelper<T>::getTypeName() "
-			"[with T = " )
-		- 1u;
-	static constexpr unsigned int back = sizeof( "]" ) - 1u;
+	/* e.g. static const char *Diagnostic::details::GetNameHelper<am320::model::Requirement>::getTypeName() [T = am320::model::Requirement] */
+	static const char* getTypeName() {
+		static constexpr size_t size = sizeof( FUNCTION );
+		static char typeName[size] = {};
+		if ( typeName[0] == 0 ) {
+			memcpy( typeName, FUNCTION, size - 1u );
+			QRegularExpression re( "\\[T = (.+)\\]" );
+			auto match = re.match( typeName );
+			if ( match.hasMatch() ) {
+				auto matched = match.captured( 1 );
+				QByteArray array = matched.toLocal8Bit();
+				memcpy( typeName, array.data(), array.size() );
+				typeName[array.size()] = '\0';
+			}
+		}
+		return typeName;
+	}
 
 #else  // if MSVC
 #	define FUNCTION __FUNCTION__
 	static constexpr unsigned int front =
 		sizeof( "Diagnostic::details::GetNameHelper<" ) - 1u;
 	static constexpr unsigned int back = sizeof( ">::GetTypeName" ) - 1u;
-
-#endif
 
 	static const char* getTypeName() {
 		static constexpr size_t size = sizeof( FUNCTION ) - front - back;
@@ -74,6 +87,8 @@ struct GetNameHelper {
 			memcpy( typeName, FUNCTION + front, size - 1u );
 		return typeName;
 	}
+
+#endif
 };
 /* End of the idiom. */
 
