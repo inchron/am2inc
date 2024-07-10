@@ -183,12 +183,12 @@ void Converter::relaxIsrSchedulers() {
 			if ( isrScheduler->getSchedulables().size() == 0 )
 				continue;
 
-			auto defaultScheduler =
-				ecore::as<sm3::Scheduler>( isrScheduler->getSchedulables().get( 0 ) );
-			/* Allow multiple Systems to be mapped to different CpuCores of
-			 * the same Cpu. */
-			for ( auto&& core : defaultScheduler->getCpuCores() )
-				isrScheduler->getCpuCores().push_back( core );
+			for ( const auto& schedulable : isrScheduler->getSchedulables() ) {
+				/* Allow multiple Systems to be mapped to different CpuCores of
+			 	 * the same Cpu. */
+				for ( const auto& core : schedulable->getCpuCores() )
+					isrScheduler->getCpuCores().push_back( core );
+			}
 		}
 	}
 }
