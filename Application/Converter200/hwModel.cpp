@@ -70,6 +70,9 @@ void Converter::work( const am::HwStructure_ptr& am, am::HwStructure* ) {
 /** Connect two HwPorts. If there is a mismatch of the PortTypes, the connection will be dropped.
  */
 void Converter::work( const am::HwConnection_ptr& am, am::HwConnection* ) {
+	if ( not withMemory() )
+		return;
+
 	if ( _mode == PreOrder ) {
 		/* It does not matter if the used HwPorts have already been converted
 		 * to INCHRON InitiatorPorts respective ResponderPorts or not. Just
@@ -96,6 +99,9 @@ void Converter::work( const am::HwConnection_ptr& am, am::HwConnection* ) {
 }
 
 void Converter::work( const am::HwPort_ptr& am, am::HwPort* ) {
+	if ( not withMemory() )
+		return;
+
 	if ( _mode == PreOrder ) {
 		auto hwModule = ecore::as<am::HwModule>( am->eContainer() );
 		if ( !hwModule )
@@ -177,6 +183,9 @@ void Converter::work( const am::ProcessingUnit_ptr& am, am::ProcessingUnit* ) {
 }
 
 void Converter::work( const am::Memory_ptr& am, am::Memory* ) {
+	if ( not withMemory() )
+		return;
+
 	if ( _mode == PreOrder ) {
 		auto memory = _oc.make<sm3m::MemoryFactory, sm3m::Memory>( am );
 		memory->setName( am->getName() );
@@ -251,6 +260,9 @@ sm3m::CacheWritePolicy convert( am::WriteStrategy s ) {
  * Are L3 caches contained by an am::HwStructure with the am::StructureType ECU?
  */
 void Converter::work( const am::Cache_ptr& am, am::Cache* ) {
+	if ( not withMemory() )
+		return;
+
 	if ( _mode == PreOrder ) {
 		auto cache = _oc.make<sm3m::MemoryFactory, sm3m::CacheMemory>( am );
 		cache->setName( am->getName() );
@@ -285,6 +297,9 @@ void Converter::work( const am::Cache_ptr& am, am::Cache* ) {
  * of its ports and synthesize sm3m::Interconnects if it matches.
  */
 void Converter::work( const am::ConnectionHandler_ptr& am, am::ConnectionHandler* ) {
+	if ( not withMemory() )
+		return;
+
 	if ( _mode == PreOrder ) {
 		if ( am->getPorts().size() == 0 )
 			return;

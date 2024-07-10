@@ -264,11 +264,6 @@ void Converter::work( const am::Group_ptr& am, am::Group* ) {
 }
 
 void Converter::work( const am::LabelAccess_ptr& am, am::LabelAccess* ) {
-	/* Do not generate a ResourceConsumption with a DataAccess if not intended
-	 * [AM2INC-42]. */
-	if ( not withMemory() )
-		return;
-
 	if ( _mode == PreOrder ) {
 		auto rc = _oc.make<sm3::ModelFactory, sm3::ResourceConsumption>(
 			am, ObjectCache::Default );

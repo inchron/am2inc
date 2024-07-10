@@ -55,9 +55,9 @@ Options::Options() {
 		QStringList() << "pedantic",
 		"Adhere strictly to the model constraints. Generates a broken output model, if "
 		"the input model is not compliant." ) );
-	_parser.addOption(
-		QCommandLineOption( QStringList() << "no-memory-accesses",
-							"Do not generate memory accesses for LabelAccesses." ) );
+	_parser.addOption( QCommandLineOption(
+		QStringList() << "no-memory-accesses",
+		"Do not generate memory, interconnects, and hardware connections (ports)." ) );
 	_parser.addOption( QCommandLineOption(
 		QStringList() << "relax",
 		"Accept input models, which do not strictly adhere to the model constraints. A "

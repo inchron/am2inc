@@ -28,7 +28,7 @@ void Converter::relax() {
 }
 
 void Converter::relaxHardware() {
-	if ( _connectionHandlersDefined )
+	if ( _connectionHandlersDefined or not withMemory() )
 		return;
 
 	const auto numberOfCpus = _model->getCpus().size();
