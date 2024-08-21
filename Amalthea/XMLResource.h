@@ -51,7 +51,8 @@ public:
 
 	const URIList& getURIList() const { return _uriList; }
 
-	void load( const Resource::OptionMap& = Resource::OptionMap() ) override;
+	using ecorecpp::resource::XMLResource::load;
+	void load( const Resource::OptionMap& ) override;
 
 protected:
 	void doLoad( const Resource::OptionMap& );

@@ -12,6 +12,14 @@
 
 namespace amalthea {
 
+namespace {
+
+const std::streamsize s_minimumAmxmlLength = []() {
+	return (signed)strlen( "<am:Amalthea xmi:version=\"2.0\"" );
+}();
+
+}  // namespace
+
 /** The URI of the baseclass is initialized with the base URI of all split
  * files, which is "amlt:/".
  */
@@ -29,17 +37,19 @@ void XMLResource::doLoad( const Resource::OptionMap& options ) {
 	for ( auto&& uri : _uriList ) {
 		auto is = getURIConverter()->createInputStream( uri );
 		if ( !is )
-			throw std::logic_error( "Input stream not readable!" );
+			throw std::logic_error( "Input stream not readable" );
 
 		// get length of file:
 		is->seekg( 0, is->end );
 		std::streamsize length = is->tellg();
-		is->seekg( 0, is->beg );
+		if ( length <= s_minimumAmxmlLength )
+			throw std::logic_error( "Input stream does not contain useful amxmi" );
 
 		// allocate memory:
 		std::vector<::ecorecpp::mapping::type_definitions::char_t> buffer( length );
 
 		// read data as a block:
+		is->seekg( 0, is->beg );
 		is->read( buffer.data(), length );
 
 		// The file is read in text mode. If it contains \r\n line

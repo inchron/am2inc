@@ -85,11 +85,12 @@ void Application::start() {
 void Application::error( Options::Status error, const QString& msg ) {
 	if ( error != Options::Ok ) {
 		if ( !msg.isEmpty() )
-			info( 0, QStringLiteral( "Terminating with error %1" ).arg( msg ) );
+			info( 0, QStringLiteral( "Terminating with error: %1" ).arg( msg ) );
 		else
 			info( 0, QStringLiteral( "Terminating with error" ) );
 	} else
-		info( 0, QStringLiteral( "Successful translation." ) );
+		info( 1, QStringLiteral( "Successful translation." ) );
+
 	QCoreApplication::exit( error );
 }
 
@@ -100,7 +101,7 @@ void Application::error( Options::Status error, const QString& msg ) {
  */
 void Application::info( unsigned int verbosity, const QString& msg ) {
 	if ( verbosity <= _options->verbosity() )
-		std::cerr << QCoreApplication::applicationName().toStdString() << " "
+		std::cerr << "[" << QCoreApplication::applicationName().toStdString() << "] "
 				  << msg.toStdString() << "\n";
 }
 
@@ -130,18 +131,17 @@ bool Application::readInput() {
 	_resourceSet->getResources().push_back( input );
 
 	try {
-		input->load();
+		input->load( {} );
 
-	} catch ( const std::logic_error& error ) {
-		std::cerr << "[am2inc] Exiting, parser failed (const std::logic_error&)\n";
-		std::cerr << "[am2inc] error: " << error.what() << "\n";
-		exit( 1 );
+	} catch ( const std::logic_error& exception ) {
+		info( 0,
+			  QStringLiteral( "Error: " ) + QString::fromStdString( exception.what() ) );
+		error( Options::Trouble, QStringLiteral( "Parser failed" ) );
 		return true;
 
-	} catch ( const char* error ) {
-		std::cerr << "[am2inc] Exiting, parser failed (const char*)\n";
-		std::cerr << "[am2inc] error: " << error << "\n";
-		exit( 1 );
+	} catch ( const char* exceptionMessage ) {
+		info( 0, QStringLiteral( "Error: " ) + QString::fromLatin1( exceptionMessage ) );
+		error( Options::Trouble, QStringLiteral( "Parser failed" ) );
 		return true;
 	}
 
@@ -157,6 +157,10 @@ bool Application::readInput() {
 	return false;
 }
 
+/** Convert the model and retrieve the result.
+ *
+ * @return true if an error occurs and the model can not be saved.
+ */
 bool Application::convert() {
 	/* Actually there is only one Resource. */
 	for ( auto&& resource : _resourceSet->getResources() )
@@ -167,6 +171,10 @@ bool Application::convert() {
 			}
 			_converter->convert( content );
 		}
+	if ( _converter->getResultStatus() >= Converter::Error ) {
+		error( Options::Trouble, QStringLiteral( "Model conversion failed" ) );
+		return true;
+	}
 
 	_mappings = _converter->getMappings();
 	_root = _converter->getRoot();
