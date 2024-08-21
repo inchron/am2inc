@@ -162,15 +162,15 @@ bool Application::readInput() {
  * @return true if an error occurs and the model can not be saved.
  */
 bool Application::convert() {
-	/* Actually there is only one Resource. */
-	for ( auto&& resource : _resourceSet->getResources() )
-		for ( auto&& content : *resource->getContents() ) {
-			if ( not _converter ) {
-				_converter = Converter::create( *this, content );
-				_converter->setOptions( *_options );
-			}
-			_converter->convert( content );
-		}
+	/* In case of split models, there is more than one EResource. */
+	auto amaltheaObject = Converter::merge( _resourceSet );
+	if ( not amaltheaObject )
+		return true;
+
+	_converter = Converter::create( *this, amaltheaObject );
+	_converter->setOptions( *_options );
+	_converter->convert( amaltheaObject );
+
 	if ( _converter->getResultStatus() >= Converter::Error ) {
 		error( Options::Trouble, QStringLiteral( "Model conversion failed" ) );
 		return true;

@@ -13,6 +13,10 @@
 #include <Mapping/am2inc.hpp>
 
 #include <ecore/EClass.hpp>
+#include <ecorecpp/mapping/any.hpp>
+#include <ecorecpp/mapping/EList.hpp>
+#include <ecorecpp/resource/Resource.hpp>
+#include <ecorecpp/resource/ResourceSet.hpp>
 
 #include <am120/model/ModelPackage.hpp>
 #include <am200/model/ModelPackage.hpp>
@@ -28,6 +32,103 @@
 #include "Converter220/Converter.h"
 #include "Converter320/Converter.h"
 #include "Options.h"
+
+namespace em = ecorecpp::mapping;
+
+namespace {
+
+using EList_ptr = em::EList<ecore::EObject_ptr>::ptr_type;
+
+/** Move all containment children from src to dest.
+ *
+ * @note dest and src need to have the same EClass, or src is a superclass of
+ *     dest. Returns true if this is not satisfied.
+ */
+bool moveContent( const ecore::EObject_ptr& dest, const ecore::EObject_ptr& src ) {
+	if ( dest->eClass() != src->eClass()
+		 and not src->eClass()->isSuperTypeOf( dest->eClass() ) ) {
+		return true;
+	}
+
+	/* Recursively traverse references, move all containments. */
+	const auto& ereferences = src->eClass()->getEAllReferences();
+	for ( const auto& ereference : ereferences ) {
+		if ( not ereference->isContainment() or not ereference->isChangeable()
+			 or ereference->isDerived() or not src->eIsSet( ereference ) )
+			continue;
+
+		auto src_refs = src->eGet( ereference );
+		if ( ereference->getUpperBound() != 1 ) {
+			const auto& srcs = *em::any::any_cast<EList_ptr>( src_refs );
+
+			auto dest_refs = dest->eGet( ereference );
+			auto dests = em::any::any_cast<EList_ptr>( dest_refs );
+
+			for ( const auto& srcObject : srcs ) {
+				auto child = em::any::any_cast<ecore::EObject_ptr>( srcObject );
+				dests->push_back( child );
+			}
+		} else if ( auto child = em::any::any_cast<ecore::EObject_ptr>( src_refs ) )
+			dest->eSet( ereference, child );
+	}
+
+	return false;
+}
+
+}  // namespace
+
+/** The Amalthea object of the first EResource is part of this namespace.
+ * Check if the Amalthea objects of the other EResources are part of the same
+ * namespace and merge their content.
+ */
+ecore::EObject_ptr Converter::merge(
+	const ecore::Ptr<ecorecpp::resource::ResourceSet>& theSet ) {
+	ecore::EObject_ptr mainObject;
+
+	auto& allResources = theSet->getResources();
+	auto resourceIterator = allResources.begin();
+	if ( resourceIterator == allResources.end() )
+		return {};
+
+	/* Will be overwritten immediately, but I need it in the outer scope. */
+	auto contentIterator = ( *resourceIterator )->getContents()->begin();
+
+	for ( ; resourceIterator != allResources.end(); ++resourceIterator ) {
+		auto allContent = ( *resourceIterator )->getContents();
+		for ( contentIterator = allContent->begin(); contentIterator != allContent->end();
+			  ++contentIterator ) {
+			mainObject = *contentIterator;
+			if ( mainObject ) {
+				++contentIterator;
+				break;
+			}
+		}
+		if ( mainObject )
+			break;
+	}
+	if ( not mainObject )
+		return {};
+
+	/* Assumption: mainObject is the first content of the first EResource. */
+
+	auto mainClass = mainObject->eClass();
+
+	do {
+		/* Continue with the current value of contentIterator. */
+		for ( ; contentIterator != ( *resourceIterator )->getContents()->end();
+			  ++contentIterator ) {
+			if ( moveContent( mainObject, *contentIterator ) )
+				throw std::invalid_argument(
+					"Split models must use base objects of the same EClass" );
+		}
+
+		++resourceIterator;
+		if ( resourceIterator != allResources.end() )
+			contentIterator = ( *resourceIterator )->getContents()->begin();
+	} while ( resourceIterator != allResources.end() );
+
+	return mainObject;
+}
 
 std::unique_ptr<Converter> Converter::create(
 	Application& application, const ecore::EObject_ptr& potentialAmaltheaObject ) {

@@ -33,6 +33,11 @@ protected:
 	Converter( Application& );
 
 public:
+	/** Amalthea split-models contain one Amalthea object per EResource.
+	 * Their content must be merged into a single Amalthea object, which then
+	 * can be traversed independent of the given order of the EResources. */
+	static ecore::EObject_ptr merge( const ecore::Ptr<ecorecpp::resource::ResourceSet>& );
+
 	static std::unique_ptr<Converter> create( Application&, const ecore::EObject_ptr& );
 	static const std::vector<std::string>& getNsURIs();
 
@@ -43,12 +48,16 @@ public:
 	virtual void setOptions( const Options& );
 
 	enum ResultStatus { Ok, Warning, Error };
-	ResultStatus getResultStatus() const { return _resultStatus; }
-	/* Emit a warning message and increase the status to Warning. */
+	[[nodiscard]] ResultStatus getResultStatus() const { return _resultStatus; }
+
+	/* Emit a warning message and increase the status to Warning.
+	 * @note This does only call Application::info(). */
 	void warning( const QString& );
-	/* Emit an error message and increase the status to Error. */
+	/* Emit an error message and increase the status to Error.
+	 * @note This does only call Application::info(). */
 	void error( const QString& );
-	/* Like error(), but additionally terminate the tree traversal as soon as possible. */
+	/* Like error(), but additionally terminate the tree traversal as soon as possible.
+	 * @note This does only call Application::info(). */
 	void abort( const QString& );
 
 	virtual void clear();
