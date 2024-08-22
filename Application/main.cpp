@@ -58,7 +58,8 @@ int main( int argc, char* argv[] ) {
 	mmr->loadPackage( am210::model::ModelPackage::_instance() );
 	mmr->loadPackage( am220::model::ModelPackage::_instance() );
 	mmr->loadPackage( am320::model::ModelPackage::_instance(),
-					  { "http://app4mc.eclipse.org/amalthea/3.1.0",
+					  { "http://app4mc.eclipse.org/amalthea/3.3.0",
+						"http://app4mc.eclipse.org/amalthea/3.1.0",
 						"http://app4mc.eclipse.org/amalthea/3.0.0" } );
 	mmr->loadPackage( am2inc::Am2incPackage::_instance() );
 	mmr->loadPackage( root::RootPackage::_instance() );

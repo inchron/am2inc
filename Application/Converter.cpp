@@ -159,7 +159,9 @@ const std::vector<std::string>& Converter::getNsURIs() {
 		/* These models are aliased to am320. */
 		"http://app4mc.eclipse.org/amalthea/3.0.0",
 		"http://app4mc.eclipse.org/amalthea/3.1.0",
-		am320::model::ModelPackage::_instance()->getNsURI() };
+		am320::model::ModelPackage::_instance()->getNsURI(),
+		"http://app4mc.eclipse.org/amalthea/3.3.0",
+	};
 
 	return s_nsURIs;
 }
