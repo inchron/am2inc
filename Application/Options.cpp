@@ -160,6 +160,12 @@ Options::Options( QCoreApplication& app ) : Options() {
 	}
 
 	// Process more options
+
+	/* Backward slashes need to be converted to forward slashes. */
+	QStringList converted;
+	for ( auto fileName : _inputNames )
+		converted << fileName.replace( '\\', '/' );
+	_inputNames = converted;
 }
 
 void Options::showVersion() {
@@ -173,6 +179,11 @@ void Options::showVersion() {
 		std::cout << "\n           " << *it;
 
 	std::cout << "\nINCHRON  : " << root::RootPackage::_instance()->getNsURI() << "\n";
+
+	/* The capabilities can be parsed by a UI tool, e.g. to control a
+	 * multi-selection dialog. */
+	std::cout << "\nversion: " << VERSION << "\ncapabilities: +multi\n";
+
 	::exit( Ok );
 }
 
