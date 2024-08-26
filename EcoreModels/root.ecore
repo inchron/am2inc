@@ -5,7 +5,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
     name="root"
-    nsURI="http://inchron.com/realtime/root/3.4.3"
+    nsURI="http://inchron.com/realtime/root/3.5.0"
     nsPrefix="root">
   <eAnnotations
       source="http://www.eclipse.org/emf/2002/GenModel">
@@ -61,14 +61,14 @@
   <eClassifiers
       xsi:type="ecore:EDataType"
       name="UnsignedLong"
-      instanceClassName="java.lang.UnsignedInteger"/>
+      instanceClassName="java.lang.Integer"/>
   <eClassifiers
       xsi:type="ecore:EDataType"
       name="Url"
       instanceClassName="java.lang.String"/>
   <eSubpackages
       name="model"
-      nsURI="http://inchron.com/realtime/root/3.4.3/model"
+      nsURI="http://inchron.com/realtime/root/3.5.0/model"
       nsPrefix="model">
     <eClassifiers
         xsi:type="ecore:EClass"
@@ -6747,7 +6747,7 @@
           lowerBound="1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
           transient="true"
-          defaultValueLiteral=""
+          defaultValueLiteral="0"
           derived="true"/>
     </eClassifiers>
     <eClassifiers
@@ -7310,7 +7310,7 @@
     </eClassifiers>
     <eSubpackages
         name="autosar"
-        nsURI="http://inchron.com/realtime/root/3.4.3/model/autosar"
+        nsURI="http://inchron.com/realtime/root/3.5.0/model/autosar"
         nsPrefix="autosar">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -7861,7 +7861,7 @@
     </eSubpackages>
     <eSubpackages
         name="fmi"
-        nsURI="http://inchron.com/realtime/root/3.4.3/model/fmi"
+        nsURI="http://inchron.com/realtime/root/3.5.0/model/fmi"
         nsPrefix="fmi">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -8045,7 +8045,7 @@
       </eClassifiers>
       <eSubpackages
           name="type"
-          nsURI="http://inchron.com/realtime/root/3.4.3/model/fmi/type"
+          nsURI="http://inchron.com/realtime/root/3.5.0/model/fmi/type"
           nsPrefix="type">
         <eClassifiers
             xsi:type="ecore:EClass"
@@ -8142,7 +8142,7 @@
       </eSubpackages>
       <eSubpackages
           name="unit"
-          nsURI="http://inchron.com/realtime/root/3.4.3/model/fmi/unit"
+          nsURI="http://inchron.com/realtime/root/3.5.0/model/fmi/unit"
           nsPrefix="unit">
         <eClassifiers
             xsi:type="ecore:EClass"
@@ -8337,7 +8337,7 @@
       </eSubpackages>
       <eSubpackages
           name="variable"
-          nsURI="http://inchron.com/realtime/root/3.4.3/model/fmi/variable"
+          nsURI="http://inchron.com/realtime/root/3.5.0/model/fmi/variable"
           nsPrefix="variable">
         <eClassifiers
             xsi:type="ecore:EClass"
@@ -8739,7 +8739,7 @@
     </eSubpackages>
     <eSubpackages
         name="memory"
-        nsURI="http://inchron.com/realtime/root/3.4.3/model/memory"
+        nsURI="http://inchron.com/realtime/root/3.5.0/model/memory"
         nsPrefix="memory">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -9439,7 +9439,7 @@
     </eSubpackages>
     <eSubpackages
         name="metric"
-        nsURI="http://inchron.com/realtime/root/3.4.3/model/metric"
+        nsURI="http://inchron.com/realtime/root/3.5.0/model/metric"
         nsPrefix="metric">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -11033,7 +11033,7 @@
     </eSubpackages>
     <eSubpackages
         name="peripheral"
-        nsURI="http://inchron.com/realtime/root/3.4.3/model/peripheral"
+        nsURI="http://inchron.com/realtime/root/3.5.0/model/peripheral"
         nsPrefix="peripheral">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -11695,7 +11695,7 @@
     </eSubpackages>
     <eSubpackages
         name="requirement"
-        nsURI="http://inchron.com/realtime/root/3.4.3/model/requirement"
+        nsURI="http://inchron.com/realtime/root/3.5.0/model/requirement"
         nsPrefix="requirement">
       <eAnnotations
           source="http://www.eclipse.org/emf/2002/GenModel">
@@ -12721,7 +12721,7 @@
     </eSubpackages>
     <eSubpackages
         name="stimulation"
-        nsURI="http://inchron.com/realtime/root/3.4.3/model/stimulation"
+        nsURI="http://inchron.com/realtime/root/3.5.0/model/stimulation"
         nsPrefix="stimulation">
       <eClassifiers
           xsi:type="ecore:EClass"
@@ -13187,7 +13187,7 @@
     </eSubpackages>
     <eSubpackages
         name="type"
-        nsURI="http://inchron.com/realtime/root/3.4.3/model/type"
+        nsURI="http://inchron.com/realtime/root/3.5.0/model/type"
         nsPrefix="type">
       <eClassifiers
           xsi:type="ecore:EClass"

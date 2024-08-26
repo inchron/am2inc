@@ -169,6 +169,9 @@ Options::Options( QCoreApplication& app ) : Options() {
 }
 
 void Options::showVersion() {
+	/* VERSION refers to the RELEASE number of am2inc, and usually reflects
+	 * the version of the latest Amalthea model, which is supported. Minor
+	 * increments may indicate features and bugfixes. */
 	std::cout << "Version " << VERSION << " Build " __DATE__ " (" << GIT_VERSION << ")\n";
 
 	std::cout << "Amalthea : ";
@@ -181,8 +184,12 @@ void Options::showVersion() {
 	std::cout << "\nINCHRON  : " << root::RootPackage::_instance()->getNsURI() << "\n";
 
 	/* The capabilities can be parsed by a UI tool, e.g. to control a
-	 * multi-selection dialog. */
-	std::cout << "\nversion: " << VERSION << "\ncapabilities: +multi\n";
+	 * multi-selection dialog. 'version' refers to the root.ecore version of
+	 * the generated model. */
+	QString nsUri = QString::fromStdString( root::RootPackage::_instance()->getNsURI() );
+	int lastSlash = nsUri.lastIndexOf( '/' );
+	std::cout << "\nversion: " << nsUri.mid( lastSlash + 1 ).toStdString()
+			  << "\ncapabilities: +multi\n";
 
 	::exit( Ok );
 }
