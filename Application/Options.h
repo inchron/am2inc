@@ -74,6 +74,7 @@ private:
 	QCommandLineParser _parser;
 
 	Q_NORETURN void showVersion();
+	static QString getRootEcoreVersion();
 	Q_NORETURN void showHelp( int exitCode );
 	Q_NORETURN void installImporter();
 

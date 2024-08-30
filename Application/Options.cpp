@@ -186,12 +186,16 @@ void Options::showVersion() {
 	/* The capabilities can be parsed by a UI tool, e.g. to control a
 	 * multi-selection dialog. 'version' refers to the root.ecore version of
 	 * the generated model. */
-	QString nsUri = QString::fromStdString( root::RootPackage::_instance()->getNsURI() );
-	int lastSlash = nsUri.lastIndexOf( '/' );
-	std::cout << "\nversion: " << nsUri.mid( lastSlash + 1 ).toStdString()
+	std::cout << "\nversion: " << getRootEcoreVersion().toStdString()
 			  << "\ncapabilities: +multi\n";
 
 	::exit( Ok );
+}
+
+QString Options::getRootEcoreVersion() {
+	QString nsUri = QString::fromStdString( root::RootPackage::_instance()->getNsURI() );
+	int lastSlash = nsUri.lastIndexOf( '/' );
+	return nsUri.mid( lastSlash + 1 );
 }
 
 void Options::showHelp( int exitCode ) {
@@ -229,9 +233,6 @@ void Options::installImporter() {
 		settings.setValue( "commandline", QCoreApplication::applicationFilePath() );
 		settings.setValue( "arguments", "-o %t %f %F" );
 		settings.setValue( "filter", "AMALTHEA Model (*.amxmi)" );
-		settings.setValue(
-			"capabilities",
-			QString( "version: %1\ncapabilities: +multi" ).arg( VERSION ) );
 		settings.setValue( "CurrentVersion", VERSION "000" );
 		settings.endGroup();
 		settings.endGroup();
