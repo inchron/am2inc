@@ -17,6 +17,7 @@ TARGET = Root
 QT += core
 
 CONFIG += dll
+win32: CONFIG += plugin # skip installation of libXX.a next to libXX.dll
 DEFINES += MAKE_ROOT_DLL
 
 QMAKE_CXXFLAGS += -Wno-unused-parameter

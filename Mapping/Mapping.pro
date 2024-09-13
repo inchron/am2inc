@@ -17,6 +17,7 @@ TARGET = Mapping
 QT += core
 
 CONFIG += dll
+win32: CONFIG += plugin # skip installation of libXX.a next to libXX.dll
 
 # Amalthea does not distribute the classes over subpackages. As a result the
 # generated PackageImpl.cpp is too big to compile with debug and the

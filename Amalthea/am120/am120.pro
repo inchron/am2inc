@@ -15,6 +15,7 @@ TARGET = am120
 CONFIG -= qt
 
 CONFIG += dll
+win32: CONFIG += plugin # skip installation of libXX.a next to libXX.dll
 CONFIG -= debug
 CONFIG += release
 
