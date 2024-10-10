@@ -21,7 +21,7 @@
 
 
 Options::Options() {
-	_parser.setApplicationDescription( "Amalthea to INCHRON Converter" );
+	_parser.setApplicationDescription( "AMALTHEA to INCHRON Converter" );
 	_parser.addOption( QCommandLineOption( QStringList()
 #ifdef Q_OS_WIN
 											   << QStringLiteral( "?" )
@@ -32,7 +32,7 @@ Options::Options() {
 
 	_parser.addPositionalArgument(
 		"model.amxmi",
-		"If given, the Amalthea model is read from this file. If multiple files "
+		"If given, the AMALTHEA model is read from this file. If multiple files "
 		"are specified, all of them are read as unified model." );
 
 	_parser.addOption(
@@ -174,7 +174,7 @@ void Options::showVersion() {
 	 * increments may indicate features and bugfixes. */
 	std::cout << "Version " << VERSION << " Build " __DATE__ " (" << GIT_VERSION << ")\n";
 
-	std::cout << "Amalthea : ";
+	std::cout << "AMALTHEA : ";
 	const auto& nsURIs = Converter::getNsURIs();
 	auto it = nsURIs.begin();
 	std::cout << *it++;

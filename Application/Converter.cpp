@@ -146,7 +146,7 @@ std::unique_ptr<Converter> Converter::create(
 	if ( ePkg == am320::model::ModelPackage::_instance() )
 		return std::make_unique<am320::Converter>( application );
 
-	throw std::invalid_argument( "This Amalthea version is not supported" );
+	throw std::invalid_argument( "This AMALTHEA version is not supported" );
 	return {};
 }
 

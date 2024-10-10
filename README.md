@@ -1,13 +1,18 @@
 # am2inc #
 
-am2inc reads [AMALTHEA models](https://www.eclipse.org/app4mc) and converts
+am2inc reads [AMALTHEA models](https://eclipse.dev/app4mc/) and converts
 them to INCHRON version 3 models, which are used by [INCHRON's chronSUITE
 3.X](https://www.inchron.com/chronsuite/). am2inc is implemented in C++ and
 uses the [EMF4CPP framework](https://github.com/inchron/emf4cpp).
 
-
 # Features #
 
+* Reads all AMALTHEA models from 1.2.0 to 3.3.0. A single ecore file is used for
+  metamodels without structural differences between them.
+* Converts the AMALTHEA model into an INCHRON model as far as the Amalthea elements
+  are supported.
+
+For more details, see [INCHRON Amalthea Importer](https://www.inchron.com/amalthea/).
 
 # Installation #
 
@@ -24,12 +29,14 @@ uses the [EMF4CPP framework](https://github.com/inchron/emf4cpp).
 ## Installation ##
 
 1. Checkout a clone of this repository
+
 ```
 $ git clone https://github.com/inchron/am2inc.git
 $ cd am2inc
 ```
 
 2. Run qmake, then make and make install.
+
 ``` sh
 $ qmake && make && make install PREFIX=/opt/am2inc
 ```
@@ -42,6 +49,7 @@ relativ path).
 
 am2inc is a command line tool. It can either operate on files, or on stdin and
 stdout. The general usage is:
+
 ``` sh
 $ am2inc -o output.iprx input.amxmi [input2.amxmi] [... inputn.amxmi]
 ```
@@ -51,14 +59,28 @@ same resource.
 
 The version information does not only contain the version and the commit id of
 the tool itself, but also the versions of the integrated models:
+
 ``` sh
-$ am2inc --version
-Version 1.0.0 Build Feb  3 2021 (8668187)
-Amalthea : http://app4mc.eclipse.org/amalthea/0.9.9
-INCHRON  : http://inchron.com/realtime/root/3.0.1
+Version 3.3.0 Build Oct 10 2024 (f0c8579)
+AMALTHEA : http://app4mc.eclipse.org/amalthea/1.2.0
+           http://app4mc.eclipse.org/amalthea/2.0.0
+           http://app4mc.eclipse.org/amalthea/2.1.0
+           http://app4mc.eclipse.org/amalthea/2.2.0
+           http://app4mc.eclipse.org/amalthea/3.0.0
+           http://app4mc.eclipse.org/amalthea/3.1.0
+           http://app4mc.eclipse.org/amalthea/3.2.0
+           http://app4mc.eclipse.org/amalthea/3.3.0
+INCHRON  : http://inchron.com/realtime/root/3.5.0
+
+version: 3.5.0
+capabilities: +multi
 ```
 
+The ```version:``` and ```capabilities:``` line are checked at runtime and used to
+control the external importer interface of the INCHRON chronSUITE 3.X.
+
 As usual, the integrated help can be obtained by:
+
 ``` sh
 $ am2inc --help
 Usage: am2inc [options] model.amxmi
@@ -87,12 +109,12 @@ Instead, we count the version of the am2inc as follows:
 3. The patch number is incremented with bug fixes or converting new model
    elements from one model to the other.
 
-
 # Updating the Models #
 
 The AMALTHEA model is maintained by the APP4MC project and can be retrieved
 from [their
-repository](https://git.eclipse.org/r/plugins/gitiles/app4mc/org.eclipse.app4mc/+/refs/heads/master/plugins/org.eclipse.app4mc.amalthea.model/model-gen/ecore/). It
+repository](https://gitlab.eclipse.org/eclipse/app4mc/org.eclipse.app4mc/-/tree/master/plugins/org.eclipse.app4mc.amalthea.model/model-gen/ecore/).
+It
 can not be used directly by EMF4CPP, the references to the ecore.ecore need to
 be corrected. Furthermore, AMALTHEA uses the Java notation for floating point
 representation, and literal names, which are reserved keywords in C++.
@@ -101,6 +123,7 @@ When the new model version has been copied to EcoreModels/amalthea.ecore, the
 necessary changes will be applied automatically during the build process.
 
 Download and adaption can be triggered manually in a single step:
+
 ``` sh
 $ ./Amalthea/adaptC++.sh --update EcoreModels/amalthea.ecore
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
