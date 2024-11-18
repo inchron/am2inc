@@ -86,6 +86,8 @@ public:
 	void work( const am120::model::NumericMode_ptr&, am120::model::NumericMode* );
 	void work( const am120::model::ModeConditionDisjunction_ptr&,
 			   am120::model::ModeConditionDisjunction* );
+	void work( const am120::model::ProcessPrototype_ptr&,
+			   am120::model::ProcessPrototype* );
 
 	void addStimulus( const am120::model::Process_ptr&, const root::model::Process_ptr& );
 

@@ -477,4 +477,8 @@ void Converter::work( const am::ModeConditionDisjunction_ptr& am,
 	skipChildren();
 }
 
+void Converter::work( const am::ProcessPrototype_ptr&, am::ProcessPrototype* ) {
+	skipChildren();
+}
+
 }  // namespace am120

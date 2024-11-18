@@ -508,4 +508,8 @@ void Converter::work( const am::LocalModeLabel_ptr&, am::LocalModeLabel* ) {
 	static Diagnostic::NotImplemented<am::LocalModeLabel> message( this );
 }
 
+void Converter::work( const am::ProcessPrototype_ptr&, am::ProcessPrototype* ) {
+	skipChildren();
+}
+
 }  // namespace am320

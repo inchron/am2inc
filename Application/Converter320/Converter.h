@@ -87,6 +87,8 @@ public:
 	void work( const am320::model::ConditionDisjunction_ptr&,
 			   am320::model::ConditionDisjunction* );
 	void work( const am320::model::LocalModeLabel_ptr&, am320::model::LocalModeLabel* );
+	void work( const am320::model::ProcessPrototype_ptr&,
+			   am320::model::ProcessPrototype* );
 
 	void addStimulus( const am320::model::Process_ptr&, const root::model::Process_ptr& );
 

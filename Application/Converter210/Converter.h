@@ -89,6 +89,8 @@ public:
 	void work( const am210::model::ConditionDisjunction_ptr&,
 			   am210::model::ConditionDisjunction* );
 	void work( const am210::model::LocalModeLabel_ptr&, am210::model::LocalModeLabel* );
+	void work( const am210::model::ProcessPrototype_ptr&,
+			   am210::model::ProcessPrototype* );
 
 	void addStimulus( const am210::model::Process_ptr&, const root::model::Process_ptr& );
 

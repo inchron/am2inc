@@ -88,6 +88,8 @@ public:
 			   am200::model::ModeConditionDisjunction* );
 	void work( const am200::model::ConditionDisjunction_ptr&,
 			   am200::model::ConditionDisjunction* );
+	void work( const am200::model::ProcessPrototype_ptr&,
+			   am200::model::ProcessPrototype* );
 
 	void addStimulus( const am200::model::Process_ptr&, const root::model::Process_ptr& );
 
