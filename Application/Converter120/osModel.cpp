@@ -63,6 +63,9 @@ void Converter::work( const am120::model::TaskScheduler_ptr& am,
 		scheduler->setName( am->getName() );
 		_schedulerHierarchy.back()->getSchedulables().push_back_unsafe( scheduler );
 		_schedulerHierarchy.push_back( scheduler );
+		if ( const auto& parentAssociation = am->getParentAssociation() )
+			if ( const auto& schedParams = parentAssociation->getSchedulingParameters() )
+				scheduler->setPriority( schedParams->getPriority() );
 
 	} else {
 		_schedulerHierarchy.pop_back();

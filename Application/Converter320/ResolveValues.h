@@ -9,7 +9,6 @@
  * SPDX-License-Identifier: EPL-2.0
 */
 #pragma once
-
 #include <am320/model/ModelPackage.hpp>
 #include <am320/model/Value.hpp>
 
@@ -22,63 +21,20 @@ namespace am320::ResolveValue {
  * See https://eclipse.dev/app4mc/help/latest/index.html#section3.2.1 for reference.
  */
 template<typename T>
-inline T resolve( const am320::model::Value_ptr& ) {
-	return {};
-}
-
+T resolve( const am320::model::Value_ptr& );
 template<>
-inline ecore::EString resolve<ecore::EString>( const am320::model::Value_ptr& abstract ) {
-	auto concrete = ecore::as<am320::model::StringObject>( abstract );
-	return concrete->getValue();
-}
-
+ecore::EString resolve<ecore::EString>( const am320::model::Value_ptr& );
 template<>
-inline ecore::EBoolean resolve<ecore::EBoolean>(
-	const am320::model::Value_ptr& abstract ) {
-	auto concrete = ecore::as<am320::model::BooleanObject>( abstract );
-	return concrete->isValue();
-}
-
+ecore::EBoolean resolve<ecore::EBoolean>( const am320::model::Value_ptr& );
 template<>
-inline ecore::EInt resolve<ecore::EInt>( const am320::model::Value_ptr& abstract ) {
-	auto concrete = ecore::as<am320::model::IntegerObject>( abstract );
-	return concrete->getValue();
-}
-
+ecore::EInt resolve<ecore::EInt>( const am320::model::Value_ptr& );
 template<>
-inline ecore::ELong resolve<ecore::ELong>( const am320::model::Value_ptr& abstract ) {
-	auto concrete = ecore::as<am320::model::LongObject>( abstract );
-	return concrete->getValue();
-}
-
-#if 0
-/* ELong and EBigInter are mapped to the same C++ type and cannot be
- * differentiated in a template parameter.
- */
+ecore::ELong resolve<ecore::ELong>( const am320::model::Value_ptr& );
 template<>
-ecore::EBigInteger resolve<ecore::EBigInteger>(
-	const am320::model::Value_ptr& abstract ) {
-	auto concrete = ecore::as<am320::model::BigIntegerObject>( abstract );
-	return concrete->getValue();
-}
-#endif
-
+ecore::EFloat resolve<ecore::EFloat>( const am320::model::Value_ptr& );
 template<>
-inline ecore::EFloat resolve<ecore::EFloat>( const am320::model::Value_ptr& abstract ) {
-	auto concrete = ecore::as<am320::model::FloatObject>( abstract );
-	return concrete->getValue();
-}
-
+ecore::EDouble resolve<ecore::EDouble>( const am320::model::Value_ptr& );
 template<>
-inline ecore::EDouble resolve<ecore::EDouble>( const am320::model::Value_ptr& abstract ) {
-	auto concrete = ecore::as<am320::model::DoubleObject>( abstract );
-	return concrete->getValue();
-}
-
-template<>
-inline sm3::Time_ptr resolve<sm3::Time_ptr>( const am320::model::Value_ptr& abstract ) {
-	auto concrete = ecore::as<am320::model::Time>( abstract );
-	return AttributeCreator<sm3::Time, am320::model::ModelPackage>()( concrete );
-}
+sm3::Time_ptr resolve<sm3::Time_ptr>( const am320::model::Value_ptr& );
 
 }  // namespace am320::ResolveValue

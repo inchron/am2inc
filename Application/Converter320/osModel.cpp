@@ -1,5 +1,4 @@
-/* -*- c++ -*-
- *
+/*
  * Converter/osModel.cpp
  *
  * Copyright (c) 2020-2024 INCHRON AG <info@inchron.com>
@@ -9,6 +8,7 @@
  */
 #include "../AttributeCreator.h"
 #include "Converter.h"
+#include "ResolveValues.h"
 #include "StimulusTraits.h"
 
 namespace am320 {
@@ -56,6 +56,13 @@ void Converter::work( const am320::model::TaskScheduler_ptr& am,
 		scheduler->setName( am->getName() );
 		_schedulerHierarchy.back()->getSchedulables().push_back_unsafe( scheduler );
 		_schedulerHierarchy.push_back( scheduler );
+
+		for ( const auto& param : am->getSchedulingParameters() ) {
+			if ( param->getKey()->getName() == "priority" ) {
+				scheduler->setPriority( ResolveValue::resolve<int>( param->getValue() ) );
+				break;
+			}
+		}
 
 	} else {
 		_schedulerHierarchy.pop_back();

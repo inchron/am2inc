@@ -136,6 +136,7 @@ SOURCES += \
     Converter120/swModel.cpp \
     \
     Converter200/Converter.cpp \
+    Converter200/ResolveValues.cpp \
     Converter200/activityGraph.cpp \
     Converter200/constraintsModel.cpp \
     Converter200/eventModel.cpp \
@@ -147,6 +148,7 @@ SOURCES += \
     Converter200/swModel.cpp \
     \
     Converter210/Converter.cpp \
+    Converter210/ResolveValues.cpp \
     Converter210/activityGraph.cpp \
     Converter210/constraintsModel.cpp \
     Converter210/eventModel.cpp \
@@ -158,6 +160,7 @@ SOURCES += \
     Converter210/swModel.cpp \
     \
     Converter220/Converter.cpp \
+    Converter220/ResolveValues.cpp \
     Converter220/activityGraph.cpp \
     Converter220/constraintsModel.cpp \
     Converter220/eventModel.cpp \
@@ -169,6 +172,7 @@ SOURCES += \
     Converter220/swModel.cpp \
     \
     Converter320/Converter.cpp \
+    Converter320/ResolveValues.cpp \
     Converter320/activityGraph.cpp \
     Converter320/constraintsModel.cpp \
     Converter320/eventModel.cpp \
