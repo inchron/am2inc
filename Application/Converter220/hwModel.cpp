@@ -14,7 +14,12 @@ namespace am = am220::model;
 
 namespace am220 {
 
-
+/**
+ * \note Setting clock references is on behalf of the work() methods for
+ * the respective hardware elements, e.g. work(HwStructure) for CPUs,
+ * and work(ProcessingUnit) for cores will calculate a prescaler based
+ * on the associated FrequencyDomain.
+ */
 void Converter::work( const am::FrequencyDomain_ptr& am, am::FrequencyDomain* ) {
 	if ( _mode == PreOrder ) {
 		auto clock = _oc.make<sm3::ModelFactory, sm3::Clock>( am );
@@ -58,8 +63,24 @@ void Converter::work( const am::HwStructure_ptr& am, am::HwStructure* ) {
 			cpu->setCpuModel( "generic" );
 			cpu->setReloadCpuModel( true );
 
-			auto firstModuleClock = am->getModules().get( 0 )->getFrequencyDomain();
-			auto clock = _oc.make<sm3::ModelFactory, sm3::Clock>( firstModuleClock );
+			/** Use the frequency domain with the highest frequency
+			 * of all HW modules of the HwStructure. */
+			am::FrequencyDomain_ptr frequencyDomain{};
+			const auto& amPkg = am::ModelPackage::_instance();
+			for ( const auto& module : am->getModules() ) {
+				if ( module->eClass() != amPkg->getProcessingUnit() )
+					continue;
+				if ( auto freqDomain = module->getFrequencyDomain() ) {
+					if ( not frequencyDomain
+						 or amFreq2Double( freqDomain->getDefaultValue() )
+								> amFreq2Double( frequencyDomain->getDefaultValue() ) )
+						frequencyDomain = freqDomain;
+				}
+			}
+
+			auto clock = _oc.make<sm3::ModelFactory, sm3::Clock>( frequencyDomain );
+			clock->setFrequency( AttributeCreator<sm3::Frequency, am::ModelPackage>()(
+				frequencyDomain->getDefaultValue() ) );
 			cpu->setClock( clock );
 		}
 
@@ -156,29 +177,32 @@ void Converter::work( const am::HwPort_ptr& am, am::HwPort* ) {
  *****************************************************************************/
 
 void Converter::work( const am::ProcessingUnit_ptr& am, am::ProcessingUnit* ) {
-	if ( _mode == PreOrder ) {
-		if ( auto hwStructure = ecore::as<am::HwStructure>( am->eContainer() ) ) {
-			auto cpuCore = _oc.make<sm3::ModelFactory, sm3::CpuCore>( am );
-			cpuCore->setName( am->getName() );
-			cpuCore->setBitWidth( AttributeCreator<sm3::DataSize, am::ModelPackage>()(
-				64, sm3::DataSizeUnit::bit ) );
-			cpuCore->setInitiator( sm3m::create<sm3m::InitiatorPort>() );
-			cpuCore->getInitiator()->setName( "from_" + am->getName() );
+	if ( _mode != PreOrder )
+		return;
+	if ( auto hwStructure = ecore::as<am::HwStructure>( am->eContainer() ) ) {
+		auto cpuCore = _oc.make<sm3::ModelFactory, sm3::CpuCore>( am );
+		cpuCore->setName( am->getName() );
+		cpuCore->setBitWidth( AttributeCreator<sm3::DataSize, am::ModelPackage>()(
+			64, sm3::DataSizeUnit::bit ) );
+		cpuCore->setInitiator( sm3m::create<sm3m::InitiatorPort>() );
+		cpuCore->getInitiator()->setName( "from_" + am->getName() );
 
-			sm3::Cpu_ptr cpu = _oc.find<sm3::Cpu>( hwStructure, ObjectCache::Default );
-			cpu->getCores().push_back_unsafe( cpuCore );
+		sm3::Cpu_ptr cpu = _oc.find<sm3::Cpu>( hwStructure, ObjectCache::Default );
+		cpu->getCores().push_back_unsafe( cpuCore );
 
-			auto cpuClock = cpu->getClock();
-			auto coreClock =
-				_oc.make<sm3::ModelFactory, sm3::Clock>( am->getFrequencyDomain() );
-			if ( cpuClock == coreClock )
-				cpuCore->setPrescaler( 1. );
-			else {
-				// @todo derive prescaler from relation of referenced
-				// FrequencyDomain and parent Clock.
-				cpuCore->setPrescaler( -1. );
+		double prescaler{ 1. };
+		if ( auto cpuClock = cpu->getClock() )
+			if ( auto cpuFrequency = cpuClock->getFrequency() ) {
+				if ( auto coreFrequency =
+						 AttributeCreator<sm3::Frequency, am::ModelPackage>()(
+							 am->getFrequencyDomain()->getDefaultValue() ) ) {
+					const double cpuFreq = incFreq2Double( cpuFrequency );
+					const double coreFreq = incFreq2Double( coreFrequency );
+					if ( coreFreq != cpuFreq )
+						prescaler = cpuFreq / coreFreq;
+				}
 			}
-		}
+		cpuCore->setPrescaler( prescaler );
 	}
 }
 

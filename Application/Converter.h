@@ -10,6 +10,7 @@
  */
 #pragma once
 
+#include <cmath>  // pow()
 #include <memory>
 #include <set>
 
@@ -25,6 +26,24 @@
 class Application;
 class Options;
 class QString;
+
+namespace {
+
+/**
+ * This is a helper to convert an INCHRON Frequency to a double.
+ */
+template<class T>
+double incFreq2Double( T frequency ) {
+	return frequency->getValue() * pow( 10, int( frequency->getUnit() ) * 3 );
+};
+
+template<class T>
+double amFreq2Double( T f ) {
+	/** The off by one of the unit enums results in a factor of 1000. */
+	return incFreq2Double( f ) * 1e-3;
+};
+
+}  // anonymous namespace
 
 /** This is the base class of all Converters.
  */
